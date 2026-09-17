@@ -1,0 +1,35 @@
+2026-09-15T20:12:27.0306597+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Version: 2.4.0+a2a92fdb11ad38cd55b31223c4cfbb070fa01c05
+2026-09-15T20:12:27.0329876+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Logging mode: asynchronous
+2026-09-15T20:12:27.0350445+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Logging level: Information
+2026-09-15T20:12:27.0350516+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION CreateBuilderAsync entry time: 20:12:26.987
+2026-09-15T20:12:27.0356073+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION PID: 22200
+2026-09-15T20:12:27.0356770+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Runtime information: win-x64 - .NET 9.0.19
+2026-09-15T20:12:27.0357024+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Runtime location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.19\System.Private.CoreLib.dll
+2026-09-15T20:12:27.0357179+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION IsDynamicCodeSupported: True
+2026-09-15T20:12:27.0357919+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Test module: C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\bin\Debug\net9.0\LogiMatch.Application.Tests.dll
+2026-09-15T20:12:27.0358039+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Command line arguments: '--server --diagnostic --diagnostic-verbosity Information --diagnostic-output-directory C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\bin\Debug\net9.0\Log --results-directory C:\US\TransportProj\LogiMatch\TestResults --client-port 60842'
+2026-09-15T20:12:27.0380712+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION TESTINGPLATFORM_DEFAULT_HANG_TIMEOUT: ''
+2026-09-15T20:12:27.0955713+00:00 Microsoft.Testing.Platform.Hosts.TestHostBuilder INFORMATION Setting RegisterEnvironmentVariablesConfigurationSource: 'True'
+2026-09-15T20:12:27.1053888+00:00 Microsoft.Testing.Platform.Hosts.TestHostBuilder INFORMATION Setting PlatformExitProcessOnUnhandledException: 'False', config file: False environment variable: 
+2026-09-15T20:12:27.3792588+00:00 Microsoft.Testing.Platform.Requests.TestHostTestFrameworkInvoker INFORMATION Test framework UID: '30ea7c6e-dd24-4152-a360-1387158cd41d' Version: '4.0.1' DisplayName: 'xUnit.net v3 Microsoft.Testing.Platform test framework' Description: 'xUnit.net v3 Microsoft.Testing.Platform test framework'
+2026-09-15T20:12:27.3952080+00:00 xUnit.net INFORMATION xUnit.net v3 In-Process Runner v4.0.1+8ed8aa354c (64-bit .NET 9.0.19)
+2026-09-15T20:12:27.4382545+00:00 xUnit.net INFORMATION   Discovering: LogiMatch.Application.Tests
+2026-09-15T20:12:27.4908382+00:00 xUnit.net INFORMATION   Discovered:  LogiMatch.Application.Tests
+2026-09-15T20:12:27.5100826+00:00 xUnit.net INFORMATION   Starting:    LogiMatch.Application.Tests
+2026-09-15T20:12:28.2996961+00:00 xUnit.net ERROR     LogiMatch.Application.Tests.TransportOffers.AcceptTransportOfferHandlerTests.Handle_WhenVehicleHasOverlappingBooking_ShouldThrow [FAIL]
+2026-09-15T20:12:28.3000597+00:00 xUnit.net INFORMATION       Assert.Throws() Failure: No exception was thrown
+2026-09-15T20:12:28.3000689+00:00 xUnit.net INFORMATION       Expected: typeof(System.InvalidOperationException)
+2026-09-15T20:12:28.3003422+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-15T20:12:28.3006456+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\TransportRequests\AcceptTransportOfferHandlerTests.cs(313,0): at LogiMatch.Application.Tests.TransportOffers.AcceptTransportOfferHandlerTests.Handle_WhenVehicleHasOverlappingBooking_ShouldThrow()
+2026-09-15T20:12:28.3006564+00:00 xUnit.net INFORMATION         --- End of stack trace from previous location ---
+2026-09-15T20:12:28.3027072+00:00 xUnit.net ERROR     LogiMatch.Application.Tests.TransportOffers.AcceptTransportOfferHandlerTests.Handle_WhenCancelledTripCargoExists_ShouldAllowAcceptance [FAIL]
+2026-09-15T20:12:28.3027402+00:00 xUnit.net INFORMATION       System.InvalidOperationException : The vehicle already has a trip that overlaps with the specified offer dates.
+2026-09-15T20:12:28.3027610+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-15T20:12:28.3027816+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application\TransportOffers\AcceptTransportOfferHandler.cs(127,0): at LogiMatch.Application.TransportOffers.AcceptTransportOfferHandler.Handle(Guid offerId)
+2026-09-15T20:12:28.3027918+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application\TransportOffers\AcceptTransportOfferHandler.cs(167,0): at LogiMatch.Application.TransportOffers.AcceptTransportOfferHandler.Handle(Guid offerId)
+2026-09-15T20:12:28.3028016+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application\TransportOffers\AcceptTransportOfferHandler.cs(168,0): at LogiMatch.Application.TransportOffers.AcceptTransportOfferHandler.Handle(Guid offerId)
+2026-09-15T20:12:28.3028121+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\TransportRequests\AcceptTransportOfferHandlerTests.cs(516,0): at LogiMatch.Application.Tests.TransportOffers.AcceptTransportOfferHandlerTests.Handle_WhenCancelledTripCargoExists_ShouldAllowAcceptance()
+2026-09-15T20:12:28.3028137+00:00 xUnit.net INFORMATION         --- End of stack trace from previous location ---
+2026-09-15T20:12:28.3400659+00:00 xUnit.net INFORMATION   Finished:    LogiMatch.Application.Tests (ID = 'ff833f4ee65d7d65f33f7edea8b7e8fca6ca708868bfc2986c3389f0f132799d')
+2026-09-15T20:12:28.3451056+00:00 xUnit.net INFORMATION === TEST EXECUTION SUMMARY ===
+2026-09-15T20:12:28.3485948+00:00 xUnit.net INFORMATION    LogiMatch.Application.Tests  Total: 64, Errors: 0, Failed: 2, Skipped: 0, Not Run: 0, Time: 0,836s

@@ -1,0 +1,141 @@
+2026-09-14T20:01:48.2282442+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Version: 2.4.0+a2a92fdb11ad38cd55b31223c4cfbb070fa01c05
+2026-09-14T20:01:48.2291896+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Logging mode: asynchronous
+2026-09-14T20:01:48.2300269+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Logging level: Information
+2026-09-14T20:01:48.2300300+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION CreateBuilderAsync entry time: 20:01:48.196
+2026-09-14T20:01:48.2302858+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION PID: 23944
+2026-09-14T20:01:48.2303154+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Runtime information: win-x64 - .NET 9.0.19
+2026-09-14T20:01:48.2303335+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Runtime location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.19\System.Private.CoreLib.dll
+2026-09-14T20:01:48.2303438+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION IsDynamicCodeSupported: True
+2026-09-14T20:01:48.2303817+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Test module: C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\bin\Debug\net9.0\LogiMatch.Domain.Tests.dll
+2026-09-14T20:01:48.2303905+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Command line arguments: '--server --diagnostic --diagnostic-verbosity Information --diagnostic-output-directory C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\bin\Debug\net9.0\Log --results-directory C:\US\TransportProj\LogiMatch\TestResults --client-port 64753'
+2026-09-14T20:01:48.2322911+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION TESTINGPLATFORM_DEFAULT_HANG_TIMEOUT: ''
+2026-09-14T20:01:48.2951204+00:00 Microsoft.Testing.Platform.Hosts.TestHostBuilder INFORMATION Setting RegisterEnvironmentVariablesConfigurationSource: 'True'
+2026-09-14T20:01:48.3012505+00:00 Microsoft.Testing.Platform.Hosts.TestHostBuilder INFORMATION Setting PlatformExitProcessOnUnhandledException: 'False', config file: False environment variable: 
+2026-09-14T20:01:48.5939952+00:00 Microsoft.Testing.Platform.Requests.TestHostTestFrameworkInvoker INFORMATION Test framework UID: '30ea7c6e-dd24-4152-a360-1387158cd41d' Version: '4.0.1' DisplayName: 'xUnit.net v3 Microsoft.Testing.Platform test framework' Description: 'xUnit.net v3 Microsoft.Testing.Platform test framework'
+2026-09-14T20:01:48.6079518+00:00 xUnit.net INFORMATION xUnit.net v3 In-Process Runner v4.0.1+8ed8aa354c (64-bit .NET 9.0.19)
+2026-09-14T20:01:48.6756881+00:00 xUnit.net INFORMATION   Discovering: LogiMatch.Domain.Tests
+2026-09-14T20:01:48.7568274+00:00 xUnit.net INFORMATION   Discovered:  LogiMatch.Domain.Tests
+2026-09-14T20:01:48.7787366+00:00 xUnit.net INFORMATION   Starting:    LogiMatch.Domain.Tests
+2026-09-14T20:01:48.9687010+00:00 xUnit.net ERROR     LogiMatch.Domain.Tests.Entities.VehicleTests.Constructor_WhenWidthIsInvalid_ShouldThrow(widthM: 0) [FAIL]
+2026-09-14T20:01:48.9691939+00:00 xUnit.net INFORMATION       Assert.Throws() Failure: Exception type was not an exact match
+2026-09-14T20:01:48.9692082+00:00 xUnit.net INFORMATION       Expected: typeof(System.ArgumentException)
+2026-09-14T20:01:48.9692099+00:00 xUnit.net INFORMATION       Actual:   typeof(System.InvalidOperationException)
+2026-09-14T20:01:48.9692108+00:00 xUnit.net INFORMATION       ---- System.InvalidOperationException : Vehicle width must be greater than zero.
+2026-09-14T20:01:48.9696383+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-14T20:01:48.9701005+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\VehicleTests.cs(125,0): at LogiMatch.Domain.Tests.Entities.VehicleTests.Constructor_WhenWidthIsInvalid_ShouldThrow(Decimal widthM)
+2026-09-14T20:01:48.9701225+00:00 xUnit.net INFORMATION            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+2026-09-14T20:01:48.9701327+00:00 xUnit.net INFORMATION            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+2026-09-14T20:01:48.9701343+00:00 xUnit.net INFORMATION         ----- Inner Stack Trace -----
+2026-09-14T20:01:48.9701447+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain\Entities\Vehicle.cs(85,0): at LogiMatch.Domain.Entities.Vehicle..ctor(Guid transporterProfileId, VehicleType type, String brand, String model, String licensePlate, Decimal maxWeightKg, Decimal maxVolumeM3, Decimal lengthM, Decimal widthM, Decimal heightM, Boolean hasTailLift, Boolean isRefrigerated)
+2026-09-14T20:01:48.9701605+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\VehicleTests.cs(126,0): at LogiMatch.Domain.Tests.Entities.VehicleTests.<>c__DisplayClass4_0.<Constructor_WhenWidthIsInvalid_ShouldThrow>b__0()
+2026-09-14T20:01:48.9713071+00:00 xUnit.net ERROR     LogiMatch.Domain.Tests.Entities.VehicleTests.Constructor_WhenWidthIsInvalid_ShouldThrow(widthM: -1) [FAIL]
+2026-09-14T20:01:48.9713148+00:00 xUnit.net INFORMATION       Assert.Throws() Failure: Exception type was not an exact match
+2026-09-14T20:01:48.9713344+00:00 xUnit.net INFORMATION       Expected: typeof(System.ArgumentException)
+2026-09-14T20:01:48.9713354+00:00 xUnit.net INFORMATION       Actual:   typeof(System.InvalidOperationException)
+2026-09-14T20:01:48.9713364+00:00 xUnit.net INFORMATION       ---- System.InvalidOperationException : Vehicle width must be greater than zero.
+2026-09-14T20:01:48.9713666+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-14T20:01:48.9713810+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\VehicleTests.cs(125,0): at LogiMatch.Domain.Tests.Entities.VehicleTests.Constructor_WhenWidthIsInvalid_ShouldThrow(Decimal widthM)
+2026-09-14T20:01:48.9713870+00:00 xUnit.net INFORMATION            at InvokeStub_VehicleTests.Constructor_WhenWidthIsInvalid_ShouldThrow(Object, Span`1)
+2026-09-14T20:01:48.9714175+00:00 xUnit.net INFORMATION            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+2026-09-14T20:01:48.9714187+00:00 xUnit.net INFORMATION         ----- Inner Stack Trace -----
+2026-09-14T20:01:48.9714264+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain\Entities\Vehicle.cs(85,0): at LogiMatch.Domain.Entities.Vehicle..ctor(Guid transporterProfileId, VehicleType type, String brand, String model, String licensePlate, Decimal maxWeightKg, Decimal maxVolumeM3, Decimal lengthM, Decimal widthM, Decimal heightM, Boolean hasTailLift, Boolean isRefrigerated)
+2026-09-14T20:01:48.9714343+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\VehicleTests.cs(126,0): at LogiMatch.Domain.Tests.Entities.VehicleTests.<>c__DisplayClass4_0.<Constructor_WhenWidthIsInvalid_ShouldThrow>b__0()
+2026-09-14T20:01:48.9716078+00:00 xUnit.net ERROR     LogiMatch.Domain.Tests.Entities.VehicleTests.Constructor_WhenLengthIsInvalid_ShouldThrow(lengthM: 0) [FAIL]
+2026-09-14T20:01:48.9716116+00:00 xUnit.net INFORMATION       Assert.Throws() Failure: Exception type was not an exact match
+2026-09-14T20:01:48.9716124+00:00 xUnit.net INFORMATION       Expected: typeof(System.ArgumentException)
+2026-09-14T20:01:48.9716132+00:00 xUnit.net INFORMATION       Actual:   typeof(System.InvalidOperationException)
+2026-09-14T20:01:48.9716139+00:00 xUnit.net INFORMATION       ---- System.InvalidOperationException : Vehicle length must be greater than zero.
+2026-09-14T20:01:48.9716359+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-14T20:01:48.9716475+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\VehicleTests.cs(100,0): at LogiMatch.Domain.Tests.Entities.VehicleTests.Constructor_WhenLengthIsInvalid_ShouldThrow(Decimal lengthM)
+2026-09-14T20:01:48.9716658+00:00 xUnit.net INFORMATION            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+2026-09-14T20:01:48.9716732+00:00 xUnit.net INFORMATION            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+2026-09-14T20:01:48.9716745+00:00 xUnit.net INFORMATION         ----- Inner Stack Trace -----
+2026-09-14T20:01:48.9716816+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain\Entities\Vehicle.cs(81,0): at LogiMatch.Domain.Entities.Vehicle..ctor(Guid transporterProfileId, VehicleType type, String brand, String model, String licensePlate, Decimal maxWeightKg, Decimal maxVolumeM3, Decimal lengthM, Decimal widthM, Decimal heightM, Boolean hasTailLift, Boolean isRefrigerated)
+2026-09-14T20:01:48.9716947+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\VehicleTests.cs(101,0): at LogiMatch.Domain.Tests.Entities.VehicleTests.<>c__DisplayClass3_0.<Constructor_WhenLengthIsInvalid_ShouldThrow>b__0()
+2026-09-14T20:01:48.9718192+00:00 xUnit.net ERROR     LogiMatch.Domain.Tests.Entities.VehicleTests.Constructor_WhenLengthIsInvalid_ShouldThrow(lengthM: -1) [FAIL]
+2026-09-14T20:01:48.9718221+00:00 xUnit.net INFORMATION       Assert.Throws() Failure: Exception type was not an exact match
+2026-09-14T20:01:48.9718306+00:00 xUnit.net INFORMATION       Expected: typeof(System.ArgumentException)
+2026-09-14T20:01:48.9718316+00:00 xUnit.net INFORMATION       Actual:   typeof(System.InvalidOperationException)
+2026-09-14T20:01:48.9718324+00:00 xUnit.net INFORMATION       ---- System.InvalidOperationException : Vehicle length must be greater than zero.
+2026-09-14T20:01:48.9718440+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-14T20:01:48.9718645+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\VehicleTests.cs(100,0): at LogiMatch.Domain.Tests.Entities.VehicleTests.Constructor_WhenLengthIsInvalid_ShouldThrow(Decimal lengthM)
+2026-09-14T20:01:48.9718727+00:00 xUnit.net INFORMATION            at InvokeStub_VehicleTests.Constructor_WhenLengthIsInvalid_ShouldThrow(Object, Span`1)
+2026-09-14T20:01:48.9718842+00:00 xUnit.net INFORMATION            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+2026-09-14T20:01:48.9718851+00:00 xUnit.net INFORMATION         ----- Inner Stack Trace -----
+2026-09-14T20:01:48.9718917+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain\Entities\Vehicle.cs(81,0): at LogiMatch.Domain.Entities.Vehicle..ctor(Guid transporterProfileId, VehicleType type, String brand, String model, String licensePlate, Decimal maxWeightKg, Decimal maxVolumeM3, Decimal lengthM, Decimal widthM, Decimal heightM, Boolean hasTailLift, Boolean isRefrigerated)
+2026-09-14T20:01:48.9719104+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\VehicleTests.cs(101,0): at LogiMatch.Domain.Tests.Entities.VehicleTests.<>c__DisplayClass3_0.<Constructor_WhenLengthIsInvalid_ShouldThrow>b__0()
+2026-09-14T20:01:48.9720312+00:00 xUnit.net ERROR     LogiMatch.Domain.Tests.Entities.VehicleTests.Constructor_WhenHeightIsInvalid_ShouldThrow(heightM: 0) [FAIL]
+2026-09-14T20:01:48.9720339+00:00 xUnit.net INFORMATION       Assert.Throws() Failure: Exception type was not an exact match
+2026-09-14T20:01:48.9720348+00:00 xUnit.net INFORMATION       Expected: typeof(System.ArgumentException)
+2026-09-14T20:01:48.9720357+00:00 xUnit.net INFORMATION       Actual:   typeof(System.InvalidOperationException)
+2026-09-14T20:01:48.9720461+00:00 xUnit.net INFORMATION       ---- System.InvalidOperationException : Vehicle height must be greater than zero.
+2026-09-14T20:01:48.9720627+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-14T20:01:48.9720800+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\VehicleTests.cs(150,0): at LogiMatch.Domain.Tests.Entities.VehicleTests.Constructor_WhenHeightIsInvalid_ShouldThrow(Decimal heightM)
+2026-09-14T20:01:48.9720870+00:00 xUnit.net INFORMATION            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+2026-09-14T20:01:48.9720941+00:00 xUnit.net INFORMATION            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+2026-09-14T20:01:48.9720951+00:00 xUnit.net INFORMATION         ----- Inner Stack Trace -----
+2026-09-14T20:01:48.9721014+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain\Entities\Vehicle.cs(89,0): at LogiMatch.Domain.Entities.Vehicle..ctor(Guid transporterProfileId, VehicleType type, String brand, String model, String licensePlate, Decimal maxWeightKg, Decimal maxVolumeM3, Decimal lengthM, Decimal widthM, Decimal heightM, Boolean hasTailLift, Boolean isRefrigerated)
+2026-09-14T20:01:48.9721161+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\VehicleTests.cs(151,0): at LogiMatch.Domain.Tests.Entities.VehicleTests.<>c__DisplayClass5_0.<Constructor_WhenHeightIsInvalid_ShouldThrow>b__0()
+2026-09-14T20:01:48.9722282+00:00 xUnit.net ERROR     LogiMatch.Domain.Tests.Entities.VehicleTests.Constructor_WhenHeightIsInvalid_ShouldThrow(heightM: -1) [FAIL]
+2026-09-14T20:01:48.9722435+00:00 xUnit.net INFORMATION       Assert.Throws() Failure: Exception type was not an exact match
+2026-09-14T20:01:48.9722448+00:00 xUnit.net INFORMATION       Expected: typeof(System.ArgumentException)
+2026-09-14T20:01:48.9722458+00:00 xUnit.net INFORMATION       Actual:   typeof(System.InvalidOperationException)
+2026-09-14T20:01:48.9722465+00:00 xUnit.net INFORMATION       ---- System.InvalidOperationException : Vehicle height must be greater than zero.
+2026-09-14T20:01:48.9722601+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-14T20:01:48.9722768+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\VehicleTests.cs(150,0): at LogiMatch.Domain.Tests.Entities.VehicleTests.Constructor_WhenHeightIsInvalid_ShouldThrow(Decimal heightM)
+2026-09-14T20:01:48.9722824+00:00 xUnit.net INFORMATION            at InvokeStub_VehicleTests.Constructor_WhenHeightIsInvalid_ShouldThrow(Object, Span`1)
+2026-09-14T20:01:48.9722906+00:00 xUnit.net INFORMATION            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+2026-09-14T20:01:48.9722915+00:00 xUnit.net INFORMATION         ----- Inner Stack Trace -----
+2026-09-14T20:01:48.9722980+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain\Entities\Vehicle.cs(89,0): at LogiMatch.Domain.Entities.Vehicle..ctor(Guid transporterProfileId, VehicleType type, String brand, String model, String licensePlate, Decimal maxWeightKg, Decimal maxVolumeM3, Decimal lengthM, Decimal widthM, Decimal heightM, Boolean hasTailLift, Boolean isRefrigerated)
+2026-09-14T20:01:48.9723124+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\VehicleTests.cs(151,0): at LogiMatch.Domain.Tests.Entities.VehicleTests.<>c__DisplayClass5_0.<Constructor_WhenHeightIsInvalid_ShouldThrow>b__0()
+2026-09-14T20:01:48.9724229+00:00 xUnit.net ERROR     LogiMatch.Domain.Tests.Entities.VehicleTests.Constructor_WhenMaxWeightIsInvalid_ShouldThrow(maxWeightKg: -1) [FAIL]
+2026-09-14T20:01:48.9724261+00:00 xUnit.net INFORMATION       Assert.Throws() Failure: Exception type was not an exact match
+2026-09-14T20:01:48.9724270+00:00 xUnit.net INFORMATION       Expected: typeof(System.ArgumentException)
+2026-09-14T20:01:48.9724354+00:00 xUnit.net INFORMATION       Actual:   typeof(System.InvalidOperationException)
+2026-09-14T20:01:48.9724362+00:00 xUnit.net INFORMATION       ---- System.InvalidOperationException : Maximum weight must be greater than zero.
+2026-09-14T20:01:48.9724488+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-14T20:01:48.9724628+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\VehicleTests.cs(50,0): at LogiMatch.Domain.Tests.Entities.VehicleTests.Constructor_WhenMaxWeightIsInvalid_ShouldThrow(Decimal maxWeightKg)
+2026-09-14T20:01:48.9724703+00:00 xUnit.net INFORMATION            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+2026-09-14T20:01:48.9724772+00:00 xUnit.net INFORMATION            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+2026-09-14T20:01:48.9724783+00:00 xUnit.net INFORMATION         ----- Inner Stack Trace -----
+2026-09-14T20:01:48.9724853+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain\Entities\Vehicle.cs(73,0): at LogiMatch.Domain.Entities.Vehicle..ctor(Guid transporterProfileId, VehicleType type, String brand, String model, String licensePlate, Decimal maxWeightKg, Decimal maxVolumeM3, Decimal lengthM, Decimal widthM, Decimal heightM, Boolean hasTailLift, Boolean isRefrigerated)
+2026-09-14T20:01:48.9725020+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\VehicleTests.cs(51,0): at LogiMatch.Domain.Tests.Entities.VehicleTests.<>c__DisplayClass1_0.<Constructor_WhenMaxWeightIsInvalid_ShouldThrow>b__0()
+2026-09-14T20:01:48.9725986+00:00 xUnit.net ERROR     LogiMatch.Domain.Tests.Entities.VehicleTests.Constructor_WhenMaxWeightIsInvalid_ShouldThrow(maxWeightKg: 0) [FAIL]
+2026-09-14T20:01:48.9726092+00:00 xUnit.net INFORMATION       Assert.Throws() Failure: Exception type was not an exact match
+2026-09-14T20:01:48.9726100+00:00 xUnit.net INFORMATION       Expected: typeof(System.ArgumentException)
+2026-09-14T20:01:48.9726109+00:00 xUnit.net INFORMATION       Actual:   typeof(System.InvalidOperationException)
+2026-09-14T20:01:48.9726119+00:00 xUnit.net INFORMATION       ---- System.InvalidOperationException : Maximum weight must be greater than zero.
+2026-09-14T20:01:48.9726225+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-14T20:01:48.9726418+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\VehicleTests.cs(50,0): at LogiMatch.Domain.Tests.Entities.VehicleTests.Constructor_WhenMaxWeightIsInvalid_ShouldThrow(Decimal maxWeightKg)
+2026-09-14T20:01:48.9726473+00:00 xUnit.net INFORMATION            at InvokeStub_VehicleTests.Constructor_WhenMaxWeightIsInvalid_ShouldThrow(Object, Span`1)
+2026-09-14T20:01:48.9726556+00:00 xUnit.net INFORMATION            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+2026-09-14T20:01:48.9726566+00:00 xUnit.net INFORMATION         ----- Inner Stack Trace -----
+2026-09-14T20:01:48.9726736+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain\Entities\Vehicle.cs(73,0): at LogiMatch.Domain.Entities.Vehicle..ctor(Guid transporterProfileId, VehicleType type, String brand, String model, String licensePlate, Decimal maxWeightKg, Decimal maxVolumeM3, Decimal lengthM, Decimal widthM, Decimal heightM, Boolean hasTailLift, Boolean isRefrigerated)
+2026-09-14T20:01:48.9726807+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\VehicleTests.cs(51,0): at LogiMatch.Domain.Tests.Entities.VehicleTests.<>c__DisplayClass1_0.<Constructor_WhenMaxWeightIsInvalid_ShouldThrow>b__0()
+2026-09-14T20:01:48.9728048+00:00 xUnit.net ERROR     LogiMatch.Domain.Tests.Entities.VehicleTests.Constructor_WhenMaxVolumeIsInvalid_ShouldThrow(maxVolumeM3: 0) [FAIL]
+2026-09-14T20:01:48.9728083+00:00 xUnit.net INFORMATION       Assert.Throws() Failure: Exception type was not an exact match
+2026-09-14T20:01:48.9728092+00:00 xUnit.net INFORMATION       Expected: typeof(System.ArgumentException)
+2026-09-14T20:01:48.9728100+00:00 xUnit.net INFORMATION       Actual:   typeof(System.InvalidOperationException)
+2026-09-14T20:01:48.9728107+00:00 xUnit.net INFORMATION       ---- System.InvalidOperationException : Maximum volume must be greater than zero.
+2026-09-14T20:01:48.9728346+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-14T20:01:48.9728444+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\VehicleTests.cs(75,0): at LogiMatch.Domain.Tests.Entities.VehicleTests.Constructor_WhenMaxVolumeIsInvalid_ShouldThrow(Decimal maxVolumeM3)
+2026-09-14T20:01:48.9728515+00:00 xUnit.net INFORMATION            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+2026-09-14T20:01:48.9728585+00:00 xUnit.net INFORMATION            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+2026-09-14T20:01:48.9728594+00:00 xUnit.net INFORMATION         ----- Inner Stack Trace -----
+2026-09-14T20:01:48.9728727+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain\Entities\Vehicle.cs(77,0): at LogiMatch.Domain.Entities.Vehicle..ctor(Guid transporterProfileId, VehicleType type, String brand, String model, String licensePlate, Decimal maxWeightKg, Decimal maxVolumeM3, Decimal lengthM, Decimal widthM, Decimal heightM, Boolean hasTailLift, Boolean isRefrigerated)
+2026-09-14T20:01:48.9728798+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\VehicleTests.cs(76,0): at LogiMatch.Domain.Tests.Entities.VehicleTests.<>c__DisplayClass2_0.<Constructor_WhenMaxVolumeIsInvalid_ShouldThrow>b__0()
+2026-09-14T20:01:48.9729814+00:00 xUnit.net ERROR     LogiMatch.Domain.Tests.Entities.VehicleTests.Constructor_WhenMaxVolumeIsInvalid_ShouldThrow(maxVolumeM3: -1) [FAIL]
+2026-09-14T20:01:48.9729843+00:00 xUnit.net INFORMATION       Assert.Throws() Failure: Exception type was not an exact match
+2026-09-14T20:01:48.9729852+00:00 xUnit.net INFORMATION       Expected: typeof(System.ArgumentException)
+2026-09-14T20:01:48.9729861+00:00 xUnit.net INFORMATION       Actual:   typeof(System.InvalidOperationException)
+2026-09-14T20:01:48.9729868+00:00 xUnit.net INFORMATION       ---- System.InvalidOperationException : Maximum volume must be greater than zero.
+2026-09-14T20:01:48.9730185+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-14T20:01:48.9730431+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\VehicleTests.cs(75,0): at LogiMatch.Domain.Tests.Entities.VehicleTests.Constructor_WhenMaxVolumeIsInvalid_ShouldThrow(Decimal maxVolumeM3)
+2026-09-14T20:01:48.9730488+00:00 xUnit.net INFORMATION            at InvokeStub_VehicleTests.Constructor_WhenMaxVolumeIsInvalid_ShouldThrow(Object, Span`1)
+2026-09-14T20:01:48.9730571+00:00 xUnit.net INFORMATION            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+2026-09-14T20:01:48.9730582+00:00 xUnit.net INFORMATION         ----- Inner Stack Trace -----
+2026-09-14T20:01:48.9730644+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain\Entities\Vehicle.cs(77,0): at LogiMatch.Domain.Entities.Vehicle..ctor(Guid transporterProfileId, VehicleType type, String brand, String model, String licensePlate, Decimal maxWeightKg, Decimal maxVolumeM3, Decimal lengthM, Decimal widthM, Decimal heightM, Boolean hasTailLift, Boolean isRefrigerated)
+2026-09-14T20:01:48.9730839+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\VehicleTests.cs(76,0): at LogiMatch.Domain.Tests.Entities.VehicleTests.<>c__DisplayClass2_0.<Constructor_WhenMaxVolumeIsInvalid_ShouldThrow>b__0()
+2026-09-14T20:01:48.9794432+00:00 xUnit.net INFORMATION   Finished:    LogiMatch.Domain.Tests (ID = '603d798c4e0f5382c49ab6ab6994de61a6fd7ac95620d9ed2f31713fe8aaf2f1')
+2026-09-14T20:01:48.9842115+00:00 xUnit.net INFORMATION === TEST EXECUTION SUMMARY ===
+2026-09-14T20:01:48.9907907+00:00 xUnit.net INFORMATION    LogiMatch.Domain.Tests  Total: 11, Errors: 0, Failed: 10, Skipped: 0, Not Run: 0, Time: 0,208s

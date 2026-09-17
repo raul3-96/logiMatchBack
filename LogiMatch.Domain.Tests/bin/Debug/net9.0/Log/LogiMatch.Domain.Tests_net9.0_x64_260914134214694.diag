@@ -1,0 +1,21 @@
+2026-09-14T13:42:14.7032439+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Version: 2.4.0+a2a92fdb11ad38cd55b31223c4cfbb070fa01c05
+2026-09-14T13:42:14.7041182+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Logging mode: asynchronous
+2026-09-14T13:42:14.7048785+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Logging level: Information
+2026-09-14T13:42:14.7048812+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION CreateBuilderAsync entry time: 13:42:14.674
+2026-09-14T13:42:14.7051251+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION PID: 46152
+2026-09-14T13:42:14.7051521+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Runtime information: win-x64 - .NET 9.0.19
+2026-09-14T13:42:14.7051682+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Runtime location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.19\System.Private.CoreLib.dll
+2026-09-14T13:42:14.7051797+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION IsDynamicCodeSupported: True
+2026-09-14T13:42:14.7052281+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Test module: C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\bin\Debug\net9.0\LogiMatch.Domain.Tests.dll
+2026-09-14T13:42:14.7052362+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Command line arguments: '--server --diagnostic --diagnostic-verbosity Information --diagnostic-output-directory C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\bin\Debug\net9.0\Log --results-directory C:\US\TransportProj\LogiMatch\TestResults --client-port 64682'
+2026-09-14T13:42:14.7063163+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION TESTINGPLATFORM_DEFAULT_HANG_TIMEOUT: ''
+2026-09-14T13:42:14.7462945+00:00 Microsoft.Testing.Platform.Hosts.TestHostBuilder INFORMATION Setting RegisterEnvironmentVariablesConfigurationSource: 'True'
+2026-09-14T13:42:14.7518106+00:00 Microsoft.Testing.Platform.Hosts.TestHostBuilder INFORMATION Setting PlatformExitProcessOnUnhandledException: 'False', config file: False environment variable: 
+2026-09-14T13:42:14.9277044+00:00 Microsoft.Testing.Platform.Requests.TestHostTestFrameworkInvoker INFORMATION Test framework UID: '30ea7c6e-dd24-4152-a360-1387158cd41d' Version: '4.0.1' DisplayName: 'xUnit.net v3 Microsoft.Testing.Platform test framework' Description: 'xUnit.net v3 Microsoft.Testing.Platform test framework'
+2026-09-14T13:42:14.9338116+00:00 xUnit.net INFORMATION xUnit.net v3 In-Process Runner v4.0.1+8ed8aa354c (64-bit .NET 9.0.19)
+2026-09-14T13:42:14.9694810+00:00 xUnit.net INFORMATION   Discovering: LogiMatch.Domain.Tests
+2026-09-14T13:42:15.0115497+00:00 xUnit.net INFORMATION   Discovered:  LogiMatch.Domain.Tests
+2026-09-14T13:42:15.0212255+00:00 xUnit.net INFORMATION   Starting:    LogiMatch.Domain.Tests
+2026-09-14T13:42:15.1239127+00:00 xUnit.net INFORMATION   Finished:    LogiMatch.Domain.Tests (ID = '603d798c4e0f5382c49ab6ab6994de61a6fd7ac95620d9ed2f31713fe8aaf2f1')
+2026-09-14T13:42:15.1261397+00:00 xUnit.net INFORMATION === TEST EXECUTION SUMMARY ===
+2026-09-14T13:42:15.1291601+00:00 xUnit.net INFORMATION    LogiMatch.Domain.Tests  Total: 10, Errors: 0, Failed: 0, Skipped: 0, Not Run: 0, Time: 0,104s

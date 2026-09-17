@@ -1,0 +1,45 @@
+2026-09-14T11:54:09.9432045+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Version: 2.4.0+a2a92fdb11ad38cd55b31223c4cfbb070fa01c05
+2026-09-14T11:54:09.9442833+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Logging mode: asynchronous
+2026-09-14T11:54:09.9451454+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Logging level: Information
+2026-09-14T11:54:09.9451485+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION CreateBuilderAsync entry time: 11:54:09.915
+2026-09-14T11:54:09.9454338+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION PID: 25828
+2026-09-14T11:54:09.9454689+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Runtime information: win-x64 - .NET 9.0.19
+2026-09-14T11:54:09.9454853+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Runtime location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.19\System.Private.CoreLib.dll
+2026-09-14T11:54:09.9454950+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION IsDynamicCodeSupported: True
+2026-09-14T11:54:09.9455285+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Test module: C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\bin\Debug\net9.0\LogiMatch.Domain.Tests.dll
+2026-09-14T11:54:09.9455363+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Command line arguments: '--server --diagnostic --diagnostic-verbosity Information --diagnostic-output-directory C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\bin\Debug\net9.0\Log --results-directory C:\US\TransportProj\LogiMatch\TestResults --client-port 49819'
+2026-09-14T11:54:09.9466258+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION TESTINGPLATFORM_DEFAULT_HANG_TIMEOUT: ''
+2026-09-14T11:54:09.9816769+00:00 Microsoft.Testing.Platform.Hosts.TestHostBuilder INFORMATION Setting RegisterEnvironmentVariablesConfigurationSource: 'True'
+2026-09-14T11:54:09.9894506+00:00 Microsoft.Testing.Platform.Hosts.TestHostBuilder INFORMATION Setting PlatformExitProcessOnUnhandledException: 'False', config file: False environment variable: 
+2026-09-14T11:54:10.1685847+00:00 Microsoft.Testing.Platform.Requests.TestHostTestFrameworkInvoker INFORMATION Test framework UID: '30ea7c6e-dd24-4152-a360-1387158cd41d' Version: '4.0.1' DisplayName: 'xUnit.net v3 Microsoft.Testing.Platform test framework' Description: 'xUnit.net v3 Microsoft.Testing.Platform test framework'
+2026-09-14T11:54:10.1748486+00:00 xUnit.net INFORMATION xUnit.net v3 In-Process Runner v4.0.1+8ed8aa354c (64-bit .NET 9.0.19)
+2026-09-14T11:54:10.2050762+00:00 xUnit.net INFORMATION   Discovering: LogiMatch.Domain.Tests
+2026-09-14T11:54:10.2395487+00:00 xUnit.net INFORMATION   Discovered:  LogiMatch.Domain.Tests
+2026-09-14T11:54:10.2494583+00:00 xUnit.net INFORMATION   Starting:    LogiMatch.Domain.Tests
+2026-09-14T11:54:10.3577613+00:00 xUnit.net ERROR     LogiMatch.Domain.Tests.Entities.TripTests.ReserveCapacity_WhenWeightIsInvalid_ShouldThrow(weight: 0) [FAIL]
+2026-09-14T11:54:10.3582282+00:00 xUnit.net INFORMATION       Assert.Throws() Failure: Exception type was not an exact match
+2026-09-14T11:54:10.3582401+00:00 xUnit.net INFORMATION       Expected: typeof(System.ArgumentException)
+2026-09-14T11:54:10.3582411+00:00 xUnit.net INFORMATION       Actual:   typeof(System.InvalidOperationException)
+2026-09-14T11:54:10.3582418+00:00 xUnit.net INFORMATION       ---- System.InvalidOperationException : Weight must be greater than zero.
+2026-09-14T11:54:10.3586002+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-14T11:54:10.3589136+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\TripTests.cs(167,0): at LogiMatch.Domain.Tests.Entities.TripTests.ReserveCapacity_WhenWeightIsInvalid_ShouldThrow(Decimal weight)
+2026-09-14T11:54:10.3589291+00:00 xUnit.net INFORMATION            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+2026-09-14T11:54:10.3589356+00:00 xUnit.net INFORMATION            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+2026-09-14T11:54:10.3589422+00:00 xUnit.net INFORMATION         ----- Inner Stack Trace -----
+2026-09-14T11:54:10.3589481+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain\Entities\Trip.cs(111,0): at LogiMatch.Domain.Entities.Trip.ReserveCapacity(Decimal weightKg, Decimal volumeM3)
+2026-09-14T11:54:10.3589537+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\TripTests.cs(168,0): at LogiMatch.Domain.Tests.Entities.TripTests.<>c__DisplayClass6_0.<ReserveCapacity_WhenWeightIsInvalid_ShouldThrow>b__0()
+2026-09-14T11:54:10.3597652+00:00 xUnit.net ERROR     LogiMatch.Domain.Tests.Entities.TripTests.ReserveCapacity_WhenWeightIsInvalid_ShouldThrow(weight: -100) [FAIL]
+2026-09-14T11:54:10.3597773+00:00 xUnit.net INFORMATION       Assert.Throws() Failure: Exception type was not an exact match
+2026-09-14T11:54:10.3597962+00:00 xUnit.net INFORMATION       Expected: typeof(System.ArgumentException)
+2026-09-14T11:54:10.3597969+00:00 xUnit.net INFORMATION       Actual:   typeof(System.InvalidOperationException)
+2026-09-14T11:54:10.3597974+00:00 xUnit.net INFORMATION       ---- System.InvalidOperationException : Weight must be greater than zero.
+2026-09-14T11:54:10.3598119+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-14T11:54:10.3598207+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\TripTests.cs(167,0): at LogiMatch.Domain.Tests.Entities.TripTests.ReserveCapacity_WhenWeightIsInvalid_ShouldThrow(Decimal weight)
+2026-09-14T11:54:10.3598303+00:00 xUnit.net INFORMATION            at InvokeStub_TripTests.ReserveCapacity_WhenWeightIsInvalid_ShouldThrow(Object, Span`1)
+2026-09-14T11:54:10.3598362+00:00 xUnit.net INFORMATION            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+2026-09-14T11:54:10.3598369+00:00 xUnit.net INFORMATION         ----- Inner Stack Trace -----
+2026-09-14T11:54:10.3598414+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain\Entities\Trip.cs(111,0): at LogiMatch.Domain.Entities.Trip.ReserveCapacity(Decimal weightKg, Decimal volumeM3)
+2026-09-14T11:54:10.3598461+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\TripTests.cs(168,0): at LogiMatch.Domain.Tests.Entities.TripTests.<>c__DisplayClass6_0.<ReserveCapacity_WhenWeightIsInvalid_ShouldThrow>b__0()
+2026-09-14T11:54:10.3642743+00:00 xUnit.net INFORMATION   Finished:    LogiMatch.Domain.Tests (ID = '603d798c4e0f5382c49ab6ab6994de61a6fd7ac95620d9ed2f31713fe8aaf2f1')
+2026-09-14T11:54:10.3665907+00:00 xUnit.net INFORMATION === TEST EXECUTION SUMMARY ===
+2026-09-14T11:54:10.3696585+00:00 xUnit.net INFORMATION    LogiMatch.Domain.Tests  Total: 10, Errors: 0, Failed: 2, Skipped: 0, Not Run: 0, Time: 0,116s

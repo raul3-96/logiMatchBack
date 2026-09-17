@@ -1,0 +1,56 @@
+2026-09-16T08:02:06.6856358+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Version: 2.4.0+a2a92fdb11ad38cd55b31223c4cfbb070fa01c05
+2026-09-16T08:02:06.6865020+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Logging mode: asynchronous
+2026-09-16T08:02:06.6872379+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Logging level: Information
+2026-09-16T08:02:06.6872409+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION CreateBuilderAsync entry time: 08:02:06.662
+2026-09-16T08:02:06.6874770+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION PID: 11100
+2026-09-16T08:02:06.6875072+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Runtime information: win-x64 - .NET 9.0.19
+2026-09-16T08:02:06.6875214+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Runtime location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.19\System.Private.CoreLib.dll
+2026-09-16T08:02:06.6875284+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION IsDynamicCodeSupported: True
+2026-09-16T08:02:06.6875614+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Test module: C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\bin\Debug\net9.0\LogiMatch.Application.Tests.dll
+2026-09-16T08:02:06.6875681+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Command line arguments: '--server --diagnostic --diagnostic-verbosity Information --diagnostic-output-directory C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\bin\Debug\net9.0\Log --results-directory C:\US\TransportProj\LogiMatch\TestResults --client-port 51848'
+2026-09-16T08:02:06.6885686+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION TESTINGPLATFORM_DEFAULT_HANG_TIMEOUT: ''
+2026-09-16T08:02:06.7251600+00:00 Microsoft.Testing.Platform.Hosts.TestHostBuilder INFORMATION Setting RegisterEnvironmentVariablesConfigurationSource: 'True'
+2026-09-16T08:02:06.7302006+00:00 Microsoft.Testing.Platform.Hosts.TestHostBuilder INFORMATION Setting PlatformExitProcessOnUnhandledException: 'False', config file: False environment variable: 
+2026-09-16T08:02:06.9005662+00:00 Microsoft.Testing.Platform.Requests.TestHostTestFrameworkInvoker INFORMATION Test framework UID: '30ea7c6e-dd24-4152-a360-1387158cd41d' Version: '4.0.1' DisplayName: 'xUnit.net v3 Microsoft.Testing.Platform test framework' Description: 'xUnit.net v3 Microsoft.Testing.Platform test framework'
+2026-09-16T08:02:06.9060020+00:00 xUnit.net INFORMATION xUnit.net v3 In-Process Runner v4.0.1+8ed8aa354c (64-bit .NET 9.0.19)
+2026-09-16T08:02:06.9367232+00:00 xUnit.net INFORMATION   Discovering: LogiMatch.Application.Tests
+2026-09-16T08:02:06.9883184+00:00 xUnit.net INFORMATION   Discovered:  LogiMatch.Application.Tests
+2026-09-16T08:02:07.0009739+00:00 xUnit.net INFORMATION   Starting:    LogiMatch.Application.Tests
+2026-09-16T08:02:07.7308007+00:00 xUnit.net ERROR     LogiMatch.Application.Tests.Matching.ReserveTripCapacityHandlerTests.Handle_ShouldThrow_WhenRequestIsNotAvailableForMatching(status: Completed) [FAIL]
+2026-09-16T08:02:07.7313174+00:00 xUnit.net INFORMATION       System.InvalidOperationException : Only draft requests can be published.
+2026-09-16T08:02:07.7317926+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-16T08:02:07.7322597+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain\Entities\TransportRequest.cs(59,0): at LogiMatch.Domain.Entities.TransportRequest.Publish()
+2026-09-16T08:02:07.7322886+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\Matching\ReserveTripCapacityHandlerTests.cs(800,0): at LogiMatch.Application.Tests.Matching.ReserveTripCapacityHandlerTests.SetRequestStatus(TransportRequest request, TransportRequestStatus status)
+2026-09-16T08:02:07.7323039+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\Matching\ReserveTripCapacityHandlerTests.cs(89,0): at LogiMatch.Application.Tests.Matching.ReserveTripCapacityHandlerTests.Handle_ShouldThrow_WhenRequestIsNotAvailableForMatching(TransportRequestStatus status)
+2026-09-16T08:02:07.7323067+00:00 xUnit.net INFORMATION         --- End of stack trace from previous location ---
+2026-09-16T08:02:07.7333968+00:00 xUnit.net ERROR     LogiMatch.Application.Tests.Matching.ReserveTripCapacityHandlerTests.Handle_ShouldThrow_WhenRequestIsNotAvailableForMatching(status: Expired) [FAIL]
+2026-09-16T08:02:07.7334139+00:00 xUnit.net INFORMATION       System.InvalidOperationException : Only draft requests can be published.
+2026-09-16T08:02:07.7334336+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-16T08:02:07.7334561+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain\Entities\TransportRequest.cs(59,0): at LogiMatch.Domain.Entities.TransportRequest.Publish()
+2026-09-16T08:02:07.7334684+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\Matching\ReserveTripCapacityHandlerTests.cs(812,0): at LogiMatch.Application.Tests.Matching.ReserveTripCapacityHandlerTests.SetRequestStatus(TransportRequest request, TransportRequestStatus status)
+2026-09-16T08:02:07.7334825+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\Matching\ReserveTripCapacityHandlerTests.cs(89,0): at LogiMatch.Application.Tests.Matching.ReserveTripCapacityHandlerTests.Handle_ShouldThrow_WhenRequestIsNotAvailableForMatching(TransportRequestStatus status)
+2026-09-16T08:02:07.7334847+00:00 xUnit.net INFORMATION         --- End of stack trace from previous location ---
+2026-09-16T08:02:07.7336185+00:00 xUnit.net ERROR     LogiMatch.Application.Tests.Matching.ReserveTripCapacityHandlerTests.Handle_ShouldThrow_WhenRequestIsNotAvailableForMatching(status: InProgress) [FAIL]
+2026-09-16T08:02:07.7336275+00:00 xUnit.net INFORMATION       System.InvalidOperationException : Only draft requests can be published.
+2026-09-16T08:02:07.7336327+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-16T08:02:07.7336470+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain\Entities\TransportRequest.cs(59,0): at LogiMatch.Domain.Entities.TransportRequest.Publish()
+2026-09-16T08:02:07.7336581+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\Matching\ReserveTripCapacityHandlerTests.cs(794,0): at LogiMatch.Application.Tests.Matching.ReserveTripCapacityHandlerTests.SetRequestStatus(TransportRequest request, TransportRequestStatus status)
+2026-09-16T08:02:07.7336688+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\Matching\ReserveTripCapacityHandlerTests.cs(89,0): at LogiMatch.Application.Tests.Matching.ReserveTripCapacityHandlerTests.Handle_ShouldThrow_WhenRequestIsNotAvailableForMatching(TransportRequestStatus status)
+2026-09-16T08:02:07.7336706+00:00 xUnit.net INFORMATION         --- End of stack trace from previous location ---
+2026-09-16T08:02:07.7337558+00:00 xUnit.net ERROR     LogiMatch.Application.Tests.Matching.ReserveTripCapacityHandlerTests.Handle_ShouldThrow_WhenRequestIsNotAvailableForMatching(status: Accepted) [FAIL]
+2026-09-16T08:02:07.7337578+00:00 xUnit.net INFORMATION       System.InvalidOperationException : Only draft requests can be published.
+2026-09-16T08:02:07.7337629+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-16T08:02:07.7337746+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain\Entities\TransportRequest.cs(59,0): at LogiMatch.Domain.Entities.TransportRequest.Publish()
+2026-09-16T08:02:07.7337843+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\Matching\ReserveTripCapacityHandlerTests.cs(789,0): at LogiMatch.Application.Tests.Matching.ReserveTripCapacityHandlerTests.SetRequestStatus(TransportRequest request, TransportRequestStatus status)
+2026-09-16T08:02:07.7337937+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\Matching\ReserveTripCapacityHandlerTests.cs(89,0): at LogiMatch.Application.Tests.Matching.ReserveTripCapacityHandlerTests.Handle_ShouldThrow_WhenRequestIsNotAvailableForMatching(TransportRequestStatus status)
+2026-09-16T08:02:07.7337964+00:00 xUnit.net INFORMATION         --- End of stack trace from previous location ---
+2026-09-16T08:02:07.7338615+00:00 xUnit.net ERROR     LogiMatch.Application.Tests.Matching.ReserveTripCapacityHandlerTests.Handle_ShouldThrow_WhenRequestIsNotAvailableForMatching(status: Cancelled) [FAIL]
+2026-09-16T08:02:07.7338634+00:00 xUnit.net INFORMATION       System.InvalidOperationException : Only draft requests can be published.
+2026-09-16T08:02:07.7338676+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-16T08:02:07.7338791+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain\Entities\TransportRequest.cs(59,0): at LogiMatch.Domain.Entities.TransportRequest.Publish()
+2026-09-16T08:02:07.7338883+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\Matching\ReserveTripCapacityHandlerTests.cs(807,0): at LogiMatch.Application.Tests.Matching.ReserveTripCapacityHandlerTests.SetRequestStatus(TransportRequest request, TransportRequestStatus status)
+2026-09-16T08:02:07.7338988+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\Matching\ReserveTripCapacityHandlerTests.cs(89,0): at LogiMatch.Application.Tests.Matching.ReserveTripCapacityHandlerTests.Handle_ShouldThrow_WhenRequestIsNotAvailableForMatching(TransportRequestStatus status)
+2026-09-16T08:02:07.7339000+00:00 xUnit.net INFORMATION         --- End of stack trace from previous location ---
+2026-09-16T08:02:07.7463960+00:00 xUnit.net INFORMATION   Finished:    LogiMatch.Application.Tests (ID = 'ff833f4ee65d7d65f33f7edea8b7e8fca6ca708868bfc2986c3389f0f132799d')
+2026-09-16T08:02:07.7491162+00:00 xUnit.net INFORMATION === TEST EXECUTION SUMMARY ===
+2026-09-16T08:02:07.7524822+00:00 xUnit.net INFORMATION    LogiMatch.Application.Tests  Total: 24, Errors: 0, Failed: 5, Skipped: 0, Not Run: 0, Time: 0,750s

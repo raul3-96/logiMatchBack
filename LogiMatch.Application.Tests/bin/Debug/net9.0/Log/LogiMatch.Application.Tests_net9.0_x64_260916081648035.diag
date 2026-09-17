@@ -1,0 +1,30 @@
+2026-09-16T08:16:48.0421038+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Version: 2.4.0+a2a92fdb11ad38cd55b31223c4cfbb070fa01c05
+2026-09-16T08:16:48.0428949+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Logging mode: asynchronous
+2026-09-16T08:16:48.0436285+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Logging level: Information
+2026-09-16T08:16:48.0436311+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION CreateBuilderAsync entry time: 08:16:48.019
+2026-09-16T08:16:48.0438616+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION PID: 15836
+2026-09-16T08:16:48.0438877+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Runtime information: win-x64 - .NET 9.0.19
+2026-09-16T08:16:48.0439006+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Runtime location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.19\System.Private.CoreLib.dll
+2026-09-16T08:16:48.0439090+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION IsDynamicCodeSupported: True
+2026-09-16T08:16:48.0439465+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Test module: C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\bin\Debug\net9.0\LogiMatch.Application.Tests.dll
+2026-09-16T08:16:48.0439538+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Command line arguments: '--server --diagnostic --diagnostic-verbosity Information --diagnostic-output-directory C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\bin\Debug\net9.0\Log --results-directory C:\US\TransportProj\LogiMatch\TestResults --client-port 59612'
+2026-09-16T08:16:48.0449757+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION TESTINGPLATFORM_DEFAULT_HANG_TIMEOUT: ''
+2026-09-16T08:16:48.0798563+00:00 Microsoft.Testing.Platform.Hosts.TestHostBuilder INFORMATION Setting RegisterEnvironmentVariablesConfigurationSource: 'True'
+2026-09-16T08:16:48.0852412+00:00 Microsoft.Testing.Platform.Hosts.TestHostBuilder INFORMATION Setting PlatformExitProcessOnUnhandledException: 'False', config file: False environment variable: 
+2026-09-16T08:16:48.2411897+00:00 Microsoft.Testing.Platform.Requests.TestHostTestFrameworkInvoker INFORMATION Test framework UID: '30ea7c6e-dd24-4152-a360-1387158cd41d' Version: '4.0.1' DisplayName: 'xUnit.net v3 Microsoft.Testing.Platform test framework' Description: 'xUnit.net v3 Microsoft.Testing.Platform test framework'
+2026-09-16T08:16:48.2464837+00:00 xUnit.net INFORMATION xUnit.net v3 In-Process Runner v4.0.1+8ed8aa354c (64-bit .NET 9.0.19)
+2026-09-16T08:16:48.2761792+00:00 xUnit.net INFORMATION   Discovering: LogiMatch.Application.Tests
+2026-09-16T08:16:48.3367194+00:00 xUnit.net INFORMATION   Discovered:  LogiMatch.Application.Tests
+2026-09-16T08:16:48.3470408+00:00 xUnit.net INFORMATION   Starting:    LogiMatch.Application.Tests
+2026-09-16T08:16:49.0143357+00:00 xUnit.net ERROR     LogiMatch.Application.Tests.Matching.CancelTripCargoHandlerTests.Handle_ShouldNotDoubleReleaseCapacity_WhenCalledAfterCancellation [FAIL]
+2026-09-16T08:16:49.0150071+00:00 xUnit.net INFORMATION       Assert.Equal() Failure: Strings differ
+2026-09-16T08:16:49.0150237+00:00 xUnit.net INFORMATION                       ↓ (pos 5)
+2026-09-16T08:16:49.0150254+00:00 xUnit.net INFORMATION       Expected: "Only reserved trip cargo can be cancelled."
+2026-09-16T08:16:49.0150263+00:00 xUnit.net INFORMATION       Actual:   "Only accepted transport requests can have a reserv"···
+2026-09-16T08:16:49.0150271+00:00 xUnit.net INFORMATION                       ↑ (pos 5)
+2026-09-16T08:16:49.0155679+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-16T08:16:49.0161045+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\Matching\CancelTripCargoHandlerTests.cs(249,0): at LogiMatch.Application.Tests.Matching.CancelTripCargoHandlerTests.Handle_ShouldNotDoubleReleaseCapacity_WhenCalledAfterCancellation()
+2026-09-16T08:16:49.0161219+00:00 xUnit.net INFORMATION         --- End of stack trace from previous location ---
+2026-09-16T08:16:49.0216149+00:00 xUnit.net INFORMATION   Finished:    LogiMatch.Application.Tests (ID = 'ff833f4ee65d7d65f33f7edea8b7e8fca6ca708868bfc2986c3389f0f132799d')
+2026-09-16T08:16:49.0237596+00:00 xUnit.net INFORMATION === TEST EXECUTION SUMMARY ===
+2026-09-16T08:16:49.0275978+00:00 xUnit.net INFORMATION    LogiMatch.Application.Tests  Total: 13, Errors: 0, Failed: 1, Skipped: 0, Not Run: 0, Time: 0,677s

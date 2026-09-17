@@ -1,0 +1,71 @@
+2026-09-14T13:37:28.4048402+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Version: 2.4.0+a2a92fdb11ad38cd55b31223c4cfbb070fa01c05
+2026-09-14T13:37:28.4064201+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Logging mode: asynchronous
+2026-09-14T13:37:28.4087995+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Logging level: Information
+2026-09-14T13:37:28.4088071+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION CreateBuilderAsync entry time: 13:37:28.381
+2026-09-14T13:37:28.4095485+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION PID: 51188
+2026-09-14T13:37:28.4095955+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Runtime information: win-x64 - .NET 9.0.19
+2026-09-14T13:37:28.4096299+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Runtime location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.19\System.Private.CoreLib.dll
+2026-09-14T13:37:28.4096479+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION IsDynamicCodeSupported: True
+2026-09-14T13:37:28.4097622+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Test module: C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\bin\Debug\net9.0\LogiMatch.Domain.Tests.dll
+2026-09-14T13:37:28.4097769+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Command line arguments: '--server --diagnostic --diagnostic-verbosity Information --diagnostic-output-directory C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\bin\Debug\net9.0\Log --results-directory C:\US\TransportProj\LogiMatch\TestResults --client-port 54491'
+2026-09-14T13:37:28.4120920+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION TESTINGPLATFORM_DEFAULT_HANG_TIMEOUT: ''
+2026-09-14T13:37:28.4473426+00:00 Microsoft.Testing.Platform.Hosts.TestHostBuilder INFORMATION Setting RegisterEnvironmentVariablesConfigurationSource: 'True'
+2026-09-14T13:37:28.4526655+00:00 Microsoft.Testing.Platform.Hosts.TestHostBuilder INFORMATION Setting PlatformExitProcessOnUnhandledException: 'False', config file: False environment variable: 
+2026-09-14T13:37:28.6291141+00:00 Microsoft.Testing.Platform.Requests.TestHostTestFrameworkInvoker INFORMATION Test framework UID: '30ea7c6e-dd24-4152-a360-1387158cd41d' Version: '4.0.1' DisplayName: 'xUnit.net v3 Microsoft.Testing.Platform test framework' Description: 'xUnit.net v3 Microsoft.Testing.Platform test framework'
+2026-09-14T13:37:28.6350572+00:00 xUnit.net INFORMATION xUnit.net v3 In-Process Runner v4.0.1+8ed8aa354c (64-bit .NET 9.0.19)
+2026-09-14T13:37:28.6708263+00:00 xUnit.net INFORMATION   Discovering: LogiMatch.Domain.Tests
+2026-09-14T13:37:28.7064083+00:00 xUnit.net INFORMATION   Discovered:  LogiMatch.Domain.Tests
+2026-09-14T13:37:28.7181707+00:00 xUnit.net INFORMATION   Starting:    LogiMatch.Domain.Tests
+2026-09-14T13:37:28.8331792+00:00 xUnit.net ERROR     LogiMatch.Domain.Tests.Entities.TransportRequestTests.ReturnToPublished_WhenRequestIsPublished_ShouldThrow [FAIL]
+2026-09-14T13:37:28.8334095+00:00 xUnit.net INFORMATION       Assert.Equal() Failure: Strings differ
+2026-09-14T13:37:28.8334182+00:00 xUnit.net INFORMATION                                              ↓ (pos 27)
+2026-09-14T13:37:28.8334187+00:00 xUnit.net INFORMATION       Expected: ···"ly accepted requests can return to published."
+2026-09-14T13:37:28.8334191+00:00 xUnit.net INFORMATION       Actual:   ···"ly accepted requests can be returned to published."
+2026-09-14T13:37:28.8334195+00:00 xUnit.net INFORMATION                                              ↑ (pos 27)
+2026-09-14T13:37:28.8335940+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-14T13:37:28.8338113+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\TransportRequestTests.cs(404,0): at LogiMatch.Domain.Tests.Entities.TransportRequestTests.ReturnToPublished_WhenRequestIsPublished_ShouldThrow()
+2026-09-14T13:37:28.8338284+00:00 xUnit.net INFORMATION            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+2026-09-14T13:37:28.8338314+00:00 xUnit.net INFORMATION            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+2026-09-14T13:37:28.8343882+00:00 xUnit.net ERROR     LogiMatch.Domain.Tests.Entities.TransportRequestTests.Start_WhenRequestIsMatching_ShouldThrow [FAIL]
+2026-09-14T13:37:28.8343913+00:00 xUnit.net INFORMATION       Assert.Equal() Failure: Strings differ
+2026-09-14T13:37:28.8343916+00:00 xUnit.net INFORMATION                                             ↓ (pos 27)
+2026-09-14T13:37:28.8343919+00:00 xUnit.net INFORMATION       Expected: "Only accepted requests can start."
+2026-09-14T13:37:28.8344042+00:00 xUnit.net INFORMATION       Actual:   "Only accepted requests can be started."
+2026-09-14T13:37:28.8344045+00:00 xUnit.net INFORMATION                                             ↑ (pos 27)
+2026-09-14T13:37:28.8344114+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-14T13:37:28.8344192+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\TransportRequestTests.cs(212,0): at LogiMatch.Domain.Tests.Entities.TransportRequestTests.Start_WhenRequestIsMatching_ShouldThrow()
+2026-09-14T13:37:28.8344222+00:00 xUnit.net INFORMATION            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+2026-09-14T13:37:28.8344243+00:00 xUnit.net INFORMATION            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+2026-09-14T13:37:28.8344921+00:00 xUnit.net ERROR     LogiMatch.Domain.Tests.Entities.TransportRequestTests.Start_WhenRequestIsOffersReceived_ShouldThrow [FAIL]
+2026-09-14T13:37:28.8344931+00:00 xUnit.net INFORMATION       Assert.Equal() Failure: Strings differ
+2026-09-14T13:37:28.8344935+00:00 xUnit.net INFORMATION                                             ↓ (pos 27)
+2026-09-14T13:37:28.8344937+00:00 xUnit.net INFORMATION       Expected: "Only accepted requests can start."
+2026-09-14T13:37:28.8344940+00:00 xUnit.net INFORMATION       Actual:   "Only accepted requests can be started."
+2026-09-14T13:37:28.8344942+00:00 xUnit.net INFORMATION                                             ↑ (pos 27)
+2026-09-14T13:37:28.8344988+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-14T13:37:28.8345030+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\TransportRequestTests.cs(230,0): at LogiMatch.Domain.Tests.Entities.TransportRequestTests.Start_WhenRequestIsOffersReceived_ShouldThrow()
+2026-09-14T13:37:28.8345057+00:00 xUnit.net INFORMATION            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+2026-09-14T13:37:28.8345077+00:00 xUnit.net INFORMATION            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+2026-09-14T13:37:28.8352633+00:00 xUnit.net ERROR     LogiMatch.Domain.Tests.Entities.TransportRequestTests.Start_WhenRequestIsDraft_ShouldThrow [FAIL]
+2026-09-14T13:37:28.8352768+00:00 xUnit.net INFORMATION       Assert.Equal() Failure: Strings differ
+2026-09-14T13:37:28.8352772+00:00 xUnit.net INFORMATION                                             ↓ (pos 27)
+2026-09-14T13:37:28.8352775+00:00 xUnit.net INFORMATION       Expected: "Only accepted requests can start."
+2026-09-14T13:37:28.8352779+00:00 xUnit.net INFORMATION       Actual:   "Only accepted requests can be started."
+2026-09-14T13:37:28.8352781+00:00 xUnit.net INFORMATION                                             ↑ (pos 27)
+2026-09-14T13:37:28.8352855+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-14T13:37:28.8352905+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\TransportRequestTests.cs(194,0): at LogiMatch.Domain.Tests.Entities.TransportRequestTests.Start_WhenRequestIsDraft_ShouldThrow()
+2026-09-14T13:37:28.8352933+00:00 xUnit.net INFORMATION            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+2026-09-14T13:37:28.8352953+00:00 xUnit.net INFORMATION            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+2026-09-14T13:37:28.8366721+00:00 xUnit.net ERROR     LogiMatch.Domain.Tests.Entities.TransportRequestTests.Cancel_WhenRequestIsExpired_ShouldThrow [FAIL]
+2026-09-14T13:37:28.8366760+00:00 xUnit.net INFORMATION       Assert.Equal() Failure: Strings differ
+2026-09-14T13:37:28.8366764+00:00 xUnit.net INFORMATION                          ↓ (pos 8)
+2026-09-14T13:37:28.8366853+00:00 xUnit.net INFORMATION       Expected: "Expired transport requests cannot be cancelled."
+2026-09-14T13:37:28.8366904+00:00 xUnit.net INFORMATION       Actual:   "Expired requests cannot be cancelled."
+2026-09-14T13:37:28.8366907+00:00 xUnit.net INFORMATION                          ↑ (pos 8)
+2026-09-14T13:37:28.8366924+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-14T13:37:28.8366987+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\TransportRequestTests.cs(495,0): at LogiMatch.Domain.Tests.Entities.TransportRequestTests.Cancel_WhenRequestIsExpired_ShouldThrow()
+2026-09-14T13:37:28.8367015+00:00 xUnit.net INFORMATION            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+2026-09-14T13:37:28.8367036+00:00 xUnit.net INFORMATION            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+2026-09-14T13:37:28.8450927+00:00 xUnit.net INFORMATION   Finished:    LogiMatch.Domain.Tests (ID = '603d798c4e0f5382c49ab6ab6994de61a6fd7ac95620d9ed2f31713fe8aaf2f1')
+2026-09-14T13:37:28.8475670+00:00 xUnit.net INFORMATION === TEST EXECUTION SUMMARY ===
+2026-09-14T13:37:28.8504845+00:00 xUnit.net INFORMATION    LogiMatch.Domain.Tests  Total: 29, Errors: 0, Failed: 5, Skipped: 0, Not Run: 0, Time: 0,130s
