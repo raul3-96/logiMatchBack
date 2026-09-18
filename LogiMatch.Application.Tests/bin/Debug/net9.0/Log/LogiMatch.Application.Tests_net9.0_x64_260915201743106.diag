@@ -1,0 +1,117 @@
+2026-09-15T20:17:43.1148213+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Version: 2.4.0+a2a92fdb11ad38cd55b31223c4cfbb070fa01c05
+2026-09-15T20:17:43.1170336+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Logging mode: asynchronous
+2026-09-15T20:17:43.1188994+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Logging level: Information
+2026-09-15T20:17:43.1189059+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION CreateBuilderAsync entry time: 20:17:43.089
+2026-09-15T20:17:43.1195333+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION PID: 23060
+2026-09-15T20:17:43.1195768+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Runtime information: win-x64 - .NET 9.0.19
+2026-09-15T20:17:43.1195995+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Runtime location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.19\System.Private.CoreLib.dll
+2026-09-15T20:17:43.1196148+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION IsDynamicCodeSupported: True
+2026-09-15T20:17:43.1196902+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Test module: C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\bin\Debug\net9.0\LogiMatch.Application.Tests.dll
+2026-09-15T20:17:43.1197022+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Command line arguments: '--server --diagnostic --diagnostic-verbosity Information --diagnostic-output-directory C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\bin\Debug\net9.0\Log --results-directory C:\US\TransportProj\LogiMatch\TestResults --client-port 61105'
+2026-09-15T20:17:43.1221532+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION TESTINGPLATFORM_DEFAULT_HANG_TIMEOUT: ''
+2026-09-15T20:17:43.2033051+00:00 Microsoft.Testing.Platform.Hosts.TestHostBuilder INFORMATION Setting RegisterEnvironmentVariablesConfigurationSource: 'True'
+2026-09-15T20:17:43.2168004+00:00 Microsoft.Testing.Platform.Hosts.TestHostBuilder INFORMATION Setting PlatformExitProcessOnUnhandledException: 'False', config file: False environment variable: 
+2026-09-15T20:17:43.5465340+00:00 Microsoft.Testing.Platform.Requests.TestHostTestFrameworkInvoker INFORMATION Test framework UID: '30ea7c6e-dd24-4152-a360-1387158cd41d' Version: '4.0.1' DisplayName: 'xUnit.net v3 Microsoft.Testing.Platform test framework' Description: 'xUnit.net v3 Microsoft.Testing.Platform test framework'
+2026-09-15T20:17:43.5590408+00:00 xUnit.net INFORMATION xUnit.net v3 In-Process Runner v4.0.1+8ed8aa354c (64-bit .NET 9.0.19)
+2026-09-15T20:17:43.6267811+00:00 xUnit.net INFORMATION   Discovering: LogiMatch.Application.Tests
+2026-09-15T20:17:43.6822089+00:00 xUnit.net INFORMATION   Discovered:  LogiMatch.Application.Tests
+2026-09-15T20:17:43.6982793+00:00 xUnit.net INFORMATION   Starting:    LogiMatch.Application.Tests
+2026-09-15T20:17:44.4399555+00:00 xUnit.net ERROR     LogiMatch.Application.Tests.Trips.CreateTripHandlerTests.Handle_WhenValid_ShouldCreateTrip [FAIL]
+2026-09-15T20:17:44.4401799+00:00 xUnit.net INFORMATION       System.InvalidOperationException : The specified transporter profile does not exist.
+2026-09-15T20:17:44.4403754+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-15T20:17:44.4405939+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application\Trip\CreateTripHandler.cs(24,0): at LogiMatch.Application.Trips.CreateTripHandler.Handle(CreateTripCommand command)
+2026-09-15T20:17:44.4406056+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\Trips\CreateTripHandlerTests.cs(492,0): at LogiMatch.Application.Tests.Trips.CreateTripHandlerTests.Handle_WhenValid_ShouldCreateTrip()
+2026-09-15T20:17:44.4406081+00:00 xUnit.net INFORMATION         --- End of stack trace from previous location ---
+2026-09-15T20:17:44.4450062+00:00 xUnit.net ERROR     LogiMatch.Application.Tests.Trips.CreateTripHandlerTests.Handle_WhenDepartureIsInPast_ShouldThrow [FAIL]
+2026-09-15T20:17:44.4450166+00:00 xUnit.net INFORMATION       Assert.Equal() Failure: Strings differ
+2026-09-15T20:17:44.4450171+00:00 xUnit.net INFORMATION                  ↓ (pos 0)
+2026-09-15T20:17:44.4450174+00:00 xUnit.net INFORMATION       Expected: "Departure date cannot be in the past."
+2026-09-15T20:17:44.4450189+00:00 xUnit.net INFORMATION       Actual:   "The specified transporter profile does not exist."
+2026-09-15T20:17:44.4450192+00:00 xUnit.net INFORMATION                  ↑ (pos 0)
+2026-09-15T20:17:44.4450331+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-15T20:17:44.4450428+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\Trips\CreateTripHandlerTests.cs(244,0): at LogiMatch.Application.Tests.Trips.CreateTripHandlerTests.Handle_WhenDepartureIsInPast_ShouldThrow()
+2026-09-15T20:17:44.4450561+00:00 xUnit.net INFORMATION         --- End of stack trace from previous location ---
+2026-09-15T20:17:44.4543006+00:00 xUnit.net ERROR     LogiMatch.Application.Tests.Trips.CreateTripHandlerTests.Handle_WhenVehicleHasOverlappingTrip_ShouldThrow [FAIL]
+2026-09-15T20:17:44.4543152+00:00 xUnit.net INFORMATION       Assert.Equal() Failure: Strings differ
+2026-09-15T20:17:44.4543165+00:00 xUnit.net INFORMATION                      ↓ (pos 4)
+2026-09-15T20:17:44.4543174+00:00 xUnit.net INFORMATION       Expected: "The vehicle already has a trip that overlaps with "···
+2026-09-15T20:17:44.4543180+00:00 xUnit.net INFORMATION       Actual:   "The specified transporter profile does not exist."
+2026-09-15T20:17:44.4543187+00:00 xUnit.net INFORMATION                      ↑ (pos 4)
+2026-09-15T20:17:44.4543238+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-15T20:17:44.4544127+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\Trips\CreateTripHandlerTests.cs(336,0): at LogiMatch.Application.Tests.Trips.CreateTripHandlerTests.Handle_WhenVehicleHasOverlappingTrip_ShouldThrow()
+2026-09-15T20:17:44.4544159+00:00 xUnit.net INFORMATION         --- End of stack trace from previous location ---
+2026-09-15T20:17:44.4560880+00:00 xUnit.net ERROR     LogiMatch.Application.Tests.Trips.CreateTripHandlerTests.Handle_WhenBookingIsCancelled_ShouldAllowCreation [FAIL]
+2026-09-15T20:17:44.4561054+00:00 xUnit.net INFORMATION       System.InvalidOperationException : The specified transporter profile does not exist.
+2026-09-15T20:17:44.4561094+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-15T20:17:44.4561174+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application\Trip\CreateTripHandler.cs(24,0): at LogiMatch.Application.Trips.CreateTripHandler.Handle(CreateTripCommand command)
+2026-09-15T20:17:44.4561238+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\Trips\CreateTripHandlerTests.cs(478,0): at LogiMatch.Application.Tests.Trips.CreateTripHandlerTests.Handle_WhenBookingIsCancelled_ShouldAllowCreation()
+2026-09-15T20:17:44.4561250+00:00 xUnit.net INFORMATION         --- End of stack trace from previous location ---
+2026-09-15T20:17:44.4572943+00:00 xUnit.net ERROR     LogiMatch.Application.Tests.Trips.CreateTripHandlerTests.Handle_WhenValid_ShouldPersistOnlyOneTrip [FAIL]
+2026-09-15T20:17:44.4573081+00:00 xUnit.net INFORMATION       System.InvalidOperationException : The specified transporter profile does not exist.
+2026-09-15T20:17:44.4573147+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-15T20:17:44.4573302+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application\Trip\CreateTripHandler.cs(24,0): at LogiMatch.Application.Trips.CreateTripHandler.Handle(CreateTripCommand command)
+2026-09-15T20:17:44.4573427+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\Trips\CreateTripHandlerTests.cs(523,0): at LogiMatch.Application.Tests.Trips.CreateTripHandlerTests.Handle_WhenValid_ShouldPersistOnlyOneTrip()
+2026-09-15T20:17:44.4573448+00:00 xUnit.net INFORMATION         --- End of stack trace from previous location ---
+2026-09-15T20:17:44.4685184+00:00 xUnit.net ERROR     LogiMatch.Application.Tests.Trips.CreateTripHandlerTests.Handle_WhenCancelledTripOverlaps_ShouldAllowCreation [FAIL]
+2026-09-15T20:17:44.4685464+00:00 xUnit.net INFORMATION       System.InvalidOperationException : The specified transporter profile does not exist.
+2026-09-15T20:17:44.4685534+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-15T20:17:44.4685732+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application\Trip\CreateTripHandler.cs(24,0): at LogiMatch.Application.Trips.CreateTripHandler.Handle(CreateTripCommand command)
+2026-09-15T20:17:44.4685786+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\Trips\CreateTripHandlerTests.cs(369,0): at LogiMatch.Application.Tests.Trips.CreateTripHandlerTests.Handle_WhenCancelledTripOverlaps_ShouldAllowCreation()
+2026-09-15T20:17:44.4685802+00:00 xUnit.net INFORMATION         --- End of stack trace from previous location ---
+2026-09-15T20:17:44.4711732+00:00 xUnit.net ERROR     LogiMatch.Application.Tests.Trips.CreateTripHandlerTests.Handle_WhenArrivalIsBeforeDeparture_ShouldThrow [FAIL]
+2026-09-15T20:17:44.4711889+00:00 xUnit.net INFORMATION       Assert.Equal() Failure: Strings differ
+2026-09-15T20:17:44.4711896+00:00 xUnit.net INFORMATION                  ↓ (pos 0)
+2026-09-15T20:17:44.4711900+00:00 xUnit.net INFORMATION       Expected: "Estimated arrival must be after departure."
+2026-09-15T20:17:44.4711904+00:00 xUnit.net INFORMATION       Actual:   "The specified transporter profile does not exist."
+2026-09-15T20:17:44.4711908+00:00 xUnit.net INFORMATION                  ↑ (pos 0)
+2026-09-15T20:17:44.4711934+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-15T20:17:44.4712013+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\Trips\CreateTripHandlerTests.cs(201,0): at LogiMatch.Application.Tests.Trips.CreateTripHandlerTests.Handle_WhenArrivalIsBeforeDeparture_ShouldThrow()
+2026-09-15T20:17:44.4712025+00:00 xUnit.net INFORMATION         --- End of stack trace from previous location ---
+2026-09-15T20:17:44.4846944+00:00 xUnit.net ERROR     LogiMatch.Application.Tests.Trips.CreateTripHandlerTests.Handle_WhenAvailableVolumeExceedsVehicleCapacity_ShouldThrow [FAIL]
+2026-09-15T20:17:44.4847116+00:00 xUnit.net INFORMATION       Assert.Equal() Failure: Strings differ
+2026-09-15T20:17:44.4847130+00:00 xUnit.net INFORMATION                  ↓ (pos 0)
+2026-09-15T20:17:44.4847140+00:00 xUnit.net INFORMATION       Expected: "Available volume cannot exceed vehicle capacity."
+2026-09-15T20:17:44.4847147+00:00 xUnit.net INFORMATION       Actual:   "The specified transporter profile does not exist."
+2026-09-15T20:17:44.4847155+00:00 xUnit.net INFORMATION                  ↑ (pos 0)
+2026-09-15T20:17:44.4847192+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-15T20:17:44.4847265+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\Trips\CreateTripHandlerTests.cs(280,0): at LogiMatch.Application.Tests.Trips.CreateTripHandlerTests.Handle_WhenAvailableVolumeExceedsVehicleCapacity_ShouldThrow()
+2026-09-15T20:17:44.4847275+00:00 xUnit.net INFORMATION         --- End of stack trace from previous location ---
+2026-09-15T20:17:44.4864671+00:00 xUnit.net ERROR     LogiMatch.Application.Tests.Trips.CreateTripHandlerTests.Handle_WhenVehicleIsNotAvailable_ShouldThrow [FAIL]
+2026-09-15T20:17:44.4864769+00:00 xUnit.net INFORMATION       Assert.Equal() Failure: Strings differ
+2026-09-15T20:17:44.4864781+00:00 xUnit.net INFORMATION                      ↓ (pos 4)
+2026-09-15T20:17:44.4864788+00:00 xUnit.net INFORMATION       Expected: "The vehicle is not available for the trip dates."
+2026-09-15T20:17:44.4864796+00:00 xUnit.net INFORMATION       Actual:   "The specified transporter profile does not exist."
+2026-09-15T20:17:44.4864802+00:00 xUnit.net INFORMATION                      ↑ (pos 4)
+2026-09-15T20:17:44.4864857+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-15T20:17:44.4864976+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\Trips\CreateTripHandlerTests.cs(302,0): at LogiMatch.Application.Tests.Trips.CreateTripHandlerTests.Handle_WhenVehicleIsNotAvailable_ShouldThrow()
+2026-09-15T20:17:44.4864998+00:00 xUnit.net INFORMATION         --- End of stack trace from previous location ---
+2026-09-15T20:17:44.4877333+00:00 xUnit.net ERROR     LogiMatch.Application.Tests.Trips.CreateTripHandlerTests.Handle_WhenAvailableWeightExceedsVehicleCapacity_ShouldThrow [FAIL]
+2026-09-15T20:17:44.4877410+00:00 xUnit.net INFORMATION       Assert.Equal() Failure: Strings differ
+2026-09-15T20:17:44.4877420+00:00 xUnit.net INFORMATION                  ↓ (pos 0)
+2026-09-15T20:17:44.4877428+00:00 xUnit.net INFORMATION       Expected: "Available weight cannot exceed vehicle capacity."
+2026-09-15T20:17:44.4877435+00:00 xUnit.net INFORMATION       Actual:   "The specified transporter profile does not exist."
+2026-09-15T20:17:44.4877441+00:00 xUnit.net INFORMATION                  ↑ (pos 0)
+2026-09-15T20:17:44.4877491+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-15T20:17:44.4877593+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\Trips\CreateTripHandlerTests.cs(262,0): at LogiMatch.Application.Tests.Trips.CreateTripHandlerTests.Handle_WhenAvailableWeightExceedsVehicleCapacity_ShouldThrow()
+2026-09-15T20:17:44.4877619+00:00 xUnit.net INFORMATION         --- End of stack trace from previous location ---
+2026-09-15T20:17:44.4917444+00:00 xUnit.net ERROR     LogiMatch.Application.Tests.Trips.CreateTripHandlerTests.Handle_WhenVehicleHasOverlappingBooking_ShouldThrow [FAIL]
+2026-09-15T20:17:44.4917541+00:00 xUnit.net INFORMATION       Assert.Equal() Failure: Strings differ
+2026-09-15T20:17:44.4917556+00:00 xUnit.net INFORMATION                      ↓ (pos 4)
+2026-09-15T20:17:44.4917568+00:00 xUnit.net INFORMATION       Expected: "The vehicle already has a booking that overlaps wi"···
+2026-09-15T20:17:44.4917579+00:00 xUnit.net INFORMATION       Actual:   "The specified transporter profile does not exist."
+2026-09-15T20:17:44.4917589+00:00 xUnit.net INFORMATION                      ↑ (pos 4)
+2026-09-15T20:17:44.4917661+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-15T20:17:44.4917816+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\Trips\CreateTripHandlerTests.cs(424,0): at LogiMatch.Application.Tests.Trips.CreateTripHandlerTests.Handle_WhenVehicleHasOverlappingBooking_ShouldThrow()
+2026-09-15T20:17:44.4917840+00:00 xUnit.net INFORMATION         --- End of stack trace from previous location ---
+2026-09-15T20:17:44.5013672+00:00 xUnit.net ERROR     LogiMatch.Application.Tests.Trips.CreateTripHandlerTests.Handle_WhenArrivalEqualsDeparture_ShouldThrow [FAIL]
+2026-09-15T20:17:44.5013792+00:00 xUnit.net INFORMATION       Assert.Equal() Failure: Strings differ
+2026-09-15T20:17:44.5013797+00:00 xUnit.net INFORMATION                  ↓ (pos 0)
+2026-09-15T20:17:44.5013802+00:00 xUnit.net INFORMATION       Expected: "Estimated arrival must be after departure."
+2026-09-15T20:17:44.5013807+00:00 xUnit.net INFORMATION       Actual:   "The specified transporter profile does not exist."
+2026-09-15T20:17:44.5013812+00:00 xUnit.net INFORMATION                  ↑ (pos 0)
+2026-09-15T20:17:44.5013843+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-15T20:17:44.5013918+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Application.Tests\Trips\CreateTripHandlerTests.cs(222,0): at LogiMatch.Application.Tests.Trips.CreateTripHandlerTests.Handle_WhenArrivalEqualsDeparture_ShouldThrow()
+2026-09-15T20:17:44.5013927+00:00 xUnit.net INFORMATION         --- End of stack trace from previous location ---
+2026-09-15T20:17:44.5105029+00:00 xUnit.net INFORMATION   Finished:    LogiMatch.Application.Tests (ID = 'ff833f4ee65d7d65f33f7edea8b7e8fca6ca708868bfc2986c3389f0f132799d')
+2026-09-15T20:17:44.5143106+00:00 xUnit.net INFORMATION === TEST EXECUTION SUMMARY ===
+2026-09-15T20:17:44.5178302+00:00 xUnit.net INFORMATION    LogiMatch.Application.Tests  Total: 82, Errors: 0, Failed: 12, Skipped: 0, Not Run: 0, Time: 0,816s
