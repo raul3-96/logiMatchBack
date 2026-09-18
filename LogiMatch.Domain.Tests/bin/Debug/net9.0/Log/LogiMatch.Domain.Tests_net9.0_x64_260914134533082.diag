@@ -1,0 +1,93 @@
+2026-09-14T13:45:33.0911841+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Version: 2.4.0+a2a92fdb11ad38cd55b31223c4cfbb070fa01c05
+2026-09-14T13:45:33.0922975+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Logging mode: asynchronous
+2026-09-14T13:45:33.0932155+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Logging level: Information
+2026-09-14T13:45:33.0932188+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION CreateBuilderAsync entry time: 13:45:33.066
+2026-09-14T13:45:33.0934909+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION PID: 46580
+2026-09-14T13:45:33.0935208+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Runtime information: win-x64 - .NET 9.0.19
+2026-09-14T13:45:33.0935338+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Runtime location: C:\Program Files\dotnet\shared\Microsoft.NETCore.App\9.0.19\System.Private.CoreLib.dll
+2026-09-14T13:45:33.0935418+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION IsDynamicCodeSupported: True
+2026-09-14T13:45:33.0935798+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Test module: C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\bin\Debug\net9.0\LogiMatch.Domain.Tests.dll
+2026-09-14T13:45:33.0935875+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION Command line arguments: '--server --diagnostic --diagnostic-verbosity Information --diagnostic-output-directory C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\bin\Debug\net9.0\Log --results-directory C:\US\TransportProj\LogiMatch\TestResults --client-port 55620'
+2026-09-14T13:45:33.0947635+00:00 Microsoft.Testing.Platform.Builder.TestApplication INFORMATION TESTINGPLATFORM_DEFAULT_HANG_TIMEOUT: ''
+2026-09-14T13:45:33.1344787+00:00 Microsoft.Testing.Platform.Hosts.TestHostBuilder INFORMATION Setting RegisterEnvironmentVariablesConfigurationSource: 'True'
+2026-09-14T13:45:33.1399551+00:00 Microsoft.Testing.Platform.Hosts.TestHostBuilder INFORMATION Setting PlatformExitProcessOnUnhandledException: 'False', config file: False environment variable: 
+2026-09-14T13:45:33.3255895+00:00 Microsoft.Testing.Platform.Requests.TestHostTestFrameworkInvoker INFORMATION Test framework UID: '30ea7c6e-dd24-4152-a360-1387158cd41d' Version: '4.0.1' DisplayName: 'xUnit.net v3 Microsoft.Testing.Platform test framework' Description: 'xUnit.net v3 Microsoft.Testing.Platform test framework'
+2026-09-14T13:45:33.3313906+00:00 xUnit.net INFORMATION xUnit.net v3 In-Process Runner v4.0.1+8ed8aa354c (64-bit .NET 9.0.19)
+2026-09-14T13:45:33.3645703+00:00 xUnit.net INFORMATION   Discovering: LogiMatch.Domain.Tests
+2026-09-14T13:45:33.4054171+00:00 xUnit.net INFORMATION   Discovered:  LogiMatch.Domain.Tests
+2026-09-14T13:45:33.4172783+00:00 xUnit.net INFORMATION   Starting:    LogiMatch.Domain.Tests
+2026-09-14T13:45:33.5088581+00:00 xUnit.net ERROR     LogiMatch.Domain.Tests.Entities.CargoTests.Constructor_WhenQuantityIsInvalid_ShouldThrow(quantity: 0) [FAIL]
+2026-09-14T13:45:33.5091732+00:00 xUnit.net INFORMATION       Assert.Throws() Failure: Exception type was not an exact match
+2026-09-14T13:45:33.5091805+00:00 xUnit.net INFORMATION       Expected: typeof(System.ArgumentException)
+2026-09-14T13:45:33.5091811+00:00 xUnit.net INFORMATION       Actual:   typeof(System.InvalidOperationException)
+2026-09-14T13:45:33.5091816+00:00 xUnit.net INFORMATION       ---- System.InvalidOperationException : Cargo quantity must be greater than zero.
+2026-09-14T13:45:33.5094294+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-14T13:45:33.5096935+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\CargoTests.cs(84,0): at LogiMatch.Domain.Tests.Entities.CargoTests.Constructor_WhenQuantityIsInvalid_ShouldThrow(Int32 quantity)
+2026-09-14T13:45:33.5096986+00:00 xUnit.net INFORMATION            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+2026-09-14T13:45:33.5097033+00:00 xUnit.net INFORMATION            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+2026-09-14T13:45:33.5097041+00:00 xUnit.net INFORMATION         ----- Inner Stack Trace -----
+2026-09-14T13:45:33.5097144+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain\Entities\Cargo.cs(51,0): at LogiMatch.Domain.Entities.Cargo..ctor(Guid transportRequestId, String description, Decimal weightKg, Decimal volumeM3, Int32 quantity, Boolean requiresRefrigeration, Boolean requiresTailLift)
+2026-09-14T13:45:33.5097195+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\CargoTests.cs(85,0): at LogiMatch.Domain.Tests.Entities.CargoTests.<>c__DisplayClass3_0.<Constructor_WhenQuantityIsInvalid_ShouldThrow>b__0()
+2026-09-14T13:45:33.5118800+00:00 xUnit.net ERROR     LogiMatch.Domain.Tests.Entities.CargoTests.Constructor_WhenQuantityIsInvalid_ShouldThrow(quantity: -1) [FAIL]
+2026-09-14T13:45:33.5118842+00:00 xUnit.net INFORMATION       Assert.Throws() Failure: Exception type was not an exact match
+2026-09-14T13:45:33.5118970+00:00 xUnit.net INFORMATION       Expected: typeof(System.ArgumentException)
+2026-09-14T13:45:33.5118974+00:00 xUnit.net INFORMATION       Actual:   typeof(System.InvalidOperationException)
+2026-09-14T13:45:33.5118977+00:00 xUnit.net INFORMATION       ---- System.InvalidOperationException : Cargo quantity must be greater than zero.
+2026-09-14T13:45:33.5119159+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-14T13:45:33.5119211+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\CargoTests.cs(84,0): at LogiMatch.Domain.Tests.Entities.CargoTests.Constructor_WhenQuantityIsInvalid_ShouldThrow(Int32 quantity)
+2026-09-14T13:45:33.5119234+00:00 xUnit.net INFORMATION            at InvokeStub_CargoTests.Constructor_WhenQuantityIsInvalid_ShouldThrow(Object, Span`1)
+2026-09-14T13:45:33.5119265+00:00 xUnit.net INFORMATION            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+2026-09-14T13:45:33.5119308+00:00 xUnit.net INFORMATION         ----- Inner Stack Trace -----
+2026-09-14T13:45:33.5119337+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain\Entities\Cargo.cs(51,0): at LogiMatch.Domain.Entities.Cargo..ctor(Guid transportRequestId, String description, Decimal weightKg, Decimal volumeM3, Int32 quantity, Boolean requiresRefrigeration, Boolean requiresTailLift)
+2026-09-14T13:45:33.5119367+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\CargoTests.cs(85,0): at LogiMatch.Domain.Tests.Entities.CargoTests.<>c__DisplayClass3_0.<Constructor_WhenQuantityIsInvalid_ShouldThrow>b__0()
+2026-09-14T13:45:33.5121125+00:00 xUnit.net ERROR     LogiMatch.Domain.Tests.Entities.CargoTests.Constructor_WhenVolumeIsInvalid_ShouldThrow(volumeM3: 0) [FAIL]
+2026-09-14T13:45:33.5121257+00:00 xUnit.net INFORMATION       Assert.Throws() Failure: Exception type was not an exact match
+2026-09-14T13:45:33.5121263+00:00 xUnit.net INFORMATION       Expected: typeof(System.ArgumentException)
+2026-09-14T13:45:33.5121266+00:00 xUnit.net INFORMATION       Actual:   typeof(System.InvalidOperationException)
+2026-09-14T13:45:33.5121269+00:00 xUnit.net INFORMATION       ---- System.InvalidOperationException : Cargo volume must be greater than zero.
+2026-09-14T13:45:33.5121334+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-14T13:45:33.5121414+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\CargoTests.cs(62,0): at LogiMatch.Domain.Tests.Entities.CargoTests.Constructor_WhenVolumeIsInvalid_ShouldThrow(Decimal volumeM3)
+2026-09-14T13:45:33.5121441+00:00 xUnit.net INFORMATION            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+2026-09-14T13:45:33.5121466+00:00 xUnit.net INFORMATION            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+2026-09-14T13:45:33.5121469+00:00 xUnit.net INFORMATION         ----- Inner Stack Trace -----
+2026-09-14T13:45:33.5121495+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain\Entities\Cargo.cs(47,0): at LogiMatch.Domain.Entities.Cargo..ctor(Guid transportRequestId, String description, Decimal weightKg, Decimal volumeM3, Int32 quantity, Boolean requiresRefrigeration, Boolean requiresTailLift)
+2026-09-14T13:45:33.5121560+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\CargoTests.cs(63,0): at LogiMatch.Domain.Tests.Entities.CargoTests.<>c__DisplayClass2_0.<Constructor_WhenVolumeIsInvalid_ShouldThrow>b__0()
+2026-09-14T13:45:33.5122767+00:00 xUnit.net ERROR     LogiMatch.Domain.Tests.Entities.CargoTests.Constructor_WhenVolumeIsInvalid_ShouldThrow(volumeM3: -1) [FAIL]
+2026-09-14T13:45:33.5122782+00:00 xUnit.net INFORMATION       Assert.Throws() Failure: Exception type was not an exact match
+2026-09-14T13:45:33.5122786+00:00 xUnit.net INFORMATION       Expected: typeof(System.ArgumentException)
+2026-09-14T13:45:33.5122825+00:00 xUnit.net INFORMATION       Actual:   typeof(System.InvalidOperationException)
+2026-09-14T13:45:33.5122829+00:00 xUnit.net INFORMATION       ---- System.InvalidOperationException : Cargo volume must be greater than zero.
+2026-09-14T13:45:33.5122953+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-14T13:45:33.5122988+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\CargoTests.cs(62,0): at LogiMatch.Domain.Tests.Entities.CargoTests.Constructor_WhenVolumeIsInvalid_ShouldThrow(Decimal volumeM3)
+2026-09-14T13:45:33.5123054+00:00 xUnit.net INFORMATION            at InvokeStub_CargoTests.Constructor_WhenVolumeIsInvalid_ShouldThrow(Object, Span`1)
+2026-09-14T13:45:33.5123085+00:00 xUnit.net INFORMATION            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+2026-09-14T13:45:33.5123097+00:00 xUnit.net INFORMATION         ----- Inner Stack Trace -----
+2026-09-14T13:45:33.5123121+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain\Entities\Cargo.cs(47,0): at LogiMatch.Domain.Entities.Cargo..ctor(Guid transportRequestId, String description, Decimal weightKg, Decimal volumeM3, Int32 quantity, Boolean requiresRefrigeration, Boolean requiresTailLift)
+2026-09-14T13:45:33.5123144+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\CargoTests.cs(63,0): at LogiMatch.Domain.Tests.Entities.CargoTests.<>c__DisplayClass2_0.<Constructor_WhenVolumeIsInvalid_ShouldThrow>b__0()
+2026-09-14T13:45:33.5125759+00:00 xUnit.net ERROR     LogiMatch.Domain.Tests.Entities.CargoTests.Constructor_WhenWeightIsInvalid_ShouldThrow(weightKg: -1) [FAIL]
+2026-09-14T13:45:33.5125919+00:00 xUnit.net INFORMATION       Assert.Throws() Failure: Exception type was not an exact match
+2026-09-14T13:45:33.5125944+00:00 xUnit.net INFORMATION       Expected: typeof(System.ArgumentException)
+2026-09-14T13:45:33.5125957+00:00 xUnit.net INFORMATION       Actual:   typeof(System.InvalidOperationException)
+2026-09-14T13:45:33.5125969+00:00 xUnit.net INFORMATION       ---- System.InvalidOperationException : Cargo weight must be greater than zero.
+2026-09-14T13:45:33.5126283+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-14T13:45:33.5126692+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\CargoTests.cs(40,0): at LogiMatch.Domain.Tests.Entities.CargoTests.Constructor_WhenWeightIsInvalid_ShouldThrow(Decimal weightKg)
+2026-09-14T13:45:33.5126810+00:00 xUnit.net INFORMATION            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+2026-09-14T13:45:33.5127175+00:00 xUnit.net INFORMATION            at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)
+2026-09-14T13:45:33.5127196+00:00 xUnit.net INFORMATION         ----- Inner Stack Trace -----
+2026-09-14T13:45:33.5127465+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain\Entities\Cargo.cs(43,0): at LogiMatch.Domain.Entities.Cargo..ctor(Guid transportRequestId, String description, Decimal weightKg, Decimal volumeM3, Int32 quantity, Boolean requiresRefrigeration, Boolean requiresTailLift)
+2026-09-14T13:45:33.5127582+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\CargoTests.cs(41,0): at LogiMatch.Domain.Tests.Entities.CargoTests.<>c__DisplayClass1_0.<Constructor_WhenWeightIsInvalid_ShouldThrow>b__0()
+2026-09-14T13:45:33.5130311+00:00 xUnit.net ERROR     LogiMatch.Domain.Tests.Entities.CargoTests.Constructor_WhenWeightIsInvalid_ShouldThrow(weightKg: 0) [FAIL]
+2026-09-14T13:45:33.5130565+00:00 xUnit.net INFORMATION       Assert.Throws() Failure: Exception type was not an exact match
+2026-09-14T13:45:33.5130581+00:00 xUnit.net INFORMATION       Expected: typeof(System.ArgumentException)
+2026-09-14T13:45:33.5130594+00:00 xUnit.net INFORMATION       Actual:   typeof(System.InvalidOperationException)
+2026-09-14T13:45:33.5130612+00:00 xUnit.net INFORMATION       ---- System.InvalidOperationException : Cargo weight must be greater than zero.
+2026-09-14T13:45:33.5130843+00:00 xUnit.net INFORMATION       Stack Trace:
+2026-09-14T13:45:33.5131126+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\CargoTests.cs(40,0): at LogiMatch.Domain.Tests.Entities.CargoTests.Constructor_WhenWeightIsInvalid_ShouldThrow(Decimal weightKg)
+2026-09-14T13:45:33.5131220+00:00 xUnit.net INFORMATION            at InvokeStub_CargoTests.Constructor_WhenWeightIsInvalid_ShouldThrow(Object, Span`1)
+2026-09-14T13:45:33.5131359+00:00 xUnit.net INFORMATION            at System.Reflection.MethodBaseInvoker.InvokeWithOneArg(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)
+2026-09-14T13:45:33.5131374+00:00 xUnit.net INFORMATION         ----- Inner Stack Trace -----
+2026-09-14T13:45:33.5131486+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain\Entities\Cargo.cs(43,0): at LogiMatch.Domain.Entities.Cargo..ctor(Guid transportRequestId, String description, Decimal weightKg, Decimal volumeM3, Int32 quantity, Boolean requiresRefrigeration, Boolean requiresTailLift)
+2026-09-14T13:45:33.5131711+00:00 xUnit.net INFORMATION         C:\US\TransportProj\LogiMatch\LogiMatch.Domain.Tests\Entities\CargoTests.cs(41,0): at LogiMatch.Domain.Tests.Entities.CargoTests.<>c__DisplayClass1_0.<Constructor_WhenWeightIsInvalid_ShouldThrow>b__0()
+2026-09-14T13:45:33.5248855+00:00 xUnit.net INFORMATION   Finished:    LogiMatch.Domain.Tests (ID = '603d798c4e0f5382c49ab6ab6994de61a6fd7ac95620d9ed2f31713fe8aaf2f1')
+2026-09-14T13:45:33.5272338+00:00 xUnit.net INFORMATION === TEST EXECUTION SUMMARY ===
+2026-09-14T13:45:33.5300150+00:00 xUnit.net INFORMATION    LogiMatch.Domain.Tests  Total: 7, Errors: 0, Failed: 6, Skipped: 0, Not Run: 0, Time: 0,110s
