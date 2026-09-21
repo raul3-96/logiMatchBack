@@ -1,4 +1,4 @@
-﻿using System.Net.Mail;
+using System.Net.Mail;
 
 namespace LogiMatch.Domain.Entities;
 
@@ -14,6 +14,8 @@ public class Company
 
     public string Phone { get; private set; } = null!;
 
+    public Guid OwnerUserId { get; private set; }
+
     public DateTime CreatedAt { get; private set; }
 
     private Company()
@@ -24,7 +26,8 @@ public class Company
         string name,
         string taxId,
         string email,
-        string phone)
+        string phone,
+        Guid ownerUserId)
     {
         if (string.IsNullOrWhiteSpace(name))
             throw new InvalidOperationException(
@@ -56,12 +59,17 @@ public class Company
             throw new InvalidOperationException(
                 "Phone cannot be empty.");
 
+        if (ownerUserId == Guid.Empty)
+            throw new InvalidOperationException(
+                "Owner user ID cannot be empty.");
+
         Id = Guid.NewGuid();
 
         Name = name.Trim();
         TaxId = taxId.Trim().ToUpperInvariant();
         Email = email.Trim().ToLowerInvariant();
         Phone = phone.Trim();
+        OwnerUserId = ownerUserId;
         CreatedAt = DateTime.UtcNow;
     }
 }
