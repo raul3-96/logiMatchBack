@@ -3,4 +3,8 @@ dist/
 .env
 bin/
 obj/
-.vs
+.vs/
+
+# Local development secrets
+appsettings.Local.json
+secrets.json
