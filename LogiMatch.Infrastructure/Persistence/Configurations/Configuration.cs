@@ -1,4 +1,4 @@
-﻿using LogiMatch.Domain.Entities;
+using LogiMatch.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -15,6 +15,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(x => x.Email)
             .IsRequired()
             .HasMaxLength(320);
+
+        builder.HasIndex(x => x.Email)
+            .IsUnique()
+            .HasDatabaseName("UX_users_email");
 
         builder.Property(x => x.FirstName)
             .IsRequired()
