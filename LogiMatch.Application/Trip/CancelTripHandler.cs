@@ -11,11 +11,6 @@ public class CancelTripHandler
     private readonly IApplicationDbContext _dbContext;
     private readonly ICurrentUserService _currentUserService;
 
-    public CancelTripHandler(IApplicationDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
-
     public CancelTripHandler(
         IApplicationDbContext dbContext,
         ICurrentUserService currentUserService)

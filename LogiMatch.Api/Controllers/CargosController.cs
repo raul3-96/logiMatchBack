@@ -1,9 +1,11 @@
 ﻿using LogiMatch.Application.Cargos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LogiMatch.Api.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/cargos")]
 public class CargosController : ControllerBase
 {

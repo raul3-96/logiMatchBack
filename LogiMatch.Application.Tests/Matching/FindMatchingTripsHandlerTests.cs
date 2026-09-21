@@ -1,10 +1,8 @@
-﻿using LogiMatch.Application.Matching;
+﻿using LogiMatch.Application.Common.Exceptions;
+using LogiMatch.Application.Matching;
 using LogiMatch.Application.Tests.Common;
-using LogiMatch.Domain;
 using LogiMatch.Domain.Entities;
 using LogiMatch.Domain.Enums;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Testing.Platform.Requests;
 using Xunit;
 
 namespace LogiMatch.Application.Tests.Matching;
@@ -16,18 +14,44 @@ public class FindMatchingTripsHandlerTests
     {
         var db = TestDbContextFactory.Create();
 
-        var handler = new FindMatchingTripsHandler(db);
+        var handler = new FindMatchingTripsHandler(
+            db,
+            new MockCurrentUserService(Guid.NewGuid()));
 
         var command = new FindMatchingTripsCommand
         {
             TransportRequestId = Guid.NewGuid()
         };
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
             () => handler.Handle(command));
 
         Assert.Equal(
             "The specified transport request does not exist.",
+            exception.Message);
+    }
+
+    [Fact]
+    public async Task Handle_ShouldThrow_WhenCurrentUserDoesNotOwnTransportRequest()
+    {
+        var db = TestDbContextFactory.Create();
+
+        var request = await CreateValidRequest(db);
+
+        var handler = new FindMatchingTripsHandler(
+            db,
+            new MockCurrentUserService(Guid.NewGuid()));
+
+        var command = new FindMatchingTripsCommand
+        {
+            TransportRequestId = request.Id
+        };
+
+        var exception = await Assert.ThrowsAsync<ConflictException>(
+            () => handler.Handle(command));
+
+        Assert.Equal(
+            "You do not have permission to search trips for this transport request.",
             exception.Message);
     }
 
@@ -38,14 +62,16 @@ public class FindMatchingTripsHandlerTests
 
         var request = await CreateValidRequest(db);
 
-        var handler = new FindMatchingTripsHandler(db);
+        var handler = new FindMatchingTripsHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var command = new FindMatchingTripsCommand
         {
             TransportRequestId = request.Id
         };
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(command));
 
         Assert.Equal(
@@ -68,10 +94,7 @@ public class FindMatchingTripsHandlerTests
             requiresRefrigeration: false,
             requiresTailLift: false);
 
-        var vehicle = CreateVehicle(
-            db,
-            isRefrigerated: false,
-            hasTailLift: false);
+        var vehicle = CreateVehicle(db);
 
         var trip = CreateMatchingTrip(
             db,
@@ -82,7 +105,9 @@ public class FindMatchingTripsHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingTripsHandler(db);
+        var handler = new FindMatchingTripsHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var command = new FindMatchingTripsCommand
         {
@@ -113,7 +138,9 @@ public class FindMatchingTripsHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingTripsHandler(db);
+        var handler = new FindMatchingTripsHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingTripsCommand
@@ -149,7 +176,9 @@ public class FindMatchingTripsHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingTripsHandler(db);
+        var handler = new FindMatchingTripsHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingTripsCommand
@@ -177,7 +206,9 @@ public class FindMatchingTripsHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingTripsHandler(db);
+        var handler = new FindMatchingTripsHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingTripsCommand
@@ -206,7 +237,7 @@ public class FindMatchingTripsHandlerTests
         var trip = new Trip(
             vehicle.TransporterProfileId,
             vehicle.Id,
-            Guid.NewGuid(), // origen DIFERENTE
+            Guid.NewGuid(),
             request.DeliveryLocationId,
             request.PickupDate.AddHours(-1),
             request.PickupDate.AddHours(2),
@@ -217,7 +248,9 @@ public class FindMatchingTripsHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingTripsHandler(db);
+        var handler = new FindMatchingTripsHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingTripsCommand
@@ -235,7 +268,11 @@ public class FindMatchingTripsHandlerTests
 
         var request = await CreateValidRequest(db);
 
-        AddCargo(db, request, 500m, 2m);
+        AddCargo(
+            db,
+            request,
+            500m,
+            2m);
 
         var vehicle = CreateVehicle(db);
 
@@ -243,7 +280,9 @@ public class FindMatchingTripsHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingTripsHandler(db);
+        var handler = new FindMatchingTripsHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingTripsCommand
@@ -270,14 +309,17 @@ public class FindMatchingTripsHandlerTests
             vehicle.Id,
             request.PickupLocationId,
             request.DeliveryLocationId,
-            request.PickupDate.AddMinutes(1), // sale después del pickup
+            request.PickupDate.AddMinutes(1),
             request.PickupDate.AddHours(2),
             1000m,
             5m);
 
+        db.Trips.Add(trip);
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingTripsHandler(db);
+        var handler = new FindMatchingTripsHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingTripsCommand
@@ -300,18 +342,21 @@ public class FindMatchingTripsHandlerTests
         var vehicle = CreateVehicle(db);
 
         var trip = new Trip(
-           vehicle.TransporterProfileId,
-           vehicle.Id,
-           request.PickupLocationId,
-           request.DeliveryLocationId,
-           request.PickupDate.AddHours(-2),
-           request.PickupDate.AddMinutes(-1), // llega antes del pickup
-           1000m,
-           5m);
+            vehicle.TransporterProfileId,
+            vehicle.Id,
+            request.PickupLocationId,
+            request.DeliveryLocationId,
+            request.PickupDate.AddHours(-2),
+            request.PickupDate.AddMinutes(-1),
+            1000m,
+            5m);
 
+        db.Trips.Add(trip);
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingTripsHandler(db);
+        var handler = new FindMatchingTripsHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingTripsCommand
@@ -343,9 +388,12 @@ public class FindMatchingTripsHandlerTests
             1000m,
             5m);
 
+        db.Trips.Add(trip);
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingTripsHandler(db);
+        var handler = new FindMatchingTripsHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingTripsCommand
@@ -385,7 +433,9 @@ public class FindMatchingTripsHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingTripsHandler(db);
+        var handler = new FindMatchingTripsHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingTripsCommand
@@ -418,7 +468,9 @@ public class FindMatchingTripsHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingTripsHandler(db);
+        var handler = new FindMatchingTripsHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingTripsCommand
@@ -449,7 +501,9 @@ public class FindMatchingTripsHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingTripsHandler(db);
+        var handler = new FindMatchingTripsHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingTripsCommand
@@ -482,7 +536,9 @@ public class FindMatchingTripsHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingTripsHandler(db);
+        var handler = new FindMatchingTripsHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingTripsCommand
@@ -515,7 +571,9 @@ public class FindMatchingTripsHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingTripsHandler(db);
+        var handler = new FindMatchingTripsHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingTripsCommand
@@ -535,13 +593,13 @@ public class FindMatchingTripsHandlerTests
 
         AddCargo(db, request, 500m, 2m);
 
-        var trip = CreateTrip(db ,Guid.NewGuid());
-
-        // VehicleId apunta a uno inexistente.
+        CreateTrip(db, Guid.NewGuid());
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingTripsHandler(db);
+        var handler = new FindMatchingTripsHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingTripsCommand
@@ -577,7 +635,9 @@ public class FindMatchingTripsHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingTripsHandler(db);
+        var handler = new FindMatchingTripsHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingTripsCommand
@@ -608,7 +668,7 @@ public class FindMatchingTripsHandlerTests
 
         var vehicle = CreateVehicle(db);
 
-        var trip = CreateMatchingTrip(
+        CreateMatchingTrip(
             db,
             request,
             vehicle,
@@ -617,7 +677,9 @@ public class FindMatchingTripsHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingTripsHandler(db);
+        var handler = new FindMatchingTripsHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingTripsCommand
@@ -772,11 +834,14 @@ public class FindMatchingTripsHandlerTests
             vehicle.TransporterProfileId,
             vehicle.Id,
             request.PickupLocationId,
-            Guid.NewGuid(),                  // destino diferente
+            Guid.NewGuid(),
             request.PickupDate.AddHours(-1),
             request.PickupDate.AddHours(2),
             1000m,
             5m);
+
+        db.Trips.Add(trip);
+
         return trip;
     }
 

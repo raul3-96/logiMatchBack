@@ -1,4 +1,5 @@
 ﻿using LogiMatch.Application.Common.Exceptions;
+using LogiMatch.Application.Common.Interfaces;
 using LogiMatch.Domain;
 using LogiMatch.Domain.Entities;
 using LogiMatch.Domain.Enums;
@@ -9,10 +10,14 @@ namespace LogiMatch.Application.Matching;
 public class ReserveTripCapacityHandler
 {
     private readonly IApplicationDbContext _dbContext;
+    private readonly ICurrentUserService _currentUserService;
 
-    public ReserveTripCapacityHandler(IApplicationDbContext dbContext)
+    public ReserveTripCapacityHandler(
+        IApplicationDbContext dbContext,
+        ICurrentUserService currentUserService)
     {
         _dbContext = dbContext;
+        _currentUserService = currentUserService;
     }
 
     public async Task<Guid> Handle(
@@ -40,6 +45,10 @@ public class ReserveTripCapacityHandler
             if (request == null)
                 throw new NotFoundException(
                     "The specified transport request does not exist.");
+
+            if (request.CustomerId != _currentUserService.UserId)
+                throw new ConflictException(
+                    "You do not have permission to reserve this transport request.");
 
             if (request.Status != TransportRequestStatus.Published &&
                 request.Status != TransportRequestStatus.Matching)

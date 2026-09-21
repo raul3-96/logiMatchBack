@@ -13,15 +13,18 @@ public class TransportOffersController : ControllerBase
     private readonly CreateTransportOfferHandler _createHandler;
     private readonly GetTransportOffersHandler _getHandler;
     private readonly AcceptTransportOfferHandler _acceptHandler;
+    private readonly RejectTransportOfferHandler _rejectHandler;
 
     public TransportOffersController(
         CreateTransportOfferHandler createHandler,
         GetTransportOffersHandler getHandler,
-        AcceptTransportOfferHandler acceptHandler)
+        AcceptTransportOfferHandler acceptHandler,
+        RejectTransportOfferHandler rejectHandler)
     {
         _createHandler = createHandler;
         _getHandler = getHandler;
         _acceptHandler = acceptHandler;
+        _rejectHandler = rejectHandler;
     }
 
     [HttpPost]
@@ -86,5 +89,13 @@ public class TransportOffersController : ControllerBase
         var bookingId = await _acceptHandler.Handle(offerId);
 
         return Ok(new { bookingId });
+    }
+
+    [HttpPost("{offerId:guid}/reject")]
+    public async Task<IActionResult> Reject(Guid offerId)
+    {
+        await _rejectHandler.Handle(offerId);
+
+        return NoContent();
     }
 }

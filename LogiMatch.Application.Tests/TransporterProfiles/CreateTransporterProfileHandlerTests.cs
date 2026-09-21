@@ -12,7 +12,7 @@ public class CreateTransporterProfileHandlerTests
     public async Task Handle_WhenUserDoesNotExist_ShouldThrow()
     {
         using var db = TestDbContextFactory.Create();
-        var handler = new CreateTransporterProfileHandler(db);
+        var handler = new CreateTransporterProfileHandler(db, new MockCurrentUserService(Guid.NewGuid()));
 
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(
             () => handler.Handle(CreateCommand()));
@@ -35,7 +35,7 @@ public class CreateTransporterProfileHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new CreateTransporterProfileHandler(db);
+        var handler = new CreateTransporterProfileHandler(db, new MockCurrentUserService(user.Id));
 
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(
             () => handler.Handle(CreateCommand(user.Id)));
@@ -54,7 +54,7 @@ public class CreateTransporterProfileHandlerTests
         db.Users.Add(user);
         await db.SaveChangesAsync();
 
-        var handler = new CreateTransporterProfileHandler(db);
+        var handler = new CreateTransporterProfileHandler(db, new MockCurrentUserService(user.Id));
 
         var command = CreateCommand(
             user.Id,
@@ -82,7 +82,7 @@ public class CreateTransporterProfileHandlerTests
         db.Companies.Add(company);
         await db.SaveChangesAsync();
 
-        var handler = new CreateTransporterProfileHandler(db);
+        var handler = new CreateTransporterProfileHandler(db, new MockCurrentUserService(user.Id));
 
         var command = CreateCommand(
             user.Id,
@@ -104,7 +104,6 @@ public class CreateTransporterProfileHandlerTests
     {
         return new CreateTransporterProfileCommand
         {
-            UserId = userId ?? Guid.NewGuid(),
             CompanyId = companyId
         };
     }

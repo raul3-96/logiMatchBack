@@ -1,21 +1,32 @@
 ﻿using LogiMatch.Application.TransporterProfiles;
+using LogiMatch.Application.Common.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using LogiMatch.Application;
+using Microsoft.EntityFrameworkCore;
 
 namespace LogiMatch.Api.Controllers;
 
 [ApiController]
 [Route("api/transporter-profiles")]
+[Authorize]
 public class TransporterProfilesController : ControllerBase
 {
     private readonly CreateTransporterProfileHandler _createHandler;
     private readonly GetTransporterProfileHandler _getHandler;
+    private readonly ICurrentUserService _currentUserService;
+    private readonly IApplicationDbContext _dbContext;
 
     public TransporterProfilesController(
         CreateTransporterProfileHandler createHandler,
-        GetTransporterProfileHandler getHandler)
+        GetTransporterProfileHandler getHandler,
+        ICurrentUserService currentUserService,
+        IApplicationDbContext dbContext)
     {
         _createHandler = createHandler;
         _getHandler = getHandler;
+        _currentUserService = currentUserService;
+        _dbContext = dbContext;
     }
 
     [HttpPost]
@@ -30,6 +41,7 @@ public class TransporterProfilesController : ControllerBase
     }
 
     [HttpGet]
+    [AllowAnonymous]
     public async Task<IActionResult> GetAll(
         [FromQuery] Guid? userId,
         [FromQuery] Guid? companyId)
@@ -42,13 +54,25 @@ public class TransporterProfilesController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
+    [AllowAnonymous]
     public async Task<IActionResult> Get(Guid id)
     {
-        var profile = await _getHandler.Handle(id);
+        var transporterProfile = await _dbContext.TransporterProfiles
+            .FirstOrDefaultAsync(x => x.Id == id);
 
-        if (profile == null)
+        if (transporterProfile == null)
             return NotFound();
 
-        return Ok(profile);
+        // Si el usuario autenticado es el propietario, mostrar datos detallados
+        if (User.Identity?.IsAuthenticated == true &&
+            transporterProfile.UserId == _currentUserService.UserId)
+        {
+            var detailedProfile = await _getHandler.HandleDetailed(id);
+            return Ok(detailedProfile);
+        }
+
+        // Si no, mostrar perfil público
+        var publicProfile = await _getHandler.Handle(id);
+        return Ok(publicProfile);
     }
 }

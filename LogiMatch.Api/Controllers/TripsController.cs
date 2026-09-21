@@ -1,4 +1,5 @@
-﻿using LogiMatch.Application.Trips;
+﻿using LogiMatch.Application.Matching;
+using LogiMatch.Application.Trips;
 using LogiMatch.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,19 +16,22 @@ public class TripsController : ControllerBase
     private readonly CompleteTripHandler _completeHandler;
     private readonly CancelTripHandler _cancelHandler;
     private readonly GetTripHandler _getHandler;
+    private readonly ReserveTripCapacityHandler _reserveHandler;
 
     public TripsController(
         CreateTripHandler createHandler,
         GetTripHandler getHandler,
         StartTripHandler startHandler,
         CompleteTripHandler completeHandler,
-        CancelTripHandler cancelHandler)
+        CancelTripHandler cancelHandler,
+        ReserveTripCapacityHandler reserveHandler)
     {
         _createHandler = createHandler;
         _getHandler = getHandler;
         _startHandler = startHandler;
         _completeHandler = completeHandler;
         _cancelHandler = cancelHandler;
+        _reserveHandler = reserveHandler;
     }
 
     [HttpPost]
@@ -63,6 +67,20 @@ public class TripsController : ControllerBase
         await _cancelHandler.Handle(id);
 
         return NoContent();
+    }
+
+    [HttpPost("{id:guid}/reserve")]
+    public async Task<IActionResult> Reserve(
+        Guid id,
+        ReserveTripCapacityCommand command)
+    {
+        command.TripId = id;
+
+        var tripCargoId = await _reserveHandler.Handle(command);
+
+        return Created(
+            $"/api/trip-cargos/{tripCargoId}",
+            new { tripCargoId });
     }
 
     [HttpGet]

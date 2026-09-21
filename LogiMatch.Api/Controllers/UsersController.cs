@@ -1,6 +1,4 @@
 ﻿using LogiMatch.Application.Users;
-using LogiMatch.Domain;
-using LogiMatch.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,6 +19,7 @@ public class UsersController : ControllerBase
         _getHandler = getHandler;
     }
 
+    [AllowAnonymous]
     [HttpPost]
     public async Task<IActionResult> Create(
         CreateUserCommand command)
@@ -33,20 +32,10 @@ public class UsersController : ControllerBase
     }
 
     [Authorize]
-    [HttpGet]
-    public async Task<IActionResult> GetAll(
-        [FromQuery] UserStatus? status)
+    [HttpGet("me")]
+    public async Task<IActionResult> GetMe()
     {
-        var users = await _getHandler.HandleAll(status);
-
-        return Ok(users);
-    }
-
-    [Authorize]
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> Get(Guid id)
-    {
-        var user = await _getHandler.Handle(id);
+        var user = await _getHandler.HandleMe();
 
         if (user == null)
             return NotFound();

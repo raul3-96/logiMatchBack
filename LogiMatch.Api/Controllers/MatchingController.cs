@@ -1,40 +1,42 @@
 ﻿using LogiMatch.Application.Matching;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LogiMatch.Api.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/matching")]
 public class MatchingController : ControllerBase
 {
-    private readonly FindMatchingVehiclesHandler _findVehiclesHandler;
-    private readonly FindMatchingTripsHandler _findTripsHandler;
+    private readonly FindMatchingVehiclesHandler _findMatchingVehiclesHandler;
+    private readonly FindMatchingTripsHandler _findMatchingTripsHandler;
     private readonly ReserveTripCapacityHandler _reserveTripCapacityHandler;
 
     public MatchingController(
-        FindMatchingVehiclesHandler findVehiclesHandler,
-        FindMatchingTripsHandler findTripsHandler,
+        FindMatchingVehiclesHandler findMatchingVehiclesHandler,
+        FindMatchingTripsHandler findMatchingTripsHandler,
         ReserveTripCapacityHandler reserveTripCapacityHandler)
     {
-        _findVehiclesHandler = findVehiclesHandler;
-        _findTripsHandler = findTripsHandler;
+        _findMatchingVehiclesHandler = findMatchingVehiclesHandler;
+        _findMatchingTripsHandler = findMatchingTripsHandler;
         _reserveTripCapacityHandler = reserveTripCapacityHandler;
     }
 
     [HttpPost("vehicles")]
-    public async Task<IActionResult> FindVehicles(
+    public async Task<IActionResult> FindMatchingVehicles(
         FindMatchingVehiclesCommand command)
     {
-        var result = await _findVehiclesHandler.Handle(command);
+        var result = await _findMatchingVehiclesHandler.Handle(command);
 
         return Ok(result);
     }
 
     [HttpPost("trips")]
-    public async Task<IActionResult> FindTrips(
+    public async Task<IActionResult> FindMatchingTrips(
         FindMatchingTripsCommand command)
     {
-        var result = await _findTripsHandler.Handle(command);
+        var result = await _findMatchingTripsHandler.Handle(command);
 
         return Ok(result);
     }

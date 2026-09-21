@@ -1,6 +1,6 @@
 ﻿using LogiMatch.Application;
 using LogiMatch.Application.Common.Exceptions;
-using LogiMatch.Domain;
+using LogiMatch.Application.Common.Interfaces;
 using LogiMatch.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,10 +9,12 @@ namespace LogiMatch.Application.Matching;
 public class CompleteTripCargoHandler
 {
     private readonly IApplicationDbContext _dbContext;
+    private readonly ICurrentUserService _currentUserService;
 
-    public CompleteTripCargoHandler(IApplicationDbContext dbContext)
+    public CompleteTripCargoHandler(IApplicationDbContext dbContext, ICurrentUserService currentUserService)
     {
         _dbContext = dbContext;
+        _currentUserService = currentUserService;
     }
 
     public async Task Handle(Guid tripCargoId)
@@ -30,6 +32,14 @@ public class CompleteTripCargoHandler
         if (trip == null)
             throw new NotFoundException(
                 "The trip associated with the trip cargo does not exist.");
+
+        // Solo el transportista dueño del trip puede completar un trip cargo
+        var transporterProfile = await _dbContext.TransporterProfiles
+            .FirstOrDefaultAsync(tp => tp.Id == trip.TransporterProfileId);
+
+        if (transporterProfile == null || transporterProfile.UserId != _currentUserService.UserId)
+            throw new ConflictException(
+                "You do not have permission to complete this trip cargo.");
 
         var request = await _dbContext.TransportRequests
             .FirstOrDefaultAsync(x => x.Id == tripCargo.TransportRequestId);

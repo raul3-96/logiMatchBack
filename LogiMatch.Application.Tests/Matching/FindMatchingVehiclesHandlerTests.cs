@@ -1,6 +1,6 @@
-﻿using LogiMatch.Application.Matching;
+﻿using LogiMatch.Application.Common.Exceptions;
+using LogiMatch.Application.Matching;
 using LogiMatch.Application.Tests.Common;
-using LogiMatch.Domain;
 using LogiMatch.Domain.Entities;
 using LogiMatch.Domain.Enums;
 using Xunit;
@@ -14,9 +14,11 @@ public class FindMatchingVehiclesHandlerTests
     {
         var db = TestDbContextFactory.Create();
 
-        var handler = new FindMatchingVehiclesHandler(db);
+        var handler = new FindMatchingVehiclesHandler(
+            db,
+            new MockCurrentUserService(Guid.NewGuid()));
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
             () => handler.Handle(new FindMatchingVehiclesCommand
             {
                 TransportRequestId = Guid.NewGuid()
@@ -28,15 +30,39 @@ public class FindMatchingVehiclesHandlerTests
     }
 
     [Fact]
+    public async Task Handle_ShouldThrow_WhenCurrentUserDoesNotOwnTransportRequest()
+    {
+        var db = TestDbContextFactory.Create();
+
+        var request = await CreateValidRequest(db);
+
+        var handler = new FindMatchingVehiclesHandler(
+            db,
+            new MockCurrentUserService(Guid.NewGuid()));
+
+        var exception = await Assert.ThrowsAsync<ConflictException>(
+            () => handler.Handle(new FindMatchingVehiclesCommand
+            {
+                TransportRequestId = request.Id
+            }));
+
+        Assert.Equal(
+            "You do not have permission to search vehicles for this transport request.",
+            exception.Message);
+    }
+
+    [Fact]
     public async Task Handle_ShouldThrow_WhenRequestHasNoCargo()
     {
         var db = TestDbContextFactory.Create();
 
         var request = await CreateValidRequest(db);
 
-        var handler = new FindMatchingVehiclesHandler(db);
+        var handler = new FindMatchingVehiclesHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(new FindMatchingVehiclesCommand
             {
                 TransportRequestId = request.Id
@@ -70,7 +96,9 @@ public class FindMatchingVehiclesHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingVehiclesHandler(db);
+        var handler = new FindMatchingVehiclesHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingVehiclesCommand
@@ -107,7 +135,9 @@ public class FindMatchingVehiclesHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingVehiclesHandler(db);
+        var handler = new FindMatchingVehiclesHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingVehiclesCommand
@@ -152,7 +182,9 @@ public class FindMatchingVehiclesHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingVehiclesHandler(db);
+        var handler = new FindMatchingVehiclesHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingVehiclesCommand
@@ -192,7 +224,9 @@ public class FindMatchingVehiclesHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingVehiclesHandler(db);
+        var handler = new FindMatchingVehiclesHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingVehiclesCommand
@@ -224,7 +258,9 @@ public class FindMatchingVehiclesHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingVehiclesHandler(db);
+        var handler = new FindMatchingVehiclesHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingVehiclesCommand
@@ -261,7 +297,9 @@ public class FindMatchingVehiclesHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingVehiclesHandler(db);
+        var handler = new FindMatchingVehiclesHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingVehiclesCommand
@@ -298,7 +336,9 @@ public class FindMatchingVehiclesHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingVehiclesHandler(db);
+        var handler = new FindMatchingVehiclesHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingVehiclesCommand
@@ -337,7 +377,9 @@ public class FindMatchingVehiclesHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingVehiclesHandler(db);
+        var handler = new FindMatchingVehiclesHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingVehiclesCommand
@@ -361,7 +403,9 @@ public class FindMatchingVehiclesHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingVehiclesHandler(db);
+        var handler = new FindMatchingVehiclesHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingVehiclesCommand
@@ -391,7 +435,9 @@ public class FindMatchingVehiclesHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingVehiclesHandler(db);
+        var handler = new FindMatchingVehiclesHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingVehiclesCommand
@@ -421,7 +467,9 @@ public class FindMatchingVehiclesHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingVehiclesHandler(db);
+        var handler = new FindMatchingVehiclesHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingVehiclesCommand
@@ -451,7 +499,9 @@ public class FindMatchingVehiclesHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingVehiclesHandler(db);
+        var handler = new FindMatchingVehiclesHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingVehiclesCommand
@@ -493,7 +543,9 @@ public class FindMatchingVehiclesHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingVehiclesHandler(db);
+        var handler = new FindMatchingVehiclesHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingVehiclesCommand
@@ -513,7 +565,7 @@ public class FindMatchingVehiclesHandlerTests
     }
 
     [Fact]
-    public async Task Handle_ShouldReturnVehicleDetails()
+    public async Task Handle_ShouldReturnVehicleDetails_WithoutLicensePlate()
     {
         var db = TestDbContextFactory.Create();
 
@@ -540,7 +592,9 @@ public class FindMatchingVehiclesHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingVehiclesHandler(db);
+        var handler = new FindMatchingVehiclesHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingVehiclesCommand
@@ -576,83 +630,30 @@ public class FindMatchingVehiclesHandlerTests
                 "Model"));
 
         Assert.Equal(
-            "TEST123",
-            GetProperty<string>(
-                vehicleResult,
-                "LicensePlate"));
-    }
-
-    [Fact]
-    public async Task Handle_ShouldReturnCapacityAndRequirements()
-    {
-        var db = TestDbContextFactory.Create();
-
-        var request = await CreateValidRequest(db);
-
-        AddCargo(db, request, 500m, 2m);
-
-        var vehicle = CreateVehicle(
-            db,
-            maxWeightKg: 1500m,
-            maxVolumeM3: 10m,
-            hasTailLift: true,
-            isRefrigerated: true);
-
-        AddAvailability(
-            db,
-            vehicle,
-            request.PickupDate.AddHours(-1),
-            request.DeliveryDate!.Value.AddHours(1));
-
-        await db.SaveChangesAsync();
-
-        var handler = new FindMatchingVehiclesHandler(db);
-
-        var result = await handler.Handle(
-            new FindMatchingVehiclesCommand
-            {
-                TransportRequestId = request.Id
-            });
-
-        var matches = GetMatches(result);
-
-        Assert.Single(matches);
-
-        var capacity =
-            GetProperty<object>(
-                matches[0],
-                "Capacity");
-
-        Assert.Equal(
             1500m,
             GetProperty<decimal>(
-                capacity,
-                "WeightKg"));
+                vehicleResult,
+                "MaxWeightKg"));
 
         Assert.Equal(
             10m,
             GetProperty<decimal>(
-                capacity,
-                "VolumeM3"));
-
-        var requirements =
-            GetProperty<object>(
-                matches[0],
-                "Requirements");
+                vehicleResult,
+                "MaxVolumeM3"));
 
         Assert.True(
             GetProperty<bool>(
-                requirements,
+                vehicleResult,
                 "HasTailLift"));
 
         Assert.True(
             GetProperty<bool>(
-                requirements,
+                vehicleResult,
                 "IsRefrigerated"));
     }
 
     [Fact]
-    public async Task Handle_ShouldReturnTransporterInformation()
+    public async Task Handle_ShouldReturnTransporterInformation_WithoutPrivateData()
     {
         var db = TestDbContextFactory.Create();
 
@@ -705,7 +706,9 @@ public class FindMatchingVehiclesHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingVehiclesHandler(db);
+        var handler = new FindMatchingVehiclesHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingVehiclesCommand
@@ -730,12 +733,6 @@ public class FindMatchingVehiclesHandlerTests
                 "User");
 
         Assert.Equal(
-            user.Id,
-            GetProperty<Guid>(
-                transporterUser,
-                "Id"));
-
-        Assert.Equal(
             "John",
             GetProperty<string>(
                 transporterUser,
@@ -753,12 +750,6 @@ public class FindMatchingVehiclesHandlerTests
                 "Company");
 
         Assert.NotNull(transporterCompany);
-
-        Assert.Equal(
-            company.Id,
-            GetProperty<Guid>(
-                transporterCompany,
-                "Id"));
 
         Assert.Equal(
             "Transport Company",
@@ -800,7 +791,9 @@ public class FindMatchingVehiclesHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingVehiclesHandler(db);
+        var handler = new FindMatchingVehiclesHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingVehiclesCommand
@@ -853,7 +846,9 @@ public class FindMatchingVehiclesHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingVehiclesHandler(db);
+        var handler = new FindMatchingVehiclesHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingVehiclesCommand
@@ -861,9 +856,6 @@ public class FindMatchingVehiclesHandlerTests
                 TransportRequestId = request.Id
             });
 
-        // Comportamiento actual del handler:
-        // AvailableTo >= request.DeliveryDate
-        // cuando DeliveryDate es null.
         Assert.Empty(GetMatches(result));
     }
 
@@ -888,7 +880,9 @@ public class FindMatchingVehiclesHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new FindMatchingVehiclesHandler(db);
+        var handler = new FindMatchingVehiclesHandler(
+            db,
+            new MockCurrentUserService(request.CustomerId));
 
         var result = await handler.Handle(
             new FindMatchingVehiclesCommand
@@ -898,10 +892,6 @@ public class FindMatchingVehiclesHandlerTests
 
         Assert.Empty(GetMatches(result));
     }
-
-    // =========================================================
-    // Helpers
-    // =========================================================
 
     private static async Task<TransportRequest> CreateValidRequest(
         TestDbContext db)

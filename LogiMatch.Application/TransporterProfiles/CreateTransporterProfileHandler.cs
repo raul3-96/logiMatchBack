@@ -1,4 +1,5 @@
-﻿using LogiMatch.Domain.Entities;
+﻿using LogiMatch.Application.Common.Interfaces;
+using LogiMatch.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace LogiMatch.Application.TransporterProfiles;
@@ -6,32 +7,37 @@ namespace LogiMatch.Application.TransporterProfiles;
 public class CreateTransporterProfileHandler
 {
     private readonly IApplicationDbContext _dbContext;
+    private readonly ICurrentUserService _currentUserService;
 
     public CreateTransporterProfileHandler(
-        IApplicationDbContext dbContext)
+        IApplicationDbContext dbContext,
+        ICurrentUserService currentUserService)
     {
         _dbContext = dbContext;
+        _currentUserService = currentUserService;
     }
 
     public async Task<Guid> Handle(
         CreateTransporterProfileCommand command)
     {
+        var userId = _currentUserService.UserId;
+
         var userExists = await _dbContext.Users
-            .AnyAsync(x => x.Id == command.UserId);
+            .AnyAsync(x => x.Id == userId);
 
         if (!userExists)
             throw new InvalidOperationException(
-                "The specified user does not exist.");
+                "The user does not exist.");
 
         var profileExists = await _dbContext.TransporterProfiles
-            .AnyAsync(x => x.UserId == command.UserId);
+            .AnyAsync(x => x.UserId == userId);
 
         if (profileExists)
             throw new InvalidOperationException(
                 "The user already has a transporter profile.");
 
         var profile = new TransporterProfile(
-            command.UserId,
+            userId,
             command.CompanyId);
 
         _dbContext.TransporterProfiles.Add(profile);

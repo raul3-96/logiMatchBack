@@ -1,4 +1,6 @@
-﻿using LogiMatch.Application.Matching;
+﻿using LogiMatch.Application.Common.Exceptions;
+using LogiMatch.Application.Common.Interfaces;
+using LogiMatch.Application.Matching;
 using LogiMatch.Application.Tests.Common;
 using LogiMatch.Domain.Entities;
 using LogiMatch.Domain.Enums;
@@ -12,9 +14,10 @@ public class CancelTripCargoHandlerTests
     public async Task Handle_ShouldThrow_WhenTripCargoDoesNotExist()
     {
         var db = await CreateValidDatabase();
-        var handler = new CancelTripCargoHandler(db);
+        var currentUserService = new MockCurrentUserService(Guid.NewGuid());
+        var handler = new CancelTripCargoHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
             () => handler.Handle(Guid.NewGuid()));
 
         Assert.Equal(
@@ -26,6 +29,7 @@ public class CancelTripCargoHandlerTests
     public async Task Handle_ShouldThrow_WhenTripDoesNotExist()
     {
         var db = await CreateValidDatabase();
+        var currentUserService = new MockCurrentUserService(Guid.NewGuid());
 
         var request = await CreateValidRequest(db);
         var tripCargo = new TripCargo(
@@ -37,9 +41,9 @@ public class CancelTripCargoHandlerTests
         db.TripCargos.Add(tripCargo);
         await db.SaveChangesAsync();
 
-        var handler = new CancelTripCargoHandler(db);
+        var handler = new CancelTripCargoHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
             () => handler.Handle(tripCargo.Id));
 
         Assert.Equal(
@@ -48,11 +52,39 @@ public class CancelTripCargoHandlerTests
     }
 
     [Fact]
+    public async Task Handle_ShouldThrow_WhenUserDoesNotOwnTheRequest()
+    {
+        var db = await CreateValidDatabase();
+        var otherUserId = Guid.NewGuid();
+        var currentUserService = new MockCurrentUserService(otherUserId);
+
+        var request = await CreateValidRequest(db);
+        var trip = CreateTrip(db);
+
+        var tripCargo = CreateReservedTripCargo(trip, request, 100m, 1m);
+
+        db.Trips.Add(trip);
+        db.TripCargos.Add(tripCargo);
+        await db.SaveChangesAsync();
+
+        var handler = new CancelTripCargoHandler(db, currentUserService);
+
+        var exception = await Assert.ThrowsAsync<ConflictException>(
+            () => handler.Handle(tripCargo.Id));
+
+        Assert.Equal(
+            "You do not have permission to cancel this trip cargo.",
+            exception.Message);
+    }
+
+    [Fact]
     public async Task Handle_ShouldThrow_WhenTripIsNotPublished()
     {
         var db = await CreateValidDatabase();
-
         var request = await CreateValidRequest(db);
+        
+        var currentUserService = new MockCurrentUserService(request.CustomerId);
+
         var trip = CreateTrip(db);
         trip.Start();
 
@@ -62,9 +94,9 @@ public class CancelTripCargoHandlerTests
         db.TripCargos.Add(tripCargo);
         await db.SaveChangesAsync();
 
-        var handler = new CancelTripCargoHandler(db);
+        var handler = new CancelTripCargoHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(tripCargo.Id));
 
         Assert.Equal(
@@ -76,6 +108,7 @@ public class CancelTripCargoHandlerTests
     public async Task Handle_ShouldThrow_WhenRequestDoesNotExist()
     {
         var db = await CreateValidDatabase();
+        var currentUserService = new MockCurrentUserService(Guid.NewGuid());
 
         var trip = CreateTrip(db);
         var tripCargo = new TripCargo(
@@ -88,9 +121,9 @@ public class CancelTripCargoHandlerTests
         db.TripCargos.Add(tripCargo);
         await db.SaveChangesAsync();
 
-        var handler = new CancelTripCargoHandler(db);
+        var handler = new CancelTripCargoHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
             () => handler.Handle(tripCargo.Id));
 
         Assert.Equal(
@@ -111,6 +144,8 @@ public class CancelTripCargoHandlerTests
         var request = await CreateValidRequest(db);
         SetRequestStatus(request, status);
 
+        var currentUserService = new MockCurrentUserService(request.CustomerId);
+
         var trip = CreateTrip(db);
         var tripCargo = CreateReservedTripCargo(trip, request, 100m, 1m);
 
@@ -119,9 +154,9 @@ public class CancelTripCargoHandlerTests
         db.TripCargos.Add(tripCargo);
         await db.SaveChangesAsync();
 
-        var handler = new CancelTripCargoHandler(db);
+        var handler = new CancelTripCargoHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(tripCargo.Id));
 
         Assert.Equal(
@@ -135,6 +170,7 @@ public class CancelTripCargoHandlerTests
         var db = await CreateValidDatabase();
 
         var request = await CreateValidRequest(db);
+        var currentUserService = new MockCurrentUserService(request.CustomerId);
 
         var trip = CreateTrip(
             db,
@@ -157,7 +193,7 @@ public class CancelTripCargoHandlerTests
         db.TransportRequests.Update(request);
         await db.SaveChangesAsync();
 
-        var handler = new CancelTripCargoHandler(db);
+        var handler = new CancelTripCargoHandler(db, currentUserService);
 
         await handler.Handle(tripCargo.Id);
 
@@ -186,6 +222,8 @@ public class CancelTripCargoHandlerTests
         var db = await CreateValidDatabase();
 
         var request = await CreateValidRequest(db);
+        var currentUserService = new MockCurrentUserService(request.CustomerId);
+        
         request.AssignToTrip();
 
         var trip = CreateTrip(db);
@@ -203,9 +241,9 @@ public class CancelTripCargoHandlerTests
         db.TripCargos.Add(tripCargo);
         await db.SaveChangesAsync();
 
-        var handler = new CancelTripCargoHandler(db);
+        var handler = new CancelTripCargoHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(tripCargo.Id));
 
         Assert.Equal(
@@ -219,6 +257,8 @@ public class CancelTripCargoHandlerTests
         var db = await CreateValidDatabase();
 
         var request = await CreateValidRequest(db);
+        var currentUserService = new MockCurrentUserService(request.CustomerId);
+        
         request.AssignToTrip();
 
         var trip = CreateTrip(db);
@@ -235,7 +275,7 @@ public class CancelTripCargoHandlerTests
         db.TripCargos.Add(tripCargo);
         await db.SaveChangesAsync();
 
-        var handler = new CancelTripCargoHandler(db);
+        var handler = new CancelTripCargoHandler(db, currentUserService);
 
         await handler.Handle(tripCargo.Id);
 
@@ -243,8 +283,8 @@ public class CancelTripCargoHandlerTests
         Assert.Equal(5m, trip.AvailableVolumeM3);
 
         // El segundo intento debe fallar antes de liberar capacidad.
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-        async () => await handler.Handle(tripCargo.Id));
+        var exception = await Assert.ThrowsAsync<ConflictException>(
+            () => handler.Handle(tripCargo.Id));
 
         Assert.Equal(
             "Only accepted transport requests can have a reserved trip cargo cancelled.",
@@ -260,6 +300,8 @@ public class CancelTripCargoHandlerTests
         var db = await CreateValidDatabase();
 
         var request = await CreateValidRequest(db);
+        var currentUserService = new MockCurrentUserService(request.CustomerId);
+        
         request.AssignToTrip();
 
         var trip = CreateTrip(db);
@@ -278,11 +320,11 @@ public class CancelTripCargoHandlerTests
         db.TripCargos.Add(tripCargo);
         await db.SaveChangesAsync();
 
-        var handler = new CancelTripCargoHandler(db);
+        var handler = new CancelTripCargoHandler(db, currentUserService);
 
         // El Trip no está publicado, por lo que el handler debe detenerse antes
         // de intentar cancelar el TripCargo.
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(tripCargo.Id));
 
         Assert.Equal(
@@ -300,6 +342,8 @@ public class CancelTripCargoHandlerTests
         var db = await CreateValidDatabase();
 
         var request = await CreateValidRequest(db);
+        var currentUserService = new MockCurrentUserService(request.CustomerId);
+        
         request.AssignToTrip();
 
         var trip = CreateTrip(db);
@@ -327,7 +371,7 @@ public class CancelTripCargoHandlerTests
         db.TripCargos.AddRange(previousCargo, currentCargo);
         await db.SaveChangesAsync();
 
-        var handler = new CancelTripCargoHandler(db);
+        var handler = new CancelTripCargoHandler(db, currentUserService);
 
         await handler.Handle(currentCargo.Id);
 

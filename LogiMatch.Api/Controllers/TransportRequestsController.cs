@@ -1,9 +1,11 @@
 ﻿using LogiMatch.Application.TransportRequests;
 using LogiMatch.Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LogiMatch.Api.Controllers;
 
+[Authorize]
 [ApiController]
 [Route("api/transport-requests")]
 public class TransportRequestsController : ControllerBase

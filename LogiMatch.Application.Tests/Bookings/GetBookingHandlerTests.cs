@@ -638,6 +638,64 @@ public class GetBookingHandlerTests
             offerType.GetProperty("EstimatedDeliveryDate")!.GetValue(offerResult));
     }
 
+    [Fact]
+    public async Task Handle_ShouldReturnNull_WhenCurrentUserIsAnotherTransporter()
+    {
+        var db = TestDbContextFactory.Create();
+
+        var customer = CreateUser("customer@example.com");
+        var transporterUser = CreateUser("transporter@example.com");
+        var otherTransporterUser = CreateUser("other-transporter@example.com");
+
+        var transporter = CreateTransporter(transporterUser.Id);
+        var otherTransporter = CreateTransporter(otherTransporterUser.Id);
+        var vehicle = CreateVehicle(transporter.Id);
+
+        var pickup = CreateLocation(
+            "Plaza de España",
+            "Sevilla",
+            "41013");
+
+        var delivery = CreateLocation(
+            "Puerta del Sol",
+            "Madrid",
+            "28013");
+
+        var request = CreateAcceptedRequest(
+            customer.Id,
+            pickup.Id,
+            delivery.Id);
+
+        var offer = CreateAcceptedOffer(
+            request.Id,
+            transporter.Id,
+            vehicle.Id);
+
+        var booking = new Booking(
+            request.Id,
+            offer.Id);
+
+        db.Users.Add(customer);
+        db.Users.Add(transporterUser);
+        db.Users.Add(otherTransporterUser);
+        db.TransporterProfiles.Add(transporter);
+        db.TransporterProfiles.Add(otherTransporter);
+        db.Vehicles.Add(vehicle);
+        db.Locations.Add(pickup);
+        db.Locations.Add(delivery);
+        db.TransportRequests.Add(request);
+        db.TransportOffers.Add(offer);
+        db.Bookings.Add(booking);
+
+        await db.SaveChangesAsync();
+
+        var handler = CreateHandler(db, otherTransporterUser.Id);
+
+        var result = await handler.Handle(booking.Id);
+
+        Assert.Null(result);
+    }
+
     private sealed class FakeCurrentUserService : ICurrentUserService
     {
         public FakeCurrentUserService(Guid userId)

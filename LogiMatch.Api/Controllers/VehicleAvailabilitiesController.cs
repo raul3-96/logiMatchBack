@@ -1,10 +1,12 @@
 ﻿using LogiMatch.Application.VehicleAvailabilities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LogiMatch.Api.Controllers;
 
 [ApiController]
 [Route("api/vehicle-availabilities")]
+[Authorize]
 public class VehicleAvailabilitiesController : ControllerBase
 {
     private readonly CreateVehicleAvailabilityHandler _createHandler;

@@ -1,3 +1,5 @@
+using LogiMatch.Application.Common.Interfaces;
+using LogiMatch.Application.TransporterProfiles;
 using Microsoft.EntityFrameworkCore;
 
 namespace LogiMatch.Application.TransporterProfiles;
@@ -5,57 +7,84 @@ namespace LogiMatch.Application.TransporterProfiles;
 public class GetTransporterProfileHandler
 {
     private readonly IApplicationDbContext _dbContext;
+    private readonly ICurrentUserService _currentUserService;
 
     public GetTransporterProfileHandler(
-        IApplicationDbContext dbContext)
+        IApplicationDbContext dbContext,
+        ICurrentUserService currentUserService)
     {
         _dbContext = dbContext;
+        _currentUserService = currentUserService;
     }
 
-    public async Task<object?> Handle(Guid id)
+    public async Task<PublicTransporterProfileDto?> Handle(Guid id)
     {
-        var profile = await _dbContext.TransporterProfiles
+        return await _dbContext.TransporterProfiles
             .Where(x => x.Id == id)
-            .Select(x => new
+            .Select(tp => new PublicTransporterProfileDto
             {
-                x.Id,
-                x.UserId,
-                x.CompanyId,
-                x.CreatedAt,
-
-                User = _dbContext.Users
-                    .Where(u => u.Id == x.UserId)
-                    .Select(u => new
-                    {
-                        u.Id,
-                        u.Email,
-                        u.FirstName,
-                        u.LastName,
-                        u.Phone,
-                        u.Status
-                    })
-                    .FirstOrDefault(),
-
-                Company = x.CompanyId == null
+                Id = tp.Id,
+                FirstName = _dbContext.Users
+                    .Where(u => u.Id == tp.UserId)
+                    .Select(u => u.FirstName)
+                    .FirstOrDefault() ?? string.Empty,
+                LastName = _dbContext.Users
+                    .Where(u => u.Id == tp.UserId)
+                    .Select(u => u.LastName)
+                    .FirstOrDefault() ?? string.Empty,
+                CompanyName = tp.CompanyId == null
                     ? null
                     : _dbContext.Companies
-                        .Where(c => c.Id == x.CompanyId)
-                        .Select(c => new
-                        {
-                            c.Id,
-                            c.Name,
-                            c.TaxId,
-                            c.Email,
-                            c.Phone
-                        })
-                        .FirstOrDefault()
+                        .Where(c => c.Id == tp.CompanyId)
+                        .Select(c => c.Name)
+                        .FirstOrDefault(),
+                CreatedAt = tp.CreatedAt
             })
             .FirstOrDefaultAsync();
-
-        return profile;
     }
 
-    public async Task<object> HandleAll(
+    public async Task<DetailedTransporterProfileDto?> HandleDetailed(Guid id)
+    {
+        return await _dbContext.TransporterProfiles
+            .Where(x => x.Id == id)
+            .Select(tp => new DetailedTransporterProfileDto
+            {
+                Id = tp.Id,
+                UserId = tp.UserId,
+                FirstName = _dbContext.Users
+                    .Where(u => u.Id == tp.UserId)
+                    .Select(u => u.FirstName)
+                    .FirstOrDefault() ?? string.Empty,
+                LastName = _dbContext.Users
+                    .Where(u => u.Id == tp.UserId)
+                    .Select(u => u.LastName)
+                    .FirstOrDefault() ?? string.Empty,
+                Email = _dbContext.Users
+                    .Where(u => u.Id == tp.UserId)
+                    .Select(u => u.Email)
+                    .FirstOrDefault() ?? string.Empty,
+                Phone = _dbContext.Users
+                    .Where(u => u.Id == tp.UserId)
+                    .Select(u => u.Phone)
+                    .FirstOrDefault(),
+                CompanyName = tp.CompanyId == null
+                    ? null
+                    : _dbContext.Companies
+                        .Where(c => c.Id == tp.CompanyId)
+                        .Select(c => c.Name)
+                        .FirstOrDefault(),
+                TaxId = tp.CompanyId == null
+                    ? null
+                    : _dbContext.Companies
+                        .Where(c => c.Id == tp.CompanyId)
+                        .Select(c => c.TaxId)
+                        .FirstOrDefault(),
+                CreatedAt = tp.CreatedAt
+            })
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<List<PublicTransporterProfileDto>> HandleAll(
         Guid? userId = null,
         Guid? companyId = null)
     {
@@ -71,41 +100,27 @@ public class GetTransporterProfileHandler
             query = query.Where(x => x.CompanyId == companyId.Value);
         }
 
-        var profiles = await query
-            .Select(x => new
+        return await query
+            .Select(tp => new PublicTransporterProfileDto
             {
-                x.Id,
-                x.UserId,
-                x.CompanyId,
-                x.CreatedAt,
-
-                User = _dbContext.Users
-                    .Where(u => u.Id == x.UserId)
-                    .Select(u => new
-                    {
-                        u.Id,
-                        u.Email,
-                        u.FirstName,
-                        u.LastName,
-                        u.Phone
-                    })
-                    .FirstOrDefault(),
-
-                Company = x.CompanyId == null
+                Id = tp.Id,
+                FirstName = _dbContext.Users
+                    .Where(u => u.Id == tp.UserId)
+                    .Select(u => u.FirstName)
+                    .FirstOrDefault() ?? string.Empty,
+                LastName = _dbContext.Users
+                    .Where(u => u.Id == tp.UserId)
+                    .Select(u => u.LastName)
+                    .FirstOrDefault() ?? string.Empty,
+                CompanyName = tp.CompanyId == null
                     ? null
                     : _dbContext.Companies
-                        .Where(c => c.Id == x.CompanyId)
-                        .Select(c => new
-                        {
-                            c.Id,
-                            c.Name,
-                            c.TaxId
-                        })
-                        .FirstOrDefault()
+                        .Where(c => c.Id == tp.CompanyId)
+                        .Select(c => c.Name)
+                        .FirstOrDefault(),
+                CreatedAt = tp.CreatedAt
             })
             .OrderByDescending(x => x.CreatedAt)
             .ToListAsync();
-
-        return profiles;
     }
 }

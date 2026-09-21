@@ -1,4 +1,6 @@
-﻿using LogiMatch.Application;
+﻿using LogiMatch.Application.Common.Exceptions;
+using LogiMatch.Application.Common.Interfaces;
+using LogiMatch.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace LogiMatch.Application.Matching;
@@ -6,10 +8,14 @@ namespace LogiMatch.Application.Matching;
 public class FindMatchingVehiclesHandler
 {
     private readonly IApplicationDbContext _dbContext;
+    private readonly ICurrentUserService _currentUserService;
 
-    public FindMatchingVehiclesHandler(IApplicationDbContext dbContext)
+    public FindMatchingVehiclesHandler(
+        IApplicationDbContext dbContext,
+        ICurrentUserService currentUserService)
     {
         _dbContext = dbContext;
+        _currentUserService = currentUserService;
     }
 
     public async Task<object> Handle(
@@ -19,21 +25,27 @@ public class FindMatchingVehiclesHandler
             .FirstOrDefaultAsync(x => x.Id == command.TransportRequestId);
 
         if (request == null)
-            throw new InvalidOperationException(
+            throw new NotFoundException(
                 "The specified transport request does not exist.");
+
+        if (request.CustomerId != _currentUserService.UserId)
+            throw new ConflictException(
+                "You do not have permission to search vehicles for this transport request.");
 
         var cargos = await _dbContext.Cargos
             .Where(x => x.TransportRequestId == request.Id)
             .ToListAsync();
 
         if (!cargos.Any())
-            throw new InvalidOperationException(
+            throw new ConflictException(
                 "The transport request has no cargo.");
 
         var totalWeight = cargos.Sum(x => x.WeightKg);
         var totalVolume = cargos.Sum(x => x.VolumeM3);
+
         var requiresRefrigeration =
             cargos.Any(x => x.RequiresRefrigeration);
+
         var requiresTailLift =
             cargos.Any(x => x.RequiresTailLift);
 
@@ -57,34 +69,24 @@ public class FindMatchingVehiclesHandler
                     x.Type,
                     x.Brand,
                     x.Model,
-                    x.LicensePlate
-                },
-
-                Capacity = new
-                {
-                    WeightKg = x.MaxWeightKg,
-                    VolumeM3 = x.MaxVolumeM3
-                },
-
-                Requirements = new
-                {
-                    HasTailLift = x.HasTailLift,
-                    IsRefrigerated = x.IsRefrigerated
+                    x.MaxWeightKg,
+                    x.MaxVolumeM3,
+                    x.HasTailLift,
+                    x.IsRefrigerated
                 },
 
                 Transporter = _dbContext.TransporterProfiles
                     .Where(tp => tp.Id == x.TransporterProfileId)
                     .Select(tp => new
                     {
+                        tp.Id,
+
                         User = _dbContext.Users
                             .Where(u => u.Id == tp.UserId)
                             .Select(u => new
                             {
-                                u.Id,
                                 u.FirstName,
-                                u.LastName,
-                                u.Email,
-                                u.Phone
+                                u.LastName
                             })
                             .FirstOrDefault(),
 
@@ -94,9 +96,7 @@ public class FindMatchingVehiclesHandler
                                 .Where(c => c.Id == tp.CompanyId)
                                 .Select(c => new
                                 {
-                                    c.Id,
-                                    c.Name,
-                                    c.TaxId
+                                    c.Name
                                 })
                                 .FirstOrDefault()
                     })

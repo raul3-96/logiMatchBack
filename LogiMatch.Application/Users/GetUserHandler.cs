@@ -1,5 +1,4 @@
-using LogiMatch.Domain;
-using LogiMatch.Domain.Enums;
+using LogiMatch.Application.Common.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace LogiMatch.Application.Users;
@@ -7,16 +6,20 @@ namespace LogiMatch.Application.Users;
 public class GetUserHandler
 {
     private readonly IApplicationDbContext _dbContext;
+    private readonly ICurrentUserService _currentUserService;
 
-    public GetUserHandler(IApplicationDbContext dbContext)
+    public GetUserHandler(
+        IApplicationDbContext dbContext,
+        ICurrentUserService currentUserService)
     {
         _dbContext = dbContext;
+        _currentUserService = currentUserService;
     }
 
-    public async Task<object?> Handle(Guid id)
+    public async Task<object?> HandleMe()
     {
         var user = await _dbContext.Users
-            .Where(x => x.Id == id)
+            .Where(x => x.Id == _currentUserService.UserId)
             .Select(x => new
             {
                 x.Id,
@@ -30,32 +33,5 @@ public class GetUserHandler
             .FirstOrDefaultAsync();
 
         return user;
-    }
-
-    public async Task<object> HandleAll(UserStatus? status = null)
-    {
-        var query = _dbContext.Users.AsQueryable();
-
-        if (status.HasValue)
-        {
-            query = query.Where(x => x.Status == status.Value);
-        }
-
-        var users = await query
-            .Select(x => new
-            {
-                x.Id,
-                x.Email,
-                x.FirstName,
-                x.LastName,
-                x.Phone,
-                x.CreatedAt,
-                x.Status
-            })
-            .OrderBy(x => x.FirstName)
-            .ThenBy(x => x.LastName)
-            .ToListAsync();
-
-        return users;
     }
 }

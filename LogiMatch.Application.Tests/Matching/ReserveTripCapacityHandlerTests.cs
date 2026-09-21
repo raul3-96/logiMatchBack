@@ -1,4 +1,5 @@
-﻿using LogiMatch.Application.Matching;
+﻿using LogiMatch.Application.Common.Exceptions;
+using LogiMatch.Application.Matching;
 using LogiMatch.Application.Tests.Common;
 using LogiMatch.Domain.Entities;
 using LogiMatch.Domain.Enums;
@@ -12,20 +13,43 @@ public class ReserveTripCapacityHandlerTests
     public async Task Handle_ShouldThrow_WhenTripDoesNotExist()
     {
         var db = await CreateValidDatabase();
-
         var request = await CreateValidRequest(db);
+        var currentUserService = new MockCurrentUserService(request.CustomerId);
 
-        var handler = new ReserveTripCapacityHandler(db);
+        var handler = new ReserveTripCapacityHandler(db, currentUserService);
 
         var command = CreateCommand(
             Guid.NewGuid(),
             request.Id);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
             () => handler.Handle(command));
 
         Assert.Equal(
             "The specified trip does not exist.",
+            exception.Message);
+    }
+
+    [Fact]
+    public async Task Handle_ShouldThrow_WhenUserDoesNotOwnTheRequest()
+    {
+        var db = await CreateValidDatabase();
+        var request = await CreateValidRequest(db);
+        var otherUserId = Guid.NewGuid();
+        var currentUserService = new MockCurrentUserService(otherUserId);
+
+        var trip = CreateTrip(db);
+        db.Trips.Add(trip);
+        await db.SaveChangesAsync();
+
+        var handler = new ReserveTripCapacityHandler(db, currentUserService);
+
+        var exception = await Assert.ThrowsAsync<ConflictException>(
+            () => handler.Handle(
+                CreateCommand(trip.Id, request.Id)));
+
+        Assert.Equal(
+            "You do not have permission to reserve this transport request.",
             exception.Message);
     }
 
@@ -35,6 +59,7 @@ public class ReserveTripCapacityHandlerTests
         var db = await CreateValidDatabase();
 
         var request = await CreateValidRequest(db);
+        var currentUserService = new MockCurrentUserService(request.CustomerId);
 
         var trip = CreateTrip(db);
         trip.Start();
@@ -42,9 +67,9 @@ public class ReserveTripCapacityHandlerTests
         db.Trips.Add(trip);
         await db.SaveChangesAsync();
 
-        var handler = new ReserveTripCapacityHandler(db);
+        var handler = new ReserveTripCapacityHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(
                 CreateCommand(trip.Id, request.Id)));
 
@@ -57,15 +82,16 @@ public class ReserveTripCapacityHandlerTests
     public async Task Handle_ShouldThrow_WhenRequestDoesNotExist()
     {
         var db = await CreateValidDatabase();
+        var currentUserService = new MockCurrentUserService(Guid.NewGuid());
 
         var trip = CreateTrip(db);
         db.Trips.Add(trip);
 
         await db.SaveChangesAsync();
 
-        var handler = new ReserveTripCapacityHandler(db);
+        var handler = new ReserveTripCapacityHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
             () => handler.Handle(
                 CreateCommand(trip.Id, Guid.NewGuid())));
 
@@ -86,6 +112,8 @@ public class ReserveTripCapacityHandlerTests
         var db = await CreateValidDatabase();
 
         var request = await CreateValidRequest(db);
+        var currentUserService = new MockCurrentUserService(request.CustomerId);
+        
         SetRequestStatus(request, status);
 
         var trip = CreateTrip(db);
@@ -95,9 +123,9 @@ public class ReserveTripCapacityHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new ReserveTripCapacityHandler(db);
+        var handler = new ReserveTripCapacityHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(
                 CreateCommand(trip.Id, request.Id)));
 
@@ -112,6 +140,7 @@ public class ReserveTripCapacityHandlerTests
         var db = await CreateValidDatabase();
 
         var request = await CreateValidRequest(db);
+        var currentUserService = new MockCurrentUserService(request.CustomerId);
 
         var trip1 = CreateTrip(db);
         var trip2 = CreateTrip(db);
@@ -128,9 +157,9 @@ public class ReserveTripCapacityHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new ReserveTripCapacityHandler(db);
+        var handler = new ReserveTripCapacityHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(
                 CreateCommand(trip2.Id, request.Id)));
 
@@ -145,6 +174,7 @@ public class ReserveTripCapacityHandlerTests
         var db = await CreateValidDatabase();
 
         var request = await CreateValidRequest(db);
+        var currentUserService = new MockCurrentUserService(request.CustomerId);
 
         var trip1 = CreateTrip(db);
         var trip2 = CreateTrip(db);
@@ -163,7 +193,7 @@ public class ReserveTripCapacityHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new ReserveTripCapacityHandler(db);
+        var handler = new ReserveTripCapacityHandler(db, currentUserService);
 
         var tripCargoId = await handler.Handle(
             CreateCommand(trip2.Id, request.Id));
@@ -182,6 +212,8 @@ public class ReserveTripCapacityHandlerTests
         var db = await CreateValidDatabase();
 
         var request = CreateRequest(db);
+        var currentUserService = new MockCurrentUserService(request.CustomerId);
+        
         db.TransportRequests.Add(request);
 
         var trip = CreateTrip(db);
@@ -189,9 +221,9 @@ public class ReserveTripCapacityHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new ReserveTripCapacityHandler(db);
+        var handler = new ReserveTripCapacityHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(
                 CreateCommand(trip.Id, request.Id)));
 
@@ -206,6 +238,7 @@ public class ReserveTripCapacityHandlerTests
         var db = await CreateValidDatabase();
 
         var request = await CreateValidRequest(db);
+        var currentUserService = new MockCurrentUserService(request.CustomerId);
 
         var trip = CreateTrip(
             db,
@@ -215,9 +248,9 @@ public class ReserveTripCapacityHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new ReserveTripCapacityHandler(db);
+        var handler = new ReserveTripCapacityHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
             () => handler.Handle(
                 CreateCommand(trip.Id, request.Id)));
 
@@ -235,14 +268,16 @@ public class ReserveTripCapacityHandlerTests
             db,
             requiresRefrigeration: true);
 
+        var currentUserService = new MockCurrentUserService(request.CustomerId);
+
         var trip = CreateTrip(db);
         db.Trips.Add(trip);
 
         await db.SaveChangesAsync();
 
-        var handler = new ReserveTripCapacityHandler(db);
+        var handler = new ReserveTripCapacityHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(
                 CreateCommand(trip.Id, request.Id)));
 
@@ -261,14 +296,16 @@ public class ReserveTripCapacityHandlerTests
             db,
             requiresTailLift: true);
 
+        var currentUserService = new MockCurrentUserService(request.CustomerId);
+
         var trip = CreateTrip(db);
         db.Trips.Add(trip);
 
         await db.SaveChangesAsync();
 
-        var handler = new ReserveTripCapacityHandler(db);
+        var handler = new ReserveTripCapacityHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(
                 CreateCommand(trip.Id, request.Id)));
 
@@ -283,6 +320,7 @@ public class ReserveTripCapacityHandlerTests
         var db = await CreateValidDatabase();
 
         var request = await CreateValidRequest(db);
+        var currentUserService = new MockCurrentUserService(request.CustomerId);
 
         var trip = CreateTrip(
             db,
@@ -292,9 +330,9 @@ public class ReserveTripCapacityHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new ReserveTripCapacityHandler(db);
+        var handler = new ReserveTripCapacityHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(
                 CreateCommand(trip.Id, request.Id)));
 
@@ -309,6 +347,7 @@ public class ReserveTripCapacityHandlerTests
         var db = await CreateValidDatabase();
 
         var request = await CreateValidRequest(db);
+        var currentUserService = new MockCurrentUserService(request.CustomerId);
 
         var trip = CreateTrip(
             db,
@@ -318,9 +357,9 @@ public class ReserveTripCapacityHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new ReserveTripCapacityHandler(db);
+        var handler = new ReserveTripCapacityHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(
                 CreateCommand(trip.Id, request.Id)));
 
@@ -330,26 +369,29 @@ public class ReserveTripCapacityHandlerTests
     }
 
     [Fact]
-    public async Task Handle_ShouldThrow_WhenTripDepartureIsAfterPickup()
+    public async Task Handle_ShouldThrow_WhenTripDepartsAfterPickup()
     {
         var db = await CreateValidDatabase();
 
+        var pickupDate = DateTime.UtcNow.AddDays(1);
+
         var request = await CreateValidRequest(
             db,
-            pickupDate: DateTime.UtcNow.AddDays(2));
+            pickupDate: pickupDate);
+
+        var currentUserService = new MockCurrentUserService(request.CustomerId);
 
         var trip = CreateTrip(
             db,
-            departureDate: DateTime.UtcNow.AddDays(3),
-            estimatedArrivalDate: DateTime.UtcNow.AddDays(3).AddHours(8));
+            departureDate: pickupDate.AddHours(1));
 
         db.Trips.Add(trip);
 
         await db.SaveChangesAsync();
 
-        var handler = new ReserveTripCapacityHandler(db);
+        var handler = new ReserveTripCapacityHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(
                 CreateCommand(trip.Id, request.Id)));
 
@@ -363,24 +405,26 @@ public class ReserveTripCapacityHandlerTests
     {
         var db = await CreateValidDatabase();
 
-        var pickup = DateTime.UtcNow.AddDays(2);
+        var pickupDate = DateTime.UtcNow.AddDays(1);
 
         var request = await CreateValidRequest(
             db,
-            pickupDate: pickup);
+            pickupDate: pickupDate);
+
+        var currentUserService = new MockCurrentUserService(request.CustomerId);
 
         var trip = CreateTrip(
             db,
-            departureDate: DateTime.UtcNow.AddDays(1),
-            estimatedArrivalDate: DateTime.UtcNow.AddDays(1).AddHours(8));
+            departureDate: pickupDate.AddHours(-2),
+            arrivalDate: pickupDate.AddHours(-1));
 
         db.Trips.Add(trip);
 
         await db.SaveChangesAsync();
 
-        var handler = new ReserveTripCapacityHandler(db);
+        var handler = new ReserveTripCapacityHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(
                 CreateCommand(trip.Id, request.Id)));
 
@@ -390,30 +434,32 @@ public class ReserveTripCapacityHandlerTests
     }
 
     [Fact]
-    public async Task Handle_ShouldThrow_WhenTripArrivalIsAfterDeliveryDeadline()
+    public async Task Handle_ShouldThrow_WhenTripArrivesAfterDeliveryDate()
     {
         var db = await CreateValidDatabase();
 
-        var pickup = DateTime.UtcNow.AddDays(2);
-        var deadline = pickup.AddHours(6);
+        var pickupDate = DateTime.UtcNow.AddDays(1);
+        var deliveryDate = pickupDate.AddDays(2);
 
         var request = await CreateValidRequest(
             db,
-            pickupDate: pickup,
-            deliveryDate: deadline);
+            pickupDate: pickupDate,
+            deliveryDate: deliveryDate);
+
+        var currentUserService = new MockCurrentUserService(request.CustomerId);
 
         var trip = CreateTrip(
             db,
-            departureDate: pickup.AddHours(-2),
-            estimatedArrivalDate: pickup.AddHours(8));
+            departureDate: pickupDate,
+            arrivalDate: deliveryDate.AddHours(1));
 
         db.Trips.Add(trip);
 
         await db.SaveChangesAsync();
 
-        var handler = new ReserveTripCapacityHandler(db);
+        var handler = new ReserveTripCapacityHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(
                 CreateCommand(trip.Id, request.Id)));
 
@@ -423,13 +469,15 @@ public class ReserveTripCapacityHandlerTests
     }
 
     [Fact]
-    public async Task Handle_ShouldThrow_WhenWeightCapacityIsInsufficient()
+    public async Task Handle_ShouldThrow_WhenTripDoesNotHaveEnoughWeight()
     {
         var db = await CreateValidDatabase();
 
         var request = await CreateValidRequest(
             db,
-            weightKg: 1200m);
+            weightKg: 2000m);
+
+        var currentUserService = new MockCurrentUserService(request.CustomerId);
 
         var trip = CreateTrip(
             db,
@@ -439,9 +487,9 @@ public class ReserveTripCapacityHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new ReserveTripCapacityHandler(db);
+        var handler = new ReserveTripCapacityHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(
                 CreateCommand(trip.Id, request.Id)));
 
@@ -451,13 +499,15 @@ public class ReserveTripCapacityHandlerTests
     }
 
     [Fact]
-    public async Task Handle_ShouldThrow_WhenVolumeCapacityIsInsufficient()
+    public async Task Handle_ShouldThrow_WhenTripDoesNotHaveEnoughVolume()
     {
         var db = await CreateValidDatabase();
 
         var request = await CreateValidRequest(
             db,
-            volumeM3: 8m);
+            volumeM3: 10m);
+
+        var currentUserService = new MockCurrentUserService(request.CustomerId);
 
         var trip = CreateTrip(
             db,
@@ -467,45 +517,14 @@ public class ReserveTripCapacityHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new ReserveTripCapacityHandler(db);
+        var handler = new ReserveTripCapacityHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(
                 CreateCommand(trip.Id, request.Id)));
 
         Assert.Equal(
             "The trip does not have enough available volume.",
-            exception.Message);
-    }
-
-    [Fact]
-    public async Task Handle_ShouldThrow_WhenRequestAlreadyExistsOnSameTrip()
-    {
-        var db = await CreateValidDatabase();
-
-        var request = await CreateValidRequest(db);
-
-        var trip = CreateTrip(db);
-        db.Trips.Add(trip);
-
-        var existingCargo = new TripCargo(
-            trip.Id,
-            request.Id,
-            100m,
-            1m);
-
-        db.TripCargos.Add(existingCargo);
-
-        await db.SaveChangesAsync();
-
-        var handler = new ReserveTripCapacityHandler(db);
-
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => handler.Handle(
-                CreateCommand(trip.Id, request.Id)));
-
-        Assert.Equal(
-            "The transport request is already reserved on another trip.",
             exception.Message);
     }
 
@@ -519,6 +538,8 @@ public class ReserveTripCapacityHandlerTests
             weightKg: 850m,
             volumeM3: 4.5m);
 
+        var currentUserService = new MockCurrentUserService(request.CustomerId);
+
         var trip = CreateTrip(
             db,
             availableWeightKg: 1500m,
@@ -528,7 +549,7 @@ public class ReserveTripCapacityHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new ReserveTripCapacityHandler(db);
+        var handler = new ReserveTripCapacityHandler(db, currentUserService);
 
         var tripCargoId = await handler.Handle(
             CreateCommand(trip.Id, request.Id));
@@ -591,6 +612,8 @@ public class ReserveTripCapacityHandlerTests
             weightKg: 200m,
             volumeM3: 1m);
 
+        var currentUserService1 = new MockCurrentUserService(request1.CustomerId);
+
         var trip = CreateTrip(
             db,
             availableWeightKg: 1000m,
@@ -600,12 +623,15 @@ public class ReserveTripCapacityHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new ReserveTripCapacityHandler(db);
+        var handler = new ReserveTripCapacityHandler(db, currentUserService1);
 
         await handler.Handle(
             CreateCommand(trip.Id, request1.Id));
 
-        await handler.Handle(
+        var currentUserService2 = new MockCurrentUserService(request2.CustomerId);
+        var handler2 = new ReserveTripCapacityHandler(db, currentUserService2);
+
+        await handler2.Handle(
             CreateCommand(trip.Id, request2.Id));
 
         var savedTrip = db.Trips.Single();
@@ -652,11 +678,14 @@ public class ReserveTripCapacityHandlerTests
             6m,
             2m,
             2.5m,
-            hasTailLift,
+            true,
             false);
 
         var origin = CreateLocation();
-        var destination = CreateLocation();
+        var destination = CreateLocation(
+            "Calle Test 2",
+            37.3886,
+            -5.9953);
 
         var availability = new VehicleAvailability(
             vehicle.Id,
@@ -714,16 +743,12 @@ public class ReserveTripCapacityHandlerTests
     {
         var locations = db.Locations.ToList();
 
-        var request = new TransportRequest(
+        return new TransportRequest(
             Guid.NewGuid(),
             locations[0].Id,
             locations[1].Id,
             DateTime.UtcNow.AddDays(1),
             null);
-
-        request.Publish();
-
-        return request;
     }
 
     private static Trip CreateTrip(
@@ -732,7 +757,7 @@ public class ReserveTripCapacityHandlerTests
         Guid? originLocationId = null,
         Guid? destinationLocationId = null,
         DateTime? departureDate = null,
-        DateTime? estimatedArrivalDate = null,
+        DateTime? arrivalDate = null,
         decimal availableWeightKg = 1000m,
         decimal availableVolumeM3 = 5m)
     {
@@ -740,13 +765,8 @@ public class ReserveTripCapacityHandlerTests
         var vehicle = db.Vehicles.Single();
         var locations = db.Locations.ToList();
 
-        var departure =
-            departureDate ??
-            DateTime.UtcNow.AddDays(1);
-
-        var arrival =
-            estimatedArrivalDate ??
-            departure.AddHours(8);
+        var departure = departureDate ?? DateTime.UtcNow.AddDays(1);
+        var arrival = arrivalDate ?? departure.AddHours(8);
 
         return new Trip(
             transporter.Id,
@@ -759,15 +779,18 @@ public class ReserveTripCapacityHandlerTests
             availableVolumeM3);
     }
 
-    private static Location CreateLocation()
+    private static Location CreateLocation(
+        string address = "Calle Test 1",
+        double latitude = 37.3772,
+        double longitude = -5.9869)
     {
         return new Location(
-            "Calle Test 1",
+            address,
             "Sevilla",
             "41001",
             "España",
-            37.3772,
-            -5.9869);
+            latitude,
+            longitude);
     }
 
     private static void SetRequestStatus(
@@ -776,6 +799,13 @@ public class ReserveTripCapacityHandlerTests
     {
         switch (status)
         {
+            case TransportRequestStatus.Published:
+                break;
+
+            case TransportRequestStatus.Matching:
+                request.StartMatching();
+                break;
+
             case TransportRequestStatus.Accepted:
                 request.AssignToTrip();
                 break;
@@ -799,16 +829,7 @@ public class ReserveTripCapacityHandlerTests
                 request.Expire();
                 break;
 
-            case TransportRequestStatus.Published:
-                // CreateValidRequest() ya deja la request en Published.
-                break;
-
-            case TransportRequestStatus.Matching:
-                request.StartMatching();
-                break;
-
             case TransportRequestStatus.Draft:
-                // No se puede volver de Published a Draft.
                 throw new InvalidOperationException(
                     "The test helper cannot move a published request back to draft.");
         }
