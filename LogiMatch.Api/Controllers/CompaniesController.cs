@@ -1,5 +1,6 @@
-﻿using LogiMatch.Application.Companies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using LogiMatch.Application.Companies;
 
 namespace LogiMatch.Api.Controllers;
 
@@ -18,6 +19,7 @@ public class CompaniesController : ControllerBase
         _getHandler = getHandler;
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Create(
         CreateCompanyCommand command)
