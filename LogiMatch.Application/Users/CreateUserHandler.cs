@@ -1,4 +1,4 @@
-﻿using LogiMatch.Application.Common.Exceptions;
+using LogiMatch.Application.Common.Exceptions;
 using LogiMatch.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +9,6 @@ namespace LogiMatch.Application.Users;
 public class CreateUserHandler
 {
     private const int MinimumPasswordLength = 8;
-    private const string EmailUniqueConstraint = "UX_users_email";
 
     private readonly IApplicationDbContext _dbContext;
     private readonly PasswordHasher<User> _passwordHasher;
@@ -54,10 +53,8 @@ public class CreateUserHandler
         {
             await _dbContext.SaveChangesAsync();
         }
-        catch (DbUpdateException ex) when (IsEmailUniqueConstraintViolation(ex))
+        catch (DbUpdateException ex) when (IsUniqueEmailViolation(ex))
         {
-            // The pre-check is only an optimization. The database constraint
-            // is the source of truth when requests race during registration.
             throw new ConflictException(
                 "A user with the specified email already exists.");
         }
@@ -65,21 +62,13 @@ public class CreateUserHandler
         return user.Id;
     }
 
-    private static bool IsEmailUniqueConstraintViolation(DbUpdateException exception)
+    private static bool IsUniqueEmailViolation(DbUpdateException ex)
     {
-        for (var current = exception.InnerException;
-             current is not null;
-             current = current.InnerException)
-        {
-            if (current.Message.Contains(
-                    EmailUniqueConstraint,
-                    StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
-        }
+        var message = ex.InnerException?.Message ?? string.Empty;
 
-        return false;
+        return message.Contains("duplicate key value violates unique constraint", StringComparison.OrdinalIgnoreCase)
+            || message.Contains("UX_users_email", StringComparison.OrdinalIgnoreCase)
+            || message.Contains("users_email", StringComparison.OrdinalIgnoreCase);
     }
 
     private static void ValidatePassword(string password)
