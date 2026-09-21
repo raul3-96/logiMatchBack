@@ -1,4 +1,4 @@
-﻿using LogiMatch.Application.Common.Interfaces;
+using LogiMatch.Application.Common.Interfaces;
 using LogiMatch.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,7 +27,7 @@ public class CreateTransporterProfileHandler
 
         if (!userExists)
             throw new InvalidOperationException(
-                "The user does not exist.");
+                "The specified user does not exist.");
 
         var profileExists = await _dbContext.TransporterProfiles
             .AnyAsync(x => x.UserId == userId);
@@ -35,6 +35,20 @@ public class CreateTransporterProfileHandler
         if (profileExists)
             throw new InvalidOperationException(
                 "The user already has a transporter profile.");
+
+        if (command.CompanyId.HasValue)
+        {
+            var company = await _dbContext.Companies
+                .SingleOrDefaultAsync(x => x.Id == command.CompanyId.Value);
+
+            if (company == null)
+                throw new InvalidOperationException(
+                    "The specified company does not exist.");
+
+            if (company.OwnerUserId != userId)
+                throw new InvalidOperationException(
+                    "The user does not own the specified company.");
+        }
 
         var profile = new TransporterProfile(
             userId,
