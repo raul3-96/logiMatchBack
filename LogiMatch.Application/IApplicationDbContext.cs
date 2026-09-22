@@ -1,3 +1,4 @@
+// LogiMatch.Application/IApplicationDbContext.cs
 using LogiMatch.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -23,6 +24,5 @@ public interface IApplicationDbContext
     DatabaseFacade Database { get; }
     bool SupportsRowLocking => true;
 
-    Task<int> SaveChangesAsync(
-        CancellationToken cancellationToken = default);
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

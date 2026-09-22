@@ -1,3 +1,4 @@
+// LogiMatch.Infrastructure/Persistence/Configurations/CompanyConfiguration.cs
 using LogiMatch.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -41,10 +42,5 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
 
         builder.HasIndex(x => x.TaxId)
             .IsUnique();
-
-        builder.HasOne<User>()
-            .WithMany()
-            .HasForeignKey(x => x.OwnerUserId)
-            .OnDelete(DeleteBehavior.Restrict);
     }
 }

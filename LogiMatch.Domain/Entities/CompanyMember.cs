@@ -1,3 +1,4 @@
+// LogiMatch.Domain/Entities/CompanyMember.cs
 using LogiMatch.Domain.Enums;
 
 namespace LogiMatch.Domain.Entities;

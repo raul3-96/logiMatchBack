@@ -1,3 +1,4 @@
+// LogiMatch.Infrastructure/Persistence/Configurations/CompanyMemberConfiguration.cs
 using LogiMatch.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
