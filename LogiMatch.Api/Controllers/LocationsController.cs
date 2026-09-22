@@ -1,4 +1,5 @@
 ﻿using LogiMatch.Application.Locations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LogiMatch.Api.Controllers;
@@ -18,6 +19,7 @@ public class LocationsController : ControllerBase
         _getHandler = getHandler;
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> Create(
         CreateLocationCommand command)
@@ -29,6 +31,7 @@ public class LocationsController : ControllerBase
             new { id });
     }
 
+    [AllowAnonymous]
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> Get(Guid id)
     {

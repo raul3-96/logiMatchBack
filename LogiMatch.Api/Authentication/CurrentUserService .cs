@@ -1,5 +1,6 @@
-﻿using System.Security.Claims;
+﻿using LogiMatch.Application.Common.Exceptions;
 using LogiMatch.Application.Common.Interfaces;
+using System.Security.Claims;
 
 namespace LogiMatch.Api.Authentication;
 
@@ -22,7 +23,7 @@ public class CurrentUserService : ICurrentUserService
                 .FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (!Guid.TryParse(userId, out var id))
-                throw new UnauthorizedAccessException(
+                throw new UnauthorizedException(
                     "Authenticated user ID is missing.");
 
             return id;
