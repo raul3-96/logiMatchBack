@@ -34,6 +34,11 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
         builder.Property(x => x.CreatedAt)
             .IsRequired();
 
+        builder.HasOne<User>()
+            .WithMany()
+            .HasForeignKey(x => x.OwnerUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
         builder.HasIndex(x => x.TaxId)
             .IsUnique();
 
