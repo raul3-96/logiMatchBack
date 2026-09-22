@@ -1,4 +1,4 @@
-﻿using LogiMatch.Domain.Entities;
+using LogiMatch.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -28,10 +28,18 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
             .IsRequired()
             .HasMaxLength(30);
 
+        builder.Property(x => x.OwnerUserId)
+            .IsRequired();
+
         builder.Property(x => x.CreatedAt)
             .IsRequired();
 
         builder.HasIndex(x => x.TaxId)
             .IsUnique();
+
+        builder.HasOne<User>()
+            .WithMany()
+            .HasForeignKey(x => x.OwnerUserId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
