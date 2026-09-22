@@ -1,4 +1,5 @@
-﻿using LogiMatch.Domain.Entities;
+// LogiMatch.Application/IApplicationDbContext.cs
+using LogiMatch.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
@@ -8,6 +9,7 @@ public interface IApplicationDbContext
 {
     DbSet<User> Users { get; }
     DbSet<Company> Companies { get; }
+    DbSet<CompanyMember> CompanyMembers { get; }
     DbSet<Location> Locations { get; }
     DbSet<TransportRequest> TransportRequests { get; }
     DbSet<Cargo> Cargos { get; }
@@ -20,9 +22,7 @@ public interface IApplicationDbContext
     DbSet<Booking> Bookings { get; }
 
     DatabaseFacade Database { get; }
-    bool SupportsRowLocking => true; // Assuming PostgreSQL supports row locking
+    bool SupportsRowLocking => true;
 
-    Task<int> SaveChangesAsync(
-        CancellationToken cancellationToken = default);
-
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

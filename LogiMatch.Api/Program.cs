@@ -25,31 +25,26 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-/*AUTHENTICATION*/
+
 builder.Services.Configure<JwtSettings>(
     builder.Configuration.GetSection("Jwt"));
 
 var jwtSettings = builder.Configuration
     .GetSection("Jwt")
     .Get<JwtSettings>()
-    ?? throw new InvalidOperationException(
-        "JWT configuration is missing.");
+    ?? throw new InvalidOperationException("JWT configuration is missing.");
 
 if (string.IsNullOrWhiteSpace(jwtSettings.Issuer))
-    throw new InvalidOperationException(
-        "JWT Issuer is missing.");
+    throw new InvalidOperationException("JWT Issuer is missing.");
 
 if (string.IsNullOrWhiteSpace(jwtSettings.Audience))
-    throw new InvalidOperationException(
-        "JWT Audience is missing.");
+    throw new InvalidOperationException("JWT Audience is missing.");
 
 if (string.IsNullOrWhiteSpace(jwtSettings.SecretKey))
-    throw new InvalidOperationException(
-        "JWT SecretKey is missing.");
+    throw new InvalidOperationException("JWT SecretKey is missing.");
 
 if (jwtSettings.ExpirationMinutes <= 0)
-    throw new InvalidOperationException(
-        "JWT ExpirationMinutes is missing.");
+    throw new InvalidOperationException("JWT ExpirationMinutes is missing.");
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -71,7 +66,7 @@ builder.Services
     });
 
 builder.Services.AddAuthorization();
-/*FIN AUTHENTICATION*/
+
 builder.Services.AddDbContext<LogiMatchDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -113,6 +108,7 @@ builder.Services.AddScoped<CancelTripHandler>();
 builder.Services.AddScoped<ReserveTripCapacityHandler>();
 builder.Services.AddScoped<FindMatchingTripsHandler>();
 builder.Services.AddScoped<CreateCompanyHandler>();
+builder.Services.AddScoped<AddCompanyMemberHandler>();
 builder.Services.AddScoped<PasswordHasher<User>>();
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
 
@@ -158,6 +154,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+
 app.UseSwagger();
 app.UseSwaggerUI();
 

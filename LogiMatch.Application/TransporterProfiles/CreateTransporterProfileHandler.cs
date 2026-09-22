@@ -45,9 +45,16 @@ public class CreateTransporterProfileHandler
                 throw new InvalidOperationException(
                     "The specified company does not exist.");
 
-            if (company.OwnerUserId != userId)
+            var isOwner = company.OwnerUserId == userId;
+            var isActiveMember = await _dbContext.CompanyMembers
+                .AnyAsync(x =>
+                    x.CompanyId == company.Id &&
+                    x.UserId == userId &&
+                    x.IsActive);
+
+            if (!isOwner && !isActiveMember)
                 throw new InvalidOperationException(
-                    "The user does not own the specified company.");
+                    "The user is not an active member of the specified company.");
         }
 
         var profile = new TransporterProfile(
