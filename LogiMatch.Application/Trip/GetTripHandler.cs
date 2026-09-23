@@ -17,16 +17,49 @@ public class GetTripHandler
         _currentUserService = currentUserService;
     }
 
-    public async Task<object?> Handle(GetTripCommand command)
+    private async Task<IQueryable<Guid>> GetAllowedTransporterProfileIds()
     {
         var currentUserId = _currentUserService.UserId;
+
+        // Perfiles propios.
+        var ownProfiles = _dbContext.TransporterProfiles
+            .Where(x => x.UserId == currentUserId)
+            .Select(x => x.Id);
+
+        // Empresas cuyo propietario es el usuario actual.
+        var ownedCompanyIds = _dbContext.Companies
+            .Where(x => x.OwnerUserId == currentUserId)
+            .Select(x => x.Id);
+
+        // Empresas donde el usuario es Admin activo.
+        var adminCompanyIds = _dbContext.CompanyMembers
+            .Where(x =>
+                x.UserId == currentUserId &&
+                x.IsActive &&
+                x.Role == CompanyMemberRole.Admin)
+            .Select(x => x.CompanyId);
+
+        var manageableCompanyIds = ownedCompanyIds
+            .Union(adminCompanyIds);
+
+        // Perfiles pertenecientes a esas empresas.
+        var companyProfiles = _dbContext.TransporterProfiles
+            .Where(x =>
+                x.CompanyId.HasValue &&
+                manageableCompanyIds.Contains(x.CompanyId.Value))
+            .Select(x => x.Id);
+
+        return ownProfiles.Union(companyProfiles);
+    }
+
+    public async Task<object?> Handle(GetTripCommand command)
+    {
+        var allowedProfileIds = await GetAllowedTransporterProfileIds();
 
         var trip = await _dbContext.Trips
             .Where(x =>
                 x.Id == command.TripId &&
-                _dbContext.TransporterProfiles.Any(tp =>
-                    tp.Id == x.TransporterProfileId &&
-                    tp.UserId == currentUserId))
+                allowedProfileIds.Contains(x.TransporterProfileId))
             .Select(x => new
             {
                 x.Id,
@@ -110,13 +143,11 @@ public class GetTripHandler
         page = page < 1 ? 1 : page;
         pageSize = pageSize < 1 ? 20 : Math.Min(pageSize, 100);
 
-        var currentUserId = _currentUserService.UserId;
+        var allowedProfileIds = await GetAllowedTransporterProfileIds();
 
         var query = _dbContext.Trips
             .Where(x =>
-                _dbContext.TransporterProfiles.Any(tp =>
-                    tp.Id == x.TransporterProfileId &&
-                    tp.UserId == currentUserId));
+                allowedProfileIds.Contains(x.TransporterProfileId));
 
         if (transporterProfileId.HasValue)
         {
@@ -126,12 +157,14 @@ public class GetTripHandler
 
         if (vehicleId.HasValue)
         {
-            query = query.Where(x => x.VehicleId == vehicleId.Value);
+            query = query.Where(x =>
+                x.VehicleId == vehicleId.Value);
         }
 
         if (status.HasValue)
         {
-            query = query.Where(x => x.Status == status.Value);
+            query = query.Where(x =>
+                x.Status == status.Value);
         }
 
         var totalItems = await query.CountAsync();

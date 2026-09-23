@@ -52,4 +52,22 @@ public class CompanyMember
     {
         IsActive = true;
     }
+
+    public void PromoteToAdmin()
+    {
+        if (!IsActive)
+            throw new InvalidOperationException(
+                "An inactive company member cannot be promoted.");
+
+        Role = CompanyMemberRole.Admin;
+    }
+
+    public void DemoteToWorker()
+    {
+        if (!IsActive)
+            throw new InvalidOperationException(
+                "An inactive company member cannot be demoted.");
+
+        Role = CompanyMemberRole.Worker;
+    }
 }

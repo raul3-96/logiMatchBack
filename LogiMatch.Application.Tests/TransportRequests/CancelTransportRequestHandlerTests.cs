@@ -1,4 +1,5 @@
-﻿using LogiMatch.Application.Tests.Common;
+﻿using LogiMatch.Application.Common.Exceptions;
+using LogiMatch.Application.Tests.Common;
 using LogiMatch.Application.TransportRequests;
 using LogiMatch.Domain.Entities;
 using LogiMatch.Domain.Enums;
@@ -18,7 +19,7 @@ public class CancelTransportRequestHandlerTests
         var handler = new CancelTransportRequestHandler(db,new MockCurrentUserService(Guid.NewGuid()));
 
         // Act
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
             () => handler.Handle(Guid.NewGuid()));
 
         // Assert
@@ -33,7 +34,8 @@ public class CancelTransportRequestHandlerTests
         // Arrange
         await using var db = TestDbContextFactory.Create();
 
-        var request = CreateRequest();
+        var user = new MockCurrentUserService(Guid.NewGuid());
+        var request = CreateRequest(user.UserId);
         request.Publish();
         request.StartMatching();
         request.MarkOffersReceived();
@@ -43,10 +45,10 @@ public class CancelTransportRequestHandlerTests
         db.TransportRequests.Add(request);
         await db.SaveChangesAsync();
 
-        var handler = new CancelTransportRequestHandler(db, new MockCurrentUserService(Guid.NewGuid()));
+        var handler = new CancelTransportRequestHandler(db, user);
 
         // Act
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(request.Id));
 
         // Assert
@@ -61,7 +63,8 @@ public class CancelTransportRequestHandlerTests
         // Arrange
         await using var db = TestDbContextFactory.Create();
 
-        var request = CreateRequest();
+        var user = new MockCurrentUserService(Guid.NewGuid());
+        var request = CreateRequest(user.UserId);
         request.Publish();
         request.StartMatching();
         request.MarkOffersReceived();
@@ -72,10 +75,10 @@ public class CancelTransportRequestHandlerTests
         db.TransportRequests.Add(request);
         await db.SaveChangesAsync();
 
-        var handler = new CancelTransportRequestHandler(db, new MockCurrentUserService(Guid.NewGuid()));
+        var handler = new CancelTransportRequestHandler(db, user);
 
         // Act
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(request.Id));
 
         // Assert
@@ -90,17 +93,18 @@ public class CancelTransportRequestHandlerTests
         // Arrange
         await using var db = TestDbContextFactory.Create();
 
-        var request = CreateRequest();
+        var user = new MockCurrentUserService(Guid.NewGuid());
+        var request = CreateRequest(user.UserId);
         request.Publish();
         request.Cancel();
 
         db.TransportRequests.Add(request);
         await db.SaveChangesAsync();
 
-        var handler = new CancelTransportRequestHandler(db, new MockCurrentUserService(Guid.NewGuid()));
+        var handler = new CancelTransportRequestHandler(db, user);
 
         // Act
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(request.Id));
 
         // Assert
@@ -115,17 +119,18 @@ public class CancelTransportRequestHandlerTests
         // Arrange
         await using var db = TestDbContextFactory.Create();
 
-        var request = CreateRequest();
+        var user = new MockCurrentUserService(Guid.NewGuid());
+        var request = CreateRequest(user.UserId);
         request.Publish();
         request.Expire();
 
         db.TransportRequests.Add(request);
         await db.SaveChangesAsync();
 
-        var handler = new CancelTransportRequestHandler(db, new MockCurrentUserService(Guid.NewGuid()));
+        var handler = new CancelTransportRequestHandler(db, user);
 
         // Act
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(request.Id));
 
         // Assert
@@ -140,7 +145,8 @@ public class CancelTransportRequestHandlerTests
         // Arrange
         await using var db = TestDbContextFactory.Create();
 
-        var request = CreateRequest();
+        var user= new MockCurrentUserService(Guid.NewGuid());
+        var request = CreateRequest(user.UserId);
         request.Publish();
         request.StartMatching();
         request.MarkOffersReceived();
@@ -164,10 +170,10 @@ public class CancelTransportRequestHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new CancelTransportRequestHandler(db, new MockCurrentUserService(Guid.NewGuid()));
+        var handler = new CancelTransportRequestHandler(db, user);
 
         // Act
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(request.Id));
 
         // Assert
@@ -182,7 +188,8 @@ public class CancelTransportRequestHandlerTests
         // Arrange
         await using var db = TestDbContextFactory.Create();
 
-        var request = CreateRequest();
+        var user = new MockCurrentUserService(Guid.NewGuid());
+        var request = CreateRequest(user.UserId);
         request.Publish();
 
         var offer = new TransportOffer(
@@ -205,7 +212,7 @@ public class CancelTransportRequestHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new CancelTransportRequestHandler(db, new MockCurrentUserService(Guid.NewGuid()));
+        var handler = new CancelTransportRequestHandler(db, user);
 
         // Act
         await handler.Handle(request.Id);
@@ -222,7 +229,8 @@ public class CancelTransportRequestHandlerTests
         // Arrange
         await using var db = TestDbContextFactory.Create();
 
-        var request = CreateRequest();
+        var user= new MockCurrentUserService(Guid.NewGuid());
+        var request = CreateRequest(user.UserId);
         request.Publish();
         request.AssignToTrip();
 
@@ -237,10 +245,10 @@ public class CancelTransportRequestHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new CancelTransportRequestHandler(db, new MockCurrentUserService(Guid.NewGuid()));
+        var handler = new CancelTransportRequestHandler(db, user);
 
         // Act
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
             () => handler.Handle(request.Id));
 
         // Assert
@@ -255,7 +263,8 @@ public class CancelTransportRequestHandlerTests
         // Arrange
         await using var db = TestDbContextFactory.Create();
 
-        var request = CreateRequest();
+        var user = new MockCurrentUserService(Guid.NewGuid());
+        var request = CreateRequest(user.UserId);
         request.Publish();
         request.AssignToTrip();
 
@@ -274,10 +283,10 @@ public class CancelTransportRequestHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new CancelTransportRequestHandler(db, new MockCurrentUserService(Guid.NewGuid()));
+        var handler = new CancelTransportRequestHandler(db, user);
 
         // Act
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(request.Id));
 
         // Assert
@@ -292,13 +301,14 @@ public class CancelTransportRequestHandlerTests
         // Arrange
         await using var db = TestDbContextFactory.Create();
 
-        var request = CreateRequest();
+        var user = new MockCurrentUserService(Guid.NewGuid());
+        var request = CreateRequest(user.UserId);
         request.Publish();
 
         db.TransportRequests.Add(request);
         await db.SaveChangesAsync();
 
-        var handler = new CancelTransportRequestHandler(db, new MockCurrentUserService(Guid.NewGuid()));
+        var handler = new CancelTransportRequestHandler(db, user);
 
         // Act
         await handler.Handle(request.Id);
@@ -322,7 +332,8 @@ public class CancelTransportRequestHandlerTests
         // Arrange
         await using var db = TestDbContextFactory.Create();
 
-        var request = CreateRequest();
+        var user = new MockCurrentUserService(Guid.NewGuid());
+        var request = CreateRequest(user.UserId);
         request.Publish();
         request.AssignToTrip();
 
@@ -342,7 +353,7 @@ public class CancelTransportRequestHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new CancelTransportRequestHandler(db, new MockCurrentUserService(Guid.NewGuid()));
+        var handler = new CancelTransportRequestHandler(db, user);
 
         // Act
         await handler.Handle(request.Id);
@@ -389,7 +400,8 @@ public class CancelTransportRequestHandlerTests
         // Arrange
         await using var db = TestDbContextFactory.Create();
 
-        var request = CreateRequest();
+        var user = new MockCurrentUserService(Guid.NewGuid());
+        var request = CreateRequest(user.UserId);
         request.Publish();
 
         var trip = CreateTrip();
@@ -408,7 +420,7 @@ public class CancelTransportRequestHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new CancelTransportRequestHandler(db, new MockCurrentUserService(Guid.NewGuid()));
+        var handler = new CancelTransportRequestHandler(db, user);
 
         // Act
         await handler.Handle(request.Id);
@@ -431,9 +443,9 @@ public class CancelTransportRequestHandlerTests
             trip.AvailableVolumeM3);
     }
 
-    private static TransportRequest CreateRequest() =>
+    private static TransportRequest CreateRequest(Guid userId) =>
         new TransportRequest(
-            Guid.NewGuid(),
+            userId,
             Guid.NewGuid(),
             Guid.NewGuid(),
             DateTime.UtcNow.AddDays(2),

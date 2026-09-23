@@ -28,4 +28,6 @@ public class TestDbContext : DbContext, IApplicationDbContext
 
     public DatabaseFacade Database => base.Database;
     public bool SupportsRowLocking => false;
+
+    public DbSet<CompanyMember> CompanyMembers => Set<CompanyMember>();
 }

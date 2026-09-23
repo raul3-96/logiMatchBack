@@ -1,3 +1,4 @@
+using LogiMatch.Application.Common.Exceptions;
 using LogiMatch.Application.Tests.Common;
 using LogiMatch.Application.TransportRequests;
 using LogiMatch.Domain;
@@ -14,10 +15,11 @@ public class CreateTransportRequestHandlerTests
     public async Task Handle_WhenCustomerDoesNotExist_ShouldThrow()
     {
         using var db = TestDbContextFactory.Create();
-        var handler = new CreateTransportRequestHandler(db,new MockCurrentUserService(Guid.NewGuid()));
+        var user = new MockCurrentUserService(Guid.NewGuid());
+        var handler = new CreateTransportRequestHandler(db, user);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
-            () => handler.Handle(CreateCommand()));
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
+            () => handler.Handle(CreateCommand(user.UserId)));
 
         Assert.Equal(
             "The specified customer does not exist.",
@@ -29,15 +31,16 @@ public class CreateTransportRequestHandlerTests
     {
         using var db = await CreateValidDatabase();
 
-        var customer = db.Users.Single();
+        var user = new MockCurrentUserService(Guid.NewGuid());
+        User customer = db.Users.Single();
         SetUserStatus(customer, UserStatus.Suspended);
         await db.SaveChangesAsync();
 
-        var handler = new CreateTransportRequestHandler(db,new MockCurrentUserService(Guid.NewGuid()));
+        var handler = new CreateTransportRequestHandler(db, user);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(CreateCommand(
-                customerId: customer.Id,
+                customerId: user.UserId,
                 pickupLocationId: db.Locations.First().Id,
                 deliveryLocationId: db.Locations.Last().Id)));
 
@@ -52,11 +55,12 @@ public class CreateTransportRequestHandlerTests
         using var db = await CreateValidDatabase();
         var customer = db.Users.Single();
 
-        var handler = new CreateTransportRequestHandler(db,new MockCurrentUserService(Guid.NewGuid()));
+        var user = new MockCurrentUserService(Guid.NewGuid());
+        var handler = new CreateTransportRequestHandler(db, user);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
             () => handler.Handle(CreateCommand(
-                customerId: customer.Id,
+                customerId: user.UserId,
                 pickupLocationId: Guid.NewGuid(),
                 deliveryLocationId: db.Locations.Last().Id)));
 
@@ -74,7 +78,7 @@ public class CreateTransportRequestHandlerTests
 
         var handler = new CreateTransportRequestHandler(db,new MockCurrentUserService(Guid.NewGuid()));
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
             () => handler.Handle(CreateCommand(
                 customerId: customer.Id,
                 pickupLocationId: pickupLocation.Id,
@@ -94,7 +98,7 @@ public class CreateTransportRequestHandlerTests
 
         var handler = new CreateTransportRequestHandler(db,new MockCurrentUserService(Guid.NewGuid()));
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(CreateCommand(
                 customerId: customer.Id,
                 pickupLocationId: location.Id,
@@ -115,7 +119,7 @@ public class CreateTransportRequestHandlerTests
 
         var handler = new CreateTransportRequestHandler(db,new MockCurrentUserService(Guid.NewGuid()));
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(CreateCommand(
                 customerId: customer.Id,
                 pickupLocationId: pickupLocation.Id,
@@ -141,7 +145,7 @@ public class CreateTransportRequestHandlerTests
 
         var handler = new CreateTransportRequestHandler(db,new MockCurrentUserService(Guid.NewGuid()));
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(CreateCommand(
                 customerId: customer.Id,
                 pickupLocationId: pickupLocation.Id,

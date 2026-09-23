@@ -29,9 +29,39 @@ public class CreateTripHandler
             throw new NotFoundException(
                 "The specified transporter profile does not exist.");
 
-        if (transporterProfile.UserId != _currentUserService.UserId)
-            throw new ConflictException(
-                "The transporter profile does not belong to the current user.");
+        var currentUserId = _currentUserService.UserId;
+
+        if (transporterProfile.UserId != currentUserId)
+        {
+            if (!transporterProfile.CompanyId.HasValue)
+            {
+                throw new ConflictException(
+                    "The transporter profile does not belong to the current user.");
+            }
+
+            var company = await _dbContext.Companies
+                .SingleOrDefaultAsync(x =>
+                    x.Id == transporterProfile.CompanyId.Value);
+
+            if (company == null)
+                throw new NotFoundException(
+                    "The company associated with the transporter profile does not exist.");
+
+            var isOwner = company.OwnerUserId == currentUserId;
+
+            var isAdmin = await _dbContext.CompanyMembers
+                .AnyAsync(x =>
+                    x.CompanyId == company.Id &&
+                    x.UserId == currentUserId &&
+                    x.IsActive &&
+                    x.Role == CompanyMemberRole.Admin);
+
+            if (!isOwner && !isAdmin)
+            {
+                throw new ConflictException(
+                    "Only the company owner or an administrator can manage trips for another company member.");
+            }
+        }
 
         var vehicle = await _dbContext.Vehicles
             .FirstOrDefaultAsync(x => x.Id == command.VehicleId);

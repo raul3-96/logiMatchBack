@@ -83,7 +83,7 @@ public class StartBookingHandlerTests
         Guid offerId)
     {
         var booking = new Booking(requestId, offerId);
-        booking.Complete();
+        //booking.Complete();
         return booking;
     }
 
@@ -129,6 +129,7 @@ public class StartBookingHandlerTests
         var booking = new Booking(
             request.Id,
             offer.Id);
+        booking.Cancel();
 
         db.Users.Add(user);
         db.TransporterProfiles.Add(transporter);

@@ -17,8 +17,7 @@ public class CreateCompanyHandlerTests
             taxId: "B12345678"));
 
         await db.SaveChangesAsync();
-
-        var handler = new CreateCompanyHandler(db);
+        var handler = new CreateCompanyHandler(db, new MockCurrentUserService( Guid.NewGuid()));
 
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(
             () => handler.Handle(new CreateCompanyCommand(
@@ -37,7 +36,7 @@ public class CreateCompanyHandlerTests
     {
         using var db = TestDbContextFactory.Create();
 
-        var handler = new CreateCompanyHandler(db);
+        var handler = new CreateCompanyHandler(db, new MockCurrentUserService(Guid.NewGuid()));
 
         var command = new CreateCompanyCommand(
             "  LogiMatch SL  ",
@@ -67,6 +66,6 @@ public class CreateCompanyHandlerTests
             name,
             taxId,
             email,
-            phone);
+            phone, Guid.NewGuid());
     }
 }

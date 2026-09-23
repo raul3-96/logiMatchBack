@@ -109,6 +109,12 @@ builder.Services.AddScoped<ReserveTripCapacityHandler>();
 builder.Services.AddScoped<FindMatchingTripsHandler>();
 builder.Services.AddScoped<CreateCompanyHandler>();
 builder.Services.AddScoped<AddCompanyMemberHandler>();
+builder.Services.AddScoped<GetCompanyHandler>();
+builder.Services.AddScoped<GetCompanyMembersHandler>();
+builder.Services.AddScoped<ActivateCompanyMemberHandler>();
+builder.Services.AddScoped<DeactivateCompanyMemberHandler>();
+builder.Services.AddScoped<PromoteCompanyMemberHandler>();
+builder.Services.AddScoped<DemoteCompanyMemberHandler>();
 builder.Services.AddScoped<PasswordHasher<User>>();
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
 

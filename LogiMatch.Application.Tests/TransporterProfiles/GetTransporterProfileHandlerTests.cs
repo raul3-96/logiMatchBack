@@ -279,6 +279,6 @@ public class GetTransporterProfileHandlerTests
             name: $"Company-{Guid.NewGuid()}",
             taxId: "12345678A",
             email: $"company-{Guid.NewGuid()}@example.com",
-            phone: "555-1234");
+            phone: "555-1234", Guid.NewGuid());
     }
 }

@@ -37,16 +37,16 @@ public class CreateCargoHandlerTests
     {
         using var db = TestDbContextFactory.Create();
 
-        var request = CreateRequest();
+        var user = new MockCurrentUserService(Guid.NewGuid());
+        var request = CreateRequest(user.UserId);
         SetRequestStatus(request, status);
 
         db.TransportRequests.Add(request);
         await db.SaveChangesAsync();
-        var user = new MockCurrentUserService(Guid.NewGuid());
 
         var handler = new CreateCargoHandler(db, user);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(CreateCommand(request.Id)));
 
         Assert.Equal(
@@ -59,7 +59,8 @@ public class CreateCargoHandlerTests
     {
         using var db = TestDbContextFactory.Create();
 
-        var request = CreateRequest();
+        var user = new MockCurrentUserService(Guid.NewGuid());
+        var request = CreateRequest(user.UserId);
         request.Publish();
 
         var trip = CreateTrip();
@@ -75,10 +76,9 @@ public class CreateCargoHandlerTests
 
         await db.SaveChangesAsync();
 
-        var user = new MockCurrentUserService(Guid.NewGuid());
         var handler = new CreateCargoHandler(db,user);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(CreateCommand(request.Id)));
 
         Assert.Equal(
@@ -91,12 +91,12 @@ public class CreateCargoHandlerTests
     {
         using var db = TestDbContextFactory.Create();
 
-        var request = CreateRequest();
+        var user = new MockCurrentUserService(Guid.NewGuid());
+        var request = CreateRequest(user.UserId);
 
         db.TransportRequests.Add(request);
         await db.SaveChangesAsync();
 
-        var user = new MockCurrentUserService(Guid.NewGuid());
         var handler = new CreateCargoHandler(db,user);
 
         var command = CreateCommand(
@@ -128,13 +128,13 @@ public class CreateCargoHandlerTests
     {
         using var db = TestDbContextFactory.Create();
 
-        var request = CreateRequest();
+        var user = new MockCurrentUserService(Guid.NewGuid());
+        var request = CreateRequest(user.UserId);
         request.Publish();
 
         db.TransportRequests.Add(request);
         await db.SaveChangesAsync();
 
-        var user = new MockCurrentUserService(Guid.NewGuid());
         var handler = new CreateCargoHandler(db,user);
 
         var cargoId = await handler.Handle(
@@ -174,10 +174,10 @@ public class CreateCargoHandlerTests
         };
     }
 
-    private static TransportRequest CreateRequest()
+    private static TransportRequest CreateRequest(Guid customerId)
     {
         return new TransportRequest(
-            Guid.NewGuid(),
+            customerId, 
             Guid.NewGuid(),
             Guid.NewGuid(),
             DateTime.UtcNow.AddDays(1),

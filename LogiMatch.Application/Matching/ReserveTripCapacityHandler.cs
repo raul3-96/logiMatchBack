@@ -129,11 +129,11 @@ public class ReserveTripCapacityHandler
                 throw new ConflictException(
                     "The trip does not have enough available volume.");
 
-            var existing = await _dbContext.TripCargos
+            /*var existing = await _dbContext.TripCargos
                 .AnyAsync(x =>
                     x.TripId == trip.Id &&
                     x.TransportRequestId == request.Id &&
-                    x.Status != TripCargoStatus.Cancelled);
+                    x.Status != TripCargoStatus.Cancelled);*/
 
             if (existing)
                 throw new ConflictException(

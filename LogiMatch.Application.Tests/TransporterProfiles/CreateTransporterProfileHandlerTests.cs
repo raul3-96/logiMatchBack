@@ -123,6 +123,6 @@ public class CreateTransporterProfileHandlerTests
             "LogiMatch SL",
             "B12345678",
             "info@logimatch.com",
-            "600123456");
+            "600123456",Guid.NewGuid());
     }
 }

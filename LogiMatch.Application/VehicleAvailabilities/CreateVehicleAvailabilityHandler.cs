@@ -1,5 +1,4 @@
-﻿using LogiMatch.Application.Common.Exceptions;
-using LogiMatch.Application.Common.Interfaces;
+﻿using LogiMatch.Application.Common.Interfaces;
 using LogiMatch.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,42 +20,28 @@ public class CreateVehicleAvailabilityHandler
     public async Task<Guid> Handle(
         CreateVehicleAvailabilityCommand command)
     {
+        var currentUserId = _currentUserService.UserId;
+
         var vehicle = await _dbContext.Vehicles
-            .FirstOrDefaultAsync(x => x.Id == command.VehicleId);
+            .Where(x => x.Id == command.VehicleId)
+            .Join(
+                _dbContext.TransporterProfiles,
+                vehicle => vehicle.TransporterProfileId,
+                profile => profile.Id,
+                (vehicle, profile) => new
+                {
+                    Vehicle = vehicle,
+                    profile.UserId
+                })
+            .SingleOrDefaultAsync();
 
         if (vehicle == null)
-            throw new NotFoundException(
+            throw new InvalidOperationException(
                 "The specified vehicle does not exist.");
 
-        var transporterProfile = await _dbContext.TransporterProfiles
-            .FirstOrDefaultAsync(x => x.Id == vehicle.TransporterProfileId);
-
-        if (transporterProfile == null)
-            throw new NotFoundException(
-                "The transporter profile associated with the vehicle does not exist.");
-
-        if (transporterProfile.UserId != _currentUserService.UserId)
-            throw new ConflictException(
-                "You can only create availability for your own vehicles.");
-
-        if (command.AvailableTo <= command.AvailableFrom)
-            throw new ValidationException(
-                "AvailableTo must be after AvailableFrom.");
-
-        if (command.AvailableFrom < DateTime.UtcNow)
-            throw new ValidationException(
-                "AvailableFrom cannot be in the past.");
-
-        var overlappingAvailability =
-            await _dbContext.VehicleAvailabilities
-                .AnyAsync(x =>
-                    x.VehicleId == command.VehicleId &&
-                    command.AvailableFrom < x.AvailableTo &&
-                    command.AvailableTo > x.AvailableFrom);
-
-        if (overlappingAvailability)
-            throw new ConflictException(
-                "The vehicle already has an availability that overlaps with the specified dates.");
+        if (vehicle.UserId != currentUserId)
+            throw new InvalidOperationException(
+                "The vehicle does not belong to the authenticated user.");
 
         var availability = new VehicleAvailability(
             command.VehicleId,

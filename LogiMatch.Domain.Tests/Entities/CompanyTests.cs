@@ -19,7 +19,8 @@ public class CompanyTests
             name,
             taxId,
             email,
-            phone);
+            phone,
+            Guid.NewGuid());
 
         // Assert
         Assert.NotEqual(Guid.Empty, company.Id);
@@ -38,7 +39,8 @@ public class CompanyTests
             "  Transportes Example S.L.  ",
             "  b12345678  ",
             "  COMPANY@EXAMPLE.COM  ",
-            "  600123456  ");
+            "  600123456  ",
+            Guid.NewGuid());
 
         // Assert
         Assert.Equal(
@@ -69,7 +71,8 @@ public class CompanyTests
                 name,
                 "B12345678",
                 "company@example.com",
-                "600123456"));
+                "600123456",
+            Guid.NewGuid()));
 
         // Assert
         Assert.Equal(
@@ -88,7 +91,8 @@ public class CompanyTests
                 "Transportes Example S.L.",
                 taxId,
                 "company@example.com",
-                "600123456"));
+                "600123456",
+            Guid.NewGuid()));
 
         // Assert
         Assert.Equal(
@@ -107,7 +111,8 @@ public class CompanyTests
                 "Transportes Example S.L.",
                 "B12345678",
                 email,
-                "600123456"));
+                "600123456",
+            Guid.NewGuid()));
 
         // Assert
         Assert.Equal(
@@ -127,7 +132,8 @@ public class CompanyTests
                 "Transportes Example S.L.",
                 "B12345678",
                 email,
-                "600123456"));
+                "600123456",
+            Guid.NewGuid()));
 
         // Assert
         Assert.Equal(
@@ -146,7 +152,8 @@ public class CompanyTests
                 "Transportes Example S.L.",
                 "B12345678",
                 "company@example.com",
-                phone));
+                phone,
+            Guid.NewGuid()));
 
         // Assert
         Assert.Equal(

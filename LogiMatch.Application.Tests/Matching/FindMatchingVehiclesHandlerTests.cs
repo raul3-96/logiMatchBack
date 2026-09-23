@@ -669,7 +669,7 @@ public class FindMatchingVehiclesHandlerTests
             "Transport Company",
             "ESB12345678",
             "company@example.com",
-            "600987654");
+            "600987654",Guid.NewGuid() );
 
         db.Companies.Add(company);
 

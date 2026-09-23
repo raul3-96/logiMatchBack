@@ -1,3 +1,4 @@
+using LogiMatch.Application.Common.Exceptions;
 using LogiMatch.Application.Tests.Common;
 using LogiMatch.Application.TransportRequests;
 using LogiMatch.Domain.Entities;
@@ -15,7 +16,7 @@ public class PublishTransportRequestHandlerTests
         using var db = TestDbContextFactory.Create();
         var handler = new PublishTransportRequestHandler(db,new MockCurrentUserService(Guid.NewGuid()));
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
             () => handler.Handle(Guid.NewGuid()));
 
         Assert.Equal(
@@ -28,13 +29,14 @@ public class PublishTransportRequestHandlerTests
     {
         using var db = TestDbContextFactory.Create();
 
-        var request = CreateRequest();
+        var user= new MockCurrentUserService(Guid.NewGuid());
+        var request = CreateRequest(user.UserId);
         db.TransportRequests.Add(request);
         await db.SaveChangesAsync();
 
-        var handler = new PublishTransportRequestHandler(db,new MockCurrentUserService(Guid.NewGuid()));
+        var handler = new PublishTransportRequestHandler(db, user);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(request.Id));
 
         Assert.Equal(
@@ -47,14 +49,15 @@ public class PublishTransportRequestHandlerTests
     {
         using var db = TestDbContextFactory.Create();
 
-        var request = CreateRequest();
+        var user= new MockCurrentUserService(Guid.NewGuid());
+        var request = CreateRequest(user.UserId);
         request.Publish();
 
         db.TransportRequests.Add(request);
         db.Cargos.Add(CreateCargo(request.Id));
         await db.SaveChangesAsync();
 
-        var handler = new PublishTransportRequestHandler(db,new MockCurrentUserService(Guid.NewGuid()));
+        var handler = new PublishTransportRequestHandler(db,user);
 
         var exception = await Assert.ThrowsAsync<InvalidOperationException>(
             () => handler.Handle(request.Id));
@@ -69,13 +72,14 @@ public class PublishTransportRequestHandlerTests
     {
         using var db = TestDbContextFactory.Create();
 
-        var request = CreateRequest();
+        var user= new MockCurrentUserService(Guid.NewGuid());
+        var request = CreateRequest(user.UserId);
 
         db.TransportRequests.Add(request);
         db.Cargos.Add(CreateCargo(request.Id));
         await db.SaveChangesAsync();
 
-        var handler = new PublishTransportRequestHandler(db,new MockCurrentUserService(Guid.NewGuid()));
+        var handler = new PublishTransportRequestHandler(db,user);
 
         await handler.Handle(request.Id);
 
@@ -87,10 +91,10 @@ public class PublishTransportRequestHandlerTests
             savedRequest.Status);
     }
 
-    private static TransportRequest CreateRequest()
+    private static TransportRequest CreateRequest(Guid userId)
     {
         return new TransportRequest(
-            Guid.NewGuid(),
+            userId,
             Guid.NewGuid(),
             Guid.NewGuid(),
             DateTime.UtcNow.AddDays(1),

@@ -39,22 +39,31 @@ public class CreateTransporterProfileHandler
         if (command.CompanyId.HasValue)
         {
             var company = await _dbContext.Companies
-                .SingleOrDefaultAsync(x => x.Id == command.CompanyId.Value);
+                .SingleOrDefaultAsync(x =>
+                    x.Id == command.CompanyId.Value);
 
             if (company == null)
                 throw new InvalidOperationException(
                     "The specified company does not exist.");
 
+            // El propietario pertenece automáticamente a su empresa.
             var isOwner = company.OwnerUserId == userId;
-            var isActiveMember = await _dbContext.CompanyMembers
-                .AnyAsync(x =>
-                    x.CompanyId == company.Id &&
-                    x.UserId == userId &&
-                    x.IsActive);
 
-            if (!isOwner && !isActiveMember)
-                throw new InvalidOperationException(
-                    "The user is not an active member of the specified company.");
+            if (!isOwner)
+            {
+                var member = await _dbContext.CompanyMembers
+                    .SingleOrDefaultAsync(x =>
+                        x.CompanyId == company.Id &&
+                        x.UserId == userId);
+
+                if (member == null)
+                    throw new InvalidOperationException(
+                        "The user is not a member of the specified company.");
+
+                if (!member.IsActive)
+                    throw new InvalidOperationException(
+                        "The user is not an active member of the specified company.");
+            }
         }
 
         var profile = new TransporterProfile(
