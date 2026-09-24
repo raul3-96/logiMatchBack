@@ -57,21 +57,6 @@ public class TransporterProfilesController : ControllerBase
     [AllowAnonymous]
     public async Task<IActionResult> Get(Guid id)
     {
-        var transporterProfile = await _dbContext.TransporterProfiles
-            .FirstOrDefaultAsync(x => x.Id == id);
-
-        if (transporterProfile == null)
-            return NotFound();
-
-        // Si el usuario autenticado es el propietario, mostrar datos detallados
-        if (User.Identity?.IsAuthenticated == true &&
-            transporterProfile.UserId == _currentUserService.UserId)
-        {
-            var detailedProfile = await _getHandler.HandleDetailed(id);
-            return Ok(detailedProfile);
-        }
-
-        // Si no, mostrar perfil público
         var publicProfile = await _getHandler.Handle(id);
         return Ok(publicProfile);
     }

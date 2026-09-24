@@ -133,11 +133,11 @@ public class ReserveTripCapacityHandler
                 .AnyAsync(x =>
                     x.TripId == trip.Id &&
                     x.TransportRequestId == request.Id &&
-                    x.Status != TripCargoStatus.Cancelled);*/
+                    x.Status != TripCargoStatus.Cancelled);
 
             if (existing)
                 throw new ConflictException(
-                    "The transport request is already reserved on this trip.");
+                    "The transport request is already reserved on this trip.");*/
 
             trip.ReserveCapacity(
                 totalWeight,

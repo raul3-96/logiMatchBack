@@ -1,3 +1,4 @@
+using LogiMatch.Application.Common.Exceptions;
 using LogiMatch.Application.Common.Interfaces;
 using LogiMatch.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -26,14 +27,14 @@ public class CreateTransporterProfileHandler
             .AnyAsync(x => x.Id == userId);
 
         if (!userExists)
-            throw new InvalidOperationException(
+            throw new NotFoundException(
                 "The specified user does not exist.");
 
         var profileExists = await _dbContext.TransporterProfiles
             .AnyAsync(x => x.UserId == userId);
 
         if (profileExists)
-            throw new InvalidOperationException(
+            throw new ConflictException(
                 "The user already has a transporter profile.");
 
         if (command.CompanyId.HasValue)
@@ -43,7 +44,7 @@ public class CreateTransporterProfileHandler
                     x.Id == command.CompanyId.Value);
 
             if (company == null)
-                throw new InvalidOperationException(
+                throw new NotFoundException(
                     "The specified company does not exist.");
 
             // El propietario pertenece automáticamente a su empresa.
@@ -57,11 +58,11 @@ public class CreateTransporterProfileHandler
                         x.UserId == userId);
 
                 if (member == null)
-                    throw new InvalidOperationException(
+                    throw new ConflictException(
                         "The user is not a member of the specified company.");
 
                 if (!member.IsActive)
-                    throw new InvalidOperationException(
+                    throw new ConflictException(
                         "The user is not an active member of the specified company.");
             }
         }

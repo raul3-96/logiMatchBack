@@ -1,4 +1,5 @@
 using LogiMatch.Application.Common.Exceptions;
+using LogiMatch.Application.Common.Services;
 using LogiMatch.Application.Matching;
 using LogiMatch.Application.Tests.Common;
 using LogiMatch.Domain.Entities;
@@ -10,21 +11,88 @@ namespace LogiMatch.Application.Tests.Matching;
 public class GetTripCargoHandlerTests
 {
     [Fact]
-    public async Task Handle_ShouldReturnTripCargo_WhenTransporterOwnsTheTrip()
+    public async Task Handle_ShouldReturnNull_WhenTripCargoDoesNotExist()
     {
         var db = await CreateValidDatabase();
+
+        var currentUserService = new MockCurrentUserService(Guid.NewGuid());
+        var accessService = new TripManagementAccessService(
+            db,
+            currentUserService);
+
+        var handler = new GetTripCargoHandler(
+            db,
+            currentUserService,
+            accessService);
+
+        var result = await handler.Handle(Guid.NewGuid());
+
+        Assert.Null(result);
+    }
+
+    [Fact]
+    public async Task Handle_ShouldAllow_WhenCurrentUserIsCustomer()
+    {
+        var db = await CreateValidDatabase();
+
+        var request = await CreateValidRequest(db);
+        var trip = CreateTrip(db);
+        var tripCargo = CreateReservedTripCargo(
+            trip,
+            request,
+            100m,
+            1m);
+
+        db.Trips.Add(trip);
+        db.TripCargos.Add(tripCargo);
+        await db.SaveChangesAsync();
+
+        var currentUserService = new MockCurrentUserService(
+            request.CustomerId);
+
+        var accessService = new TripManagementAccessService(
+            db,
+            currentUserService);
+
+        var handler = new GetTripCargoHandler(
+            db,
+            currentUserService,
+            accessService);
+
+        var result = await handler.Handle(tripCargo.Id);
+
+        Assert.NotNull(result);
+    }
+
+    [Fact]
+    public async Task Handle_ShouldAllow_WhenCurrentUserIsProfileOwner()
+    {
+        var db = await CreateValidDatabase();
+
         var transporter = db.TransporterProfiles.Single();
-        var currentUserService = new MockCurrentUserService(transporter.UserId);
-
         var request = await CreateValidRequest(db);
         var trip = CreateTrip(db);
-        var tripCargo = CreateReservedTripCargo(trip, request, 100m, 1m);
+        var tripCargo = CreateReservedTripCargo(
+            trip,
+            request,
+            100m,
+            1m);
 
         db.Trips.Add(trip);
         db.TripCargos.Add(tripCargo);
         await db.SaveChangesAsync();
 
-        var handler = new GetTripCargoHandler(db, currentUserService);
+        var currentUserService = new MockCurrentUserService(
+            transporter.UserId);
+
+        var accessService = new TripManagementAccessService(
+            db,
+            currentUserService);
+
+        var handler = new GetTripCargoHandler(
+            db,
+            currentUserService,
+            accessService);
 
         var result = await handler.Handle(tripCargo.Id);
 
@@ -32,20 +100,34 @@ public class GetTripCargoHandlerTests
     }
 
     [Fact]
-    public async Task Handle_ShouldReturnTripCargo_WhenCustomerOwnsTheRequest()
+    public async Task Handle_ShouldAllow_WhenCurrentUserIsCompanyOwner()
     {
-        var db = await CreateValidDatabase();
-        var request = await CreateValidRequest(db);
-        var currentUserService = new MockCurrentUserService(request.CustomerId);
+        var db = await CreateValidDatabaseWithCompany();
 
+        var company = db.Companies.Single();
+        var request = await CreateValidRequest(db);
         var trip = CreateTrip(db);
-        var tripCargo = CreateReservedTripCargo(trip, request, 100m, 1m);
+        var tripCargo = CreateReservedTripCargo(
+            trip,
+            request,
+            100m,
+            1m);
 
         db.Trips.Add(trip);
         db.TripCargos.Add(tripCargo);
         await db.SaveChangesAsync();
 
-        var handler = new GetTripCargoHandler(db, currentUserService);
+        var currentUserService = new MockCurrentUserService(
+            company.OwnerUserId);
+
+        var accessService = new TripManagementAccessService(
+            db,
+            currentUserService);
+
+        var handler = new GetTripCargoHandler(
+            db,
+            currentUserService,
+            accessService);
 
         var result = await handler.Handle(tripCargo.Id);
 
@@ -53,21 +135,76 @@ public class GetTripCargoHandlerTests
     }
 
     [Fact]
-    public async Task Handle_ShouldThrow_WhenUserDoesNotOwnTripOrRequest()
+    public async Task Handle_ShouldAllow_WhenCurrentUserIsCompanyAdmin()
     {
-        var db = await CreateValidDatabase();
-        var otherUserId = Guid.NewGuid();
-        var currentUserService = new MockCurrentUserService(otherUserId);
+        var db = await CreateValidDatabaseWithCompany();
+
+        var company = db.Companies.Single();
+        var adminUserId = Guid.NewGuid();
+
+        db.CompanyMembers.Add(
+            new CompanyMember(
+                company.Id,
+                adminUserId,
+                CompanyMemberRole.Admin));
+
+        await db.SaveChangesAsync();
 
         var request = await CreateValidRequest(db);
         var trip = CreateTrip(db);
-        var tripCargo = CreateReservedTripCargo(trip, request, 100m, 1m);
+        var tripCargo = CreateReservedTripCargo(
+            trip,
+            request,
+            100m,
+            1m);
 
         db.Trips.Add(trip);
         db.TripCargos.Add(tripCargo);
         await db.SaveChangesAsync();
 
-        var handler = new GetTripCargoHandler(db, currentUserService);
+        var currentUserService = new MockCurrentUserService(
+            adminUserId);
+
+        var accessService = new TripManagementAccessService(
+            db,
+            currentUserService);
+
+        var handler = new GetTripCargoHandler(
+            db,
+            currentUserService,
+            accessService);
+
+        var result = await handler.Handle(tripCargo.Id);
+
+        Assert.NotNull(result);
+    }
+
+    [Fact]
+    public async Task Handle_ShouldThrow_WhenCurrentUserCannotViewTripCargo()
+    {
+        var db = await CreateValidDatabase();
+
+        var request = await CreateValidRequest(db);
+        var trip = CreateTrip(db);
+        var tripCargo = CreateReservedTripCargo(
+            trip,
+            request,
+            100m,
+            1m);
+
+        db.Trips.Add(trip);
+        db.TripCargos.Add(tripCargo);
+        await db.SaveChangesAsync();
+
+        var currentUserService = new MockCurrentUserService(Guid.NewGuid());
+        var accessService = new TripManagementAccessService(
+            db,
+            currentUserService);
+
+        var handler = new GetTripCargoHandler(
+            db,
+            currentUserService,
+            accessService);
 
         var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(tripCargo.Id));
@@ -78,59 +215,57 @@ public class GetTripCargoHandlerTests
     }
 
     [Fact]
-    public async Task Handle_ShouldReturnNull_WhenTripCargoDoesNotExist()
+    public async Task HandleAll_ShouldReturnOnlyCustomerTripCargos()
     {
         var db = await CreateValidDatabase();
-        var currentUserService = new MockCurrentUserService(Guid.NewGuid());
 
-        var handler = new GetTripCargoHandler(db, currentUserService);
+        var customerRequest = await CreateValidRequest(db);
+        var otherRequest = await CreateValidRequest(db);
 
-        var result = await handler.Handle(Guid.NewGuid());
+        var trip1 = CreateTrip(db);
+        var trip2 = CreateTrip(db);
 
-        Assert.Null(result);
-    }
+        var customerTripCargo = CreateReservedTripCargo(
+            trip1,
+            customerRequest,
+            100m,
+            1m);
 
-    [Fact]
-    public async Task HandleAll_ShouldReturnOnlyTransporterTrips()
-    {
-        var db = await CreateValidDatabase();
-        var transporter = db.TransporterProfiles.Single();
-        var currentUserService = new MockCurrentUserService(transporter.UserId);
+        var otherTripCargo = CreateReservedTripCargo(
+            trip2,
+            otherRequest,
+            150m,
+            1.5m);
 
-        var request = await CreateValidRequest(db);
-        var trip = CreateTrip(db);
-        var tripCargo = CreateReservedTripCargo(trip, request, 100m, 1m);
-
-        db.Trips.Add(trip);
-        db.TripCargos.Add(tripCargo);
+        db.Trips.AddRange(trip1, trip2);
+        db.TripCargos.AddRange(customerTripCargo, otherTripCargo);
         await db.SaveChangesAsync();
 
-        var handler = new GetTripCargoHandler(db, currentUserService);
+        var currentUserService = new MockCurrentUserService(
+            customerRequest.CustomerId);
+
+        var accessService = new TripManagementAccessService(
+            db,
+            currentUserService);
+
+        var handler = new GetTripCargoHandler(
+            db,
+            currentUserService,
+            accessService);
 
         var result = await handler.HandleAll();
 
-        Assert.IsType<List<dynamic>>(result);
-    }
+        var list = ((System.Collections.IEnumerable)result)
+            .Cast<object>()
+            .ToList();
 
-    [Fact]
-    public async Task HandleAll_ShouldReturnOnlyCustomerRequests()
-    {
-        var db = await CreateValidDatabase();
-        var request = await CreateValidRequest(db);
-        var currentUserService = new MockCurrentUserService(request.CustomerId);
+        Assert.Single(list);
 
-        var trip = CreateTrip(db);
-        var tripCargo = CreateReservedTripCargo(trip, request, 100m, 1m);
+        var itemType = list[0].GetType();
 
-        db.Trips.Add(trip);
-        db.TripCargos.Add(tripCargo);
-        await db.SaveChangesAsync();
-
-        var handler = new GetTripCargoHandler(db, currentUserService);
-
-        var result = await handler.HandleAll();
-
-        Assert.IsType<List<dynamic>>(result);
+        Assert.Equal(
+            customerTripCargo.Id,
+            itemType.GetProperty("Id")!.GetValue(list[0]));
     }
 
     private static async Task<TestDbContext> CreateValidDatabase()
@@ -164,6 +299,59 @@ public class GetTripCargoHandlerTests
             DateTime.UtcNow.AddDays(-1),
             DateTime.UtcNow.AddDays(10));
 
+        db.TransporterProfiles.Add(transporter);
+        db.Vehicles.Add(vehicle);
+        db.Locations.AddRange(origin, destination);
+        db.VehicleAvailabilities.Add(availability);
+
+        await db.SaveChangesAsync();
+
+        return db;
+    }
+
+    private static async Task<TestDbContext> CreateValidDatabaseWithCompany()
+    {
+        var db = TestDbContextFactory.Create();
+
+        var ownerUserId = Guid.NewGuid();
+
+        var company = new Company(
+            "Transport Company",
+            "ESB12345678",
+            "company@example.com",
+            "600123456",
+            ownerUserId);
+
+        var transporter = new TransporterProfile(
+            Guid.NewGuid(),
+            company.Id);
+
+        var vehicle = new Vehicle(
+            transporter.Id,
+            VehicleType.Van,
+            "Mercedes",
+            "Sprinter",
+            "1234ABC",
+            1500m,
+            10m,
+            6m,
+            2m,
+            2.5m,
+            true,
+            false);
+
+        var origin = CreateLocation();
+        var destination = CreateLocation(
+            "Calle Test 2",
+            37.3886,
+            -5.9953);
+
+        var availability = new VehicleAvailability(
+            vehicle.Id,
+            DateTime.UtcNow.AddDays(-1),
+            DateTime.UtcNow.AddDays(10));
+
+        db.Companies.Add(company);
         db.TransporterProfiles.Add(transporter);
         db.Vehicles.Add(vehicle);
         db.Locations.AddRange(origin, destination);

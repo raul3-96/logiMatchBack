@@ -9,11 +9,16 @@ public class GetTripCargoHandler
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly ICurrentUserService _currentUserService;
+    private readonly ITripManagementAccessService _tripManagementAccessService;
 
-    public GetTripCargoHandler(IApplicationDbContext dbContext, ICurrentUserService currentUserService)
+    public GetTripCargoHandler(
+        IApplicationDbContext dbContext,
+        ICurrentUserService currentUserService,
+        ITripManagementAccessService tripManagementAccessService)
     {
         _dbContext = dbContext;
         _currentUserService = currentUserService;
+        _tripManagementAccessService = tripManagementAccessService;
     }
 
     public async Task<object?> Handle(Guid id)
@@ -60,25 +65,29 @@ public class GetTripCargoHandler
         if (tripCargo == null)
             return null;
 
-        // Validar ownership: transportista dueño del trip O cliente dueño del request
         var trip = await _dbContext.Trips
             .FirstOrDefaultAsync(t => t.Id == tripCargo.TripId);
 
         if (trip == null)
-            throw new InvalidOperationException("Trip not found.");
+            throw new NotFoundException(
+                "Trip not found.");
 
-        var transporterProfile = await _dbContext.TransporterProfiles
-            .FirstOrDefaultAsync(tp => tp.Id == trip.TransporterProfileId);
+        var allowedProfileIds =
+            await _tripManagementAccessService
+                .GetManageableTransporterProfileIdsAsync();
 
-        var isTransporter = transporterProfile?.UserId == _currentUserService.UserId;
+        var isTransporter =
+            allowedProfileIds.Contains(trip.TransporterProfileId);
 
         var request = await _dbContext.TransportRequests
             .FirstOrDefaultAsync(r => r.Id == tripCargo.TransportRequestId);
 
         if (request == null)
-            throw new InvalidOperationException("Transport request not found.");
+            throw new NotFoundException(
+                "Transport request not found.");
 
-        var isCustomer = request.CustomerId == _currentUserService.UserId;
+        var isCustomer =
+            request.CustomerId == _currentUserService.UserId;
 
         if (!isTransporter && !isCustomer)
             throw new ConflictException(
@@ -92,26 +101,24 @@ public class GetTripCargoHandler
         Guid? transportRequestId = null,
         TripCargoStatus? status = null)
     {
-        // Obtener los trips que pertenecen al usuario actual (como transportista)
-        var userTransporterProfileIds = await _dbContext.TransporterProfiles
-            .Where(tp => tp.UserId == _currentUserService.UserId)
-            .Select(tp => tp.Id)
-            .ToListAsync();
+        var allowedProfileIds =
+            await _tripManagementAccessService
+                .GetManageableTransporterProfileIdsAsync();
 
         var userTripIds = await _dbContext.Trips
-            .Where(t => userTransporterProfileIds.Contains(t.TransporterProfileId))
+            .Where(t => allowedProfileIds.Contains(t.TransporterProfileId))
             .Select(t => t.Id)
             .ToListAsync();
 
-        // Obtener las requests que pertenecen al usuario actual (como cliente)
         var userRequestIds = await _dbContext.TransportRequests
             .Where(r => r.CustomerId == _currentUserService.UserId)
             .Select(r => r.Id)
             .ToListAsync();
 
         var query = _dbContext.TripCargos
-            .Where(x => userTripIds.Contains(x.TripId) || userRequestIds.Contains(x.TransportRequestId))
-            .AsQueryable();
+            .Where(x =>
+                userTripIds.Contains(x.TripId) ||
+                userRequestIds.Contains(x.TransportRequestId));
 
         if (tripId.HasValue)
         {
@@ -120,7 +127,8 @@ public class GetTripCargoHandler
 
         if (transportRequestId.HasValue)
         {
-            query = query.Where(x => x.TransportRequestId == transportRequestId.Value);
+            query = query.Where(x =>
+                x.TransportRequestId == transportRequestId.Value);
         }
 
         if (status.HasValue)

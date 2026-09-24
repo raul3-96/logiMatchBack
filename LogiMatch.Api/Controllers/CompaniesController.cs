@@ -1,6 +1,7 @@
+using LogiMatch.Application.Companies;
+using LogiMatch.Application.Companies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using LogiMatch.Application.Companies;
 
 namespace LogiMatch.Api.Controllers;
 
@@ -10,6 +11,7 @@ public class CompaniesController : ControllerBase
 {
     private readonly CreateCompanyHandler _createHandler;
     private readonly GetCompanyHandler _getHandler;
+    private readonly GetCompanyPrivateHandler _getPrivateHandler;
     private readonly AddCompanyMemberHandler _addMemberHandler;
     private readonly GetCompanyMembersHandler _getMembersHandler;
     private readonly ActivateCompanyMemberHandler _activateMemberHandler;
@@ -20,6 +22,7 @@ public class CompaniesController : ControllerBase
     public CompaniesController(
         CreateCompanyHandler createHandler,
         GetCompanyHandler getHandler,
+        GetCompanyPrivateHandler getPrivateHandler,
         AddCompanyMemberHandler addMemberHandler,
         GetCompanyMembersHandler getMembersHandler,
         ActivateCompanyMemberHandler activateMemberHandler,
@@ -29,6 +32,7 @@ public class CompaniesController : ControllerBase
     {
         _createHandler = createHandler;
         _getHandler = getHandler;
+        _getPrivateHandler = getPrivateHandler;
         _addMemberHandler = addMemberHandler;
         _getMembersHandler = getMembersHandler;
         _activateMemberHandler = activateMemberHandler;
@@ -126,6 +130,18 @@ public class CompaniesController : ControllerBase
     public async Task<IActionResult> Get(Guid id)
     {
         var company = await _getHandler.Handle(id);
+
+        if (company == null)
+            return NotFound();
+
+        return Ok(company);
+    }
+
+    [Authorize]
+    [HttpGet("{id:guid}/private")]
+    public async Task<IActionResult> GetPrivate(Guid id)
+    {
+        var company = await _getPrivateHandler.Handle(id);
 
         if (company == null)
             return NotFound();

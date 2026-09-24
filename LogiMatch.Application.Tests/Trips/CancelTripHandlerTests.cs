@@ -1,4 +1,5 @@
 ﻿using LogiMatch.Application.Common.Interfaces;
+using LogiMatch.Application.Common.Services;
 using LogiMatch.Application.Tests.Common;
 using LogiMatch.Application.Trips;
 using LogiMatch.Domain.Entities;
@@ -574,9 +575,14 @@ public class CancelTripHandlerTests
         IApplicationDbContext db,
         Guid currentUserId)
     {
+        var currentUserService = new MockCurrentUserService(currentUserId);
+        var accessService = new TripManagementAccessService(
+            db,
+            currentUserService);
+
         return new CancelTripHandler(
             db,
-            new FakeCurrentUserService(currentUserId));
+            accessService);
     }
 
     private static async Task<TestDbContext> CreateValidDatabase()
@@ -593,6 +599,43 @@ public class CancelTripHandlerTests
             DateTime.UtcNow.AddHours(-1),
             DateTime.UtcNow.AddDays(10));
 
+        db.TransporterProfiles.Add(transporter);
+        db.Vehicles.Add(vehicle);
+        db.Locations.AddRange(origin, destination);
+        db.VehicleAvailabilities.Add(availability);
+
+        await db.SaveChangesAsync();
+
+        return db;
+    }
+
+    private static async Task<TestDbContext> CreateValidDatabaseWithCompany()
+    {
+        var db = TestDbContextFactory.Create();
+
+        var ownerUserId = Guid.NewGuid();
+
+        var company = new Company(
+            "Transport Company",
+            "ESB12345678",
+            "company@example.com",
+            "600123456",
+            ownerUserId);
+
+        var transporter = new TransporterProfile(
+            Guid.NewGuid(),
+            company.Id);
+
+        var vehicle = CreateVehicle(transporter.Id);
+        var origin = CreateLocation();
+        var destination = CreateLocation();
+
+        var availability = new VehicleAvailability(
+            vehicle.Id,
+            DateTime.UtcNow.AddHours(-1),
+            DateTime.UtcNow.AddDays(10));
+
+        db.Companies.Add(company);
         db.TransporterProfiles.Add(transporter);
         db.Vehicles.Add(vehicle);
         db.Locations.AddRange(origin, destination);
@@ -699,9 +742,9 @@ public class CancelTripHandlerTests
             -5.9869);
     }
 
-    private sealed class FakeCurrentUserService : ICurrentUserService
+    private sealed class MockCurrentUserService : ICurrentUserService
     {
-        public FakeCurrentUserService(Guid userId)
+        public MockCurrentUserService(Guid userId)
         {
             UserId = userId;
         }

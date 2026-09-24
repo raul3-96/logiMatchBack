@@ -1,3 +1,4 @@
+using LogiMatch.Application.Common.Exceptions;
 using LogiMatch.Application.Common.Interfaces;
 using LogiMatch.Domain;
 using LogiMatch.Domain.Entities;
@@ -26,14 +27,14 @@ public class CreateCompanyHandler
             .AnyAsync(x => x.Id == ownerUserId);
 
         if (!userExists)
-            throw new InvalidOperationException(
+            throw new NotFoundException(
                 "The authenticated user does not exist.");
 
         var taxIdExists = await _dbContext.Companies
             .AnyAsync(x => x.TaxId == command.TaxId.Trim().ToUpperInvariant());
 
         if (taxIdExists)
-            throw new InvalidOperationException(
+            throw new ConflictException(
                 "A company with the specified Tax ID already exists.");
 
         var company = new Company(

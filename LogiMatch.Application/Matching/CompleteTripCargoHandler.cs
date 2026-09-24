@@ -1,5 +1,4 @@
-﻿using LogiMatch.Application;
-using LogiMatch.Application.Common.Exceptions;
+﻿using LogiMatch.Application.Common.Exceptions;
 using LogiMatch.Application.Common.Interfaces;
 using LogiMatch.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -9,12 +8,14 @@ namespace LogiMatch.Application.Matching;
 public class CompleteTripCargoHandler
 {
     private readonly IApplicationDbContext _dbContext;
-    private readonly ICurrentUserService _currentUserService;
+    private readonly ITripManagementAccessService _tripManagementAccessService;
 
-    public CompleteTripCargoHandler(IApplicationDbContext dbContext, ICurrentUserService currentUserService)
+    public CompleteTripCargoHandler(
+        IApplicationDbContext dbContext,
+        ITripManagementAccessService tripManagementAccessService)
     {
         _dbContext = dbContext;
-        _currentUserService = currentUserService;
+        _tripManagementAccessService = tripManagementAccessService;
     }
 
     public async Task Handle(Guid tripCargoId)
@@ -33,13 +34,20 @@ public class CompleteTripCargoHandler
             throw new NotFoundException(
                 "The trip associated with the trip cargo does not exist.");
 
-        // Solo el transportista dueño del trip puede completar un trip cargo
         var transporterProfile = await _dbContext.TransporterProfiles
             .FirstOrDefaultAsync(tp => tp.Id == trip.TransporterProfileId);
 
-        if (transporterProfile == null || transporterProfile.UserId != _currentUserService.UserId)
+        if (transporterProfile == null)
+            throw new NotFoundException(
+                "The transporter profile associated with the trip does not exist.");
+
+        var allowedProfileIds =
+            await _tripManagementAccessService
+                .GetManageableTransporterProfileIdsAsync();
+
+        if (!allowedProfileIds.Contains(transporterProfile.Id))
             throw new ConflictException(
-                "You do not have permission to complete this trip cargo.");
+                "Only the company owner, an administrator, or the profile owner can manage this trip cargo.");
 
         var request = await _dbContext.TransportRequests
             .FirstOrDefaultAsync(x => x.Id == tripCargo.TransportRequestId);

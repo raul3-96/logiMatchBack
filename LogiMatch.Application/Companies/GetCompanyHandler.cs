@@ -19,9 +19,6 @@ public class GetCompanyHandler
             {
                 x.Id,
                 x.Name,
-                x.TaxId,
-                x.Email,
-                x.Phone,
                 x.CreatedAt
             })
             .FirstOrDefaultAsync();
@@ -36,9 +33,6 @@ public class GetCompanyHandler
             {
                 x.Id,
                 x.Name,
-                x.TaxId,
-                x.Email,
-                x.Phone,
                 x.CreatedAt
             })
             .OrderBy(x => x.Name)

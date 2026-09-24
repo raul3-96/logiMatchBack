@@ -1,6 +1,5 @@
 ﻿using LogiMatch.Application.Common.Exceptions;
 using LogiMatch.Application.Common.Interfaces;
-using LogiMatch.Domain;
 using LogiMatch.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,14 +8,14 @@ namespace LogiMatch.Application.Trips;
 public class CompleteTripHandler
 {
     private readonly IApplicationDbContext _dbContext;
-    private readonly ICurrentUserService _currentUserService;
+    private readonly ITripManagementAccessService _tripManagementAccessService;
 
     public CompleteTripHandler(
         IApplicationDbContext dbContext,
-        ICurrentUserService currentUserService)
+        ITripManagementAccessService tripManagementAccessService)
     {
         _dbContext = dbContext;
-        _currentUserService = currentUserService;
+        _tripManagementAccessService = tripManagementAccessService;
     }
 
     public async Task Handle(Guid tripId)
@@ -35,35 +34,13 @@ public class CompleteTripHandler
             throw new NotFoundException(
                 "The transporter profile associated with the trip does not exist.");
 
-        var currentUserId = _currentUserService.UserId;
+        var allowedProfileIds =
+            await _tripManagementAccessService
+                .GetManageableTransporterProfileIdsAsync();
 
-        if (transporterProfile.UserId != currentUserId)
-        {
-            if (!transporterProfile.CompanyId.HasValue)
-                throw new ConflictException(
-                    "The trip does not belong to the current user.");
-
-            var company = await _dbContext.Companies
-                .SingleOrDefaultAsync(x =>
-                    x.Id == transporterProfile.CompanyId.Value);
-
-            if (company == null)
-                throw new NotFoundException(
-                    "The company associated with the transporter profile does not exist.");
-
-            var isOwner = company.OwnerUserId == currentUserId;
-
-            var isAdmin = await _dbContext.CompanyMembers
-                .AnyAsync(x =>
-                    x.CompanyId == company.Id &&
-                    x.UserId == currentUserId &&
-                    x.IsActive &&
-                    x.Role == CompanyMemberRole.Admin);
-
-            if (!isOwner && !isAdmin)
-                throw new ConflictException(
-                    "Only the company owner or an administrator can manage this trip.");
-        }
+        if (!allowedProfileIds.Contains(transporterProfile.Id))
+            throw new ConflictException(
+                "Only the company owner, an administrator, or the profile owner can manage this trip.");
 
         if (trip.Status != TripStatus.InProgress)
             throw new ConflictException(

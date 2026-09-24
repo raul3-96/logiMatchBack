@@ -1,6 +1,5 @@
 ﻿using LogiMatch.Application.Common.Exceptions;
 using LogiMatch.Application.Common.Interfaces;
-using LogiMatch.Domain;
 using LogiMatch.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,14 +8,14 @@ namespace LogiMatch.Application.Trips;
 public class CancelTripHandler
 {
     private readonly IApplicationDbContext _dbContext;
-    private readonly ICurrentUserService _currentUserService;
+    private readonly ITripManagementAccessService _tripManagementAccessService;
 
     public CancelTripHandler(
         IApplicationDbContext dbContext,
-        ICurrentUserService currentUserService)
+        ITripManagementAccessService tripManagementAccessService)
     {
         _dbContext = dbContext;
-        _currentUserService = currentUserService;
+        _tripManagementAccessService = tripManagementAccessService;
     }
 
     public async Task Handle(Guid tripId)
@@ -25,48 +24,26 @@ public class CancelTripHandler
             .FirstOrDefaultAsync(x => x.Id == tripId);
 
         if (trip == null)
-            throw new InvalidOperationException(
+            throw new NotFoundException(
                 "The specified trip does not exist.");
 
         var transporterProfile = await _dbContext.TransporterProfiles
             .FirstOrDefaultAsync(x => x.Id == trip.TransporterProfileId);
 
         if (transporterProfile == null)
-            throw new InvalidOperationException(
+            throw new NotFoundException(
                 "The transporter profile associated with the trip does not exist.");
 
-        var currentUserId = _currentUserService.UserId;
+        var allowedProfileIds =
+            await _tripManagementAccessService
+                .GetManageableTransporterProfileIdsAsync();
 
-        if (transporterProfile.UserId != currentUserId)
-        {
-            if (!transporterProfile.CompanyId.HasValue)
-                throw new InvalidOperationException(
-                    "The trip does not belong to the current user.");
-
-            var company = await _dbContext.Companies
-                .SingleOrDefaultAsync(x =>
-                    x.Id == transporterProfile.CompanyId.Value);
-
-            if (company == null)
-                throw new InvalidOperationException(
-                    "The company associated with the transporter profile does not exist.");
-
-            var isOwner = company.OwnerUserId == currentUserId;
-
-            var isAdmin = await _dbContext.CompanyMembers
-                .AnyAsync(x =>
-                    x.CompanyId == company.Id &&
-                    x.UserId == currentUserId &&
-                    x.IsActive &&
-                    x.Role == CompanyMemberRole.Admin);
-
-            if (!isOwner && !isAdmin)
-                throw new InvalidOperationException(
-                    "Only the company owner or an administrator can manage this trip.");
-        }
+        if (!allowedProfileIds.Contains(transporterProfile.Id))
+            throw new ConflictException(
+                "Only the company owner, an administrator, or the profile owner can manage this trip.");
 
         if (trip.Status != TripStatus.Published)
-            throw new InvalidOperationException(
+            throw new ConflictException(
                 "Only published trips can be cancelled.");
 
         var activeCargos = await _dbContext.TripCargos
@@ -78,14 +55,14 @@ public class CancelTripHandler
         if (activeCargos.Any(x =>
             x.Status == TripCargoStatus.InProgress))
         {
-            throw new InvalidOperationException(
+            throw new ConflictException(
                 "The trip cannot be cancelled because it has cargo in progress.");
         }
 
         if (activeCargos.Any(x =>
             x.Status != TripCargoStatus.Reserved))
         {
-            throw new InvalidOperationException(
+            throw new ConflictException(
                 "The trip contains cargo with an invalid status for cancellation.");
         }
 
@@ -105,11 +82,11 @@ public class CancelTripHandler
                     x.Id == tripCargo.TransportRequestId);
 
             if (request == null)
-                throw new InvalidOperationException(
+                throw new NotFoundException(
                     "The transport request associated with the trip cargo does not exist.");
 
             if (request.Status != TransportRequestStatus.Accepted)
-                throw new InvalidOperationException(
+                throw new ConflictException(
                     "A reserved trip cargo must belong to an accepted transport request.");
         }
 
@@ -119,7 +96,7 @@ public class CancelTripHandler
                 booking.Status != BookingStatus.Cancelled);
 
         if (activeBookingExists)
-            throw new InvalidOperationException(
+            throw new ConflictException(
                 "The trip cannot be cancelled because one of its transport requests has an active booking.");
 
         foreach (var tripCargo in activeCargos)

@@ -5,6 +5,7 @@ using LogiMatch.Application.Authentication;
 using LogiMatch.Application.Bookings;
 using LogiMatch.Application.Cargos;
 using LogiMatch.Application.Common.Interfaces;
+using LogiMatch.Application.Common.Services;
 using LogiMatch.Application.Companies;
 using LogiMatch.Application.Locations;
 using LogiMatch.Application.Matching;
@@ -115,8 +116,10 @@ builder.Services.AddScoped<ActivateCompanyMemberHandler>();
 builder.Services.AddScoped<DeactivateCompanyMemberHandler>();
 builder.Services.AddScoped<PromoteCompanyMemberHandler>();
 builder.Services.AddScoped<DemoteCompanyMemberHandler>();
+builder.Services.AddScoped<GetCompanyPrivateHandler>();
 builder.Services.AddScoped<PasswordHasher<User>>();
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
+builder.Services.AddScoped<ITripManagementAccessService, TripManagementAccessService>();
 
 builder.Services.AddControllers();
 builder.Services.AddProblemDetails();
