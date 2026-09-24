@@ -1,3 +1,4 @@
+using LogiMatch.Application.Common.Exceptions;
 using LogiMatch.Application.Companies;
 using LogiMatch.Application.Tests.Common;
 using LogiMatch.Domain.Entities;
@@ -12,14 +13,16 @@ public class CreateCompanyHandlerTests
     public async Task Handle_WhenTaxIdAlreadyExists_ShouldThrow()
     {
         using var db = TestDbContextFactory.Create();
+        db.Users.Add(new User("rr@gmail.com", "rr", "last", "658999666"));
+        await db.SaveChangesAsync();
 
         db.Companies.Add(CreateCompany(
             taxId: "B12345678"));
 
         await db.SaveChangesAsync();
-        var handler = new CreateCompanyHandler(db, new MockCurrentUserService( Guid.NewGuid()));
+        var handler = new CreateCompanyHandler(db, new MockCurrentUserService(db.Users.Single().Id));
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(new CreateCompanyCommand(
                 "Nueva empresa",
                 "b12345678",
@@ -35,8 +38,10 @@ public class CreateCompanyHandlerTests
     public async Task Handle_WhenCompanyIsValid_ShouldCreateCompany()
     {
         using var db = TestDbContextFactory.Create();
+        db.Users.Add(new User("rr@gmail.com", "rr", "last","658999666"));
+        await db.SaveChangesAsync();
 
-        var handler = new CreateCompanyHandler(db, new MockCurrentUserService(Guid.NewGuid()));
+        var handler = new CreateCompanyHandler(db, new MockCurrentUserService(db.Users.Single().Id));
 
         var command = new CreateCompanyCommand(
             "  LogiMatch SL  ",

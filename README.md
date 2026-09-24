@@ -312,48 +312,126 @@ Mantiene el peso y volumen reservados para controlar la capacidad restante del v
 
 ## TransportRequest
 
-Estados principales:
+Los estados principales son:
+
+* `Draft`: solicitud creada pero todavía no publicada.
+* `Published`: solicitud publicada y disponible para ser atendida.
+* `Matching`: estado reservado para el proceso de búsqueda/matching cuando corresponda.
+* `OffersReceived`: existen ofertas recibidas para la solicitud.
+* `Accepted`: la solicitud ha sido asignada a una solución de transporte.
+* `InProgress`: el transporte está en ejecución.
+* `Completed`: el transporte ha finalizado correctamente.
+* `Cancelled`: la solicitud ha sido cancelada.
+* `Expired`: la solicitud ha expirado.
+
+El ciclo de vida **no obliga a que todas las solicitudes pasen por todos los estados**. Existen diferentes formas de cubrir una solicitud.
+
+### Flujo mediante reserva directa de un viaje
+
+Cuando una solicitud publicada se asigna directamente a un viaje mediante `ReserveTripCapacityHandler`, el flujo es:
 
 ```text
 Draft
-  ↓
+  ↓ Publish()
 Published
-  ↓
-Matching
-  ↓
-OffersReceived
-  ↓
+  ↓ AssignToTrip()
 Accepted
-  ↓
+  ↓ StartTripCargoHandler
 InProgress
-  ↓
+  ↓ CompleteTripCargoHandler
 Completed
 ```
 
-También puede terminar en:
+En este flujo no es necesario pasar por `Matching` ni por `OffersReceived`.
+
+La asignación al viaje se realiza mediante `TransportRequest.AssignToTrip()`, que establece la solicitud como:
 
 ```text
-Cancelled
-Expired
+Status = Accepted
+FulfillmentMode = Trip
 ```
 
-Una solicitud aceptada mediante una oferta utiliza:
+Posteriormente, cuando comienza la mercancía asociada al viaje, `StartTripCargoHandler` realiza la transición:
 
 ```text
-Fulfillment = Offer
+Accepted → InProgress
 ```
 
-Una solicitud asignada directamente a un viaje utiliza:
+Finalmente, `CompleteTripCargoHandler` realiza:
 
 ```text
-Fulfillment = Trip
+InProgress → Completed
 ```
 
-Cuando una reserva de viaje se cancela correctamente, la solicitud puede volver a:
+### Flujo mediante ofertas
+
+El modelo de dominio también contempla un flujo basado en ofertas:
 
 ```text
+Draft
+  ↓ Publish()
 Published
+  ↓ StartMatching()
+Matching
+  ↓ MarkOffersReceived()
+OffersReceived
+  ↓ Accept()
+Accepted
+  ↓ Start()
+InProgress
+  ↓ Complete()
+Completed
 ```
+
+Este flujo representa el proceso en el que una solicitud entra en una fase de matching y recibe ofertas antes de ser aceptada.
+
+El hecho de que `Matching` y `OffersReceived` existan en el modelo de dominio no significa que todas las solicitudes deban atravesarlos.
+
+### Cancelación y expiración
+
+`Cancelled` y `Expired` representan estados terminales alternativos al flujo normal de finalización.
+
+Una solicitud puede ser cancelada desde los estados en los que las reglas de negocio lo permiten, siempre respetando las restricciones asociadas a reservas, viajes y operaciones que ya estén en progreso.
+
+La expiración representa una solicitud que deja de estar disponible por superar las condiciones temporales establecidas.
+
+### Relación entre `TransportRequest` y `TripCargo`
+
+Cuando una solicitud se asigna a un viaje, se crea un `TripCargo` que representa la mercancía reservada dentro de la capacidad del viaje.
+
+El ciclo de `TripCargo` está relacionado con el ciclo de la solicitud:
+
+```text
+TripCargo
+Reserved
+   ↓ StartTripCargoHandler
+InProgress
+   ↓ CompleteTripCargoHandler
+Completed
+```
+
+Las operaciones sobre `TripCargo` actualizan también el estado correspondiente de `TransportRequest`.
+
+Por tanto, el flujo de una reserva directa queda coordinado de esta forma:
+
+```text
+TransportRequest              TripCargo
+
+Published
+    ↓
+Accepted  ← AssignToTrip() →  Reserved
+                                ↓
+                         StartTripCargoHandler
+                                ↓
+InProgress                   InProgress
+                                ↓
+                      CompleteTripCargoHandler
+                                ↓
+Completed                    Completed
+```
+
+Los handlers son responsables de aplicar las transiciones de negocio y de validar que el estado actual permita realizar la operación solicitada. Los tests de aplicación deben utilizar estos handlers para recorrer las transiciones reales, evitando modificar directamente el estado de las entidades cuando dicho cambio forma parte de la lógica que se está probando.
+
 
 ## TransportOffer
 

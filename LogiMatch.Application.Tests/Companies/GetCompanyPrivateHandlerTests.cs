@@ -1,3 +1,4 @@
+using LogiMatch.Application.Common.Exceptions;
 using LogiMatch.Application.Companies;
 using LogiMatch.Application.Tests.Common;
 using LogiMatch.Domain.Entities;
@@ -17,7 +18,7 @@ public class GetCompanyPrivateHandlerTests
             db,
             new MockCurrentUserService(Guid.NewGuid()));
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
             () => handler.Handle(Guid.NewGuid()));
 
         Assert.Equal(
@@ -146,7 +147,7 @@ public class GetCompanyPrivateHandlerTests
             db,
             new MockCurrentUserService(worker.Id));
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(company.Id));
 
         Assert.Equal(
@@ -181,7 +182,7 @@ public class GetCompanyPrivateHandlerTests
             db,
             new MockCurrentUserService(admin.Id));
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(company.Id));
 
         Assert.Equal(
@@ -208,7 +209,7 @@ public class GetCompanyPrivateHandlerTests
             db,
             new MockCurrentUserService(otherUser.Id));
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(company.Id));
 
         Assert.Equal(

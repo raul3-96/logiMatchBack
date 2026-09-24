@@ -5,6 +5,7 @@ using LogiMatch.Application.Tests.Common;
 using LogiMatch.Domain.Entities;
 using LogiMatch.Domain.Enums;
 using Xunit;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace LogiMatch.Application.Tests.Matching;
 
@@ -14,7 +15,9 @@ public class CompleteTripCargoHandlerTests
     public async Task Handle_ShouldThrow_WhenTripCargoDoesNotExist()
     {
         var db = await CreateValidDatabase();
+
         var currentUserService = new MockCurrentUserService(Guid.NewGuid());
+
         var accessService = new TripManagementAccessService(
             db,
             currentUserService);
@@ -35,7 +38,9 @@ public class CompleteTripCargoHandlerTests
     public async Task Handle_ShouldThrow_WhenTripDoesNotExist()
     {
         var db = await CreateValidDatabase();
+
         var currentUserService = new MockCurrentUserService(Guid.NewGuid());
+
         var accessService = new TripManagementAccessService(
             db,
             currentUserService);
@@ -68,7 +73,8 @@ public class CompleteTripCargoHandlerTests
     {
         var db = await CreateValidDatabase();
 
-        var request = await CreateValidRequest(db);
+        var request = await CreateAcceptedTripRequest(db);
+
         var trip = CreateTrip(db);
         trip.Start();
 
@@ -77,13 +83,17 @@ public class CompleteTripCargoHandlerTests
             request,
             100m,
             1m);
+
         tripCargo.Start();
 
         db.Trips.Add(trip);
         db.TripCargos.Add(tripCargo);
+
         await db.SaveChangesAsync();
 
-        var currentUserService = new MockCurrentUserService(Guid.NewGuid());
+        var currentUserService = new MockCurrentUserService(
+            Guid.NewGuid());
+
         var accessService = new TripManagementAccessService(
             db,
             currentUserService);
@@ -106,7 +116,9 @@ public class CompleteTripCargoHandlerTests
         var db = await CreateValidDatabase();
 
         var transporter = db.TransporterProfiles.Single();
-        var request = await CreateValidRequest(db);
+
+        var request = await CreateAcceptedTripRequest(db);
+
         var trip = CreateTrip(db);
         trip.Start();
 
@@ -115,11 +127,15 @@ public class CompleteTripCargoHandlerTests
             request,
             100m,
             1m);
-        tripCargo.Start();
+
+        //tripCargo.Start();
 
         db.Trips.Add(trip);
         db.TripCargos.Add(tripCargo);
+
         await db.SaveChangesAsync();
+
+        await new StartTripCargoHandler(db, new TripManagementAccessService(db, new MockCurrentUserService(transporter.UserId))).Handle(tripCargo.Id);
 
         var currentUserService = new MockCurrentUserService(
             transporter.UserId);
@@ -149,7 +165,9 @@ public class CompleteTripCargoHandlerTests
         var db = await CreateValidDatabaseWithCompany();
 
         var company = db.Companies.Single();
-        var request = await CreateValidRequest(db);
+
+        var request = await CreateAcceptedTripRequest(db);
+
         var trip = CreateTrip(db);
         trip.Start();
 
@@ -158,11 +176,15 @@ public class CompleteTripCargoHandlerTests
             request,
             100m,
             1m);
-        tripCargo.Start();
+
+        //tripCargo.Start();
 
         db.Trips.Add(trip);
         db.TripCargos.Add(tripCargo);
+
         await db.SaveChangesAsync();
+
+        await new StartTripCargoHandler(db, new TripManagementAccessService(db, new MockCurrentUserService(company.OwnerUserId))).Handle(tripCargo.Id);
 
         var currentUserService = new MockCurrentUserService(
             company.OwnerUserId);
@@ -192,6 +214,7 @@ public class CompleteTripCargoHandlerTests
         var db = await CreateValidDatabaseWithCompany();
 
         var company = db.Companies.Single();
+
         var adminUserId = Guid.NewGuid();
 
         db.CompanyMembers.Add(
@@ -202,7 +225,8 @@ public class CompleteTripCargoHandlerTests
 
         await db.SaveChangesAsync();
 
-        var request = await CreateValidRequest(db);
+        var request = await CreateAcceptedTripRequest(db);
+
         var trip = CreateTrip(db);
         trip.Start();
 
@@ -211,11 +235,16 @@ public class CompleteTripCargoHandlerTests
             request,
             100m,
             1m);
-        tripCargo.Start();
+
+        //tripCargo.Start();
 
         db.Trips.Add(trip);
         db.TripCargos.Add(tripCargo);
         await db.SaveChangesAsync();
+
+        //le he tenido que hacer un start para que el tripCargo pase a InProgress, si no no se puede completar y el request sigue en Accepted.
+        await new StartTripCargoHandler(db, new TripManagementAccessService(db, new MockCurrentUserService(adminUserId))).Handle(tripCargo.Id);
+
 
         var currentUserService = new MockCurrentUserService(
             adminUserId);
@@ -228,6 +257,7 @@ public class CompleteTripCargoHandlerTests
             db,
             accessService);
 
+        //AQUI hace un complete pero el request sigue en Accepted.
         await handler.Handle(tripCargo.Id);
 
         Assert.Equal(
@@ -245,7 +275,9 @@ public class CompleteTripCargoHandlerTests
         var db = await CreateValidDatabase();
 
         var transporter = db.TransporterProfiles.Single();
-        var request = await CreateValidRequest(db);
+
+        var request = await CreateAcceptedTripRequest(db);
+
         var trip = CreateTrip(db);
 
         var tripCargo = CreateReservedTripCargo(
@@ -256,6 +288,7 @@ public class CompleteTripCargoHandlerTests
 
         db.Trips.Add(trip);
         db.TripCargos.Add(tripCargo);
+
         await db.SaveChangesAsync();
 
         var currentUserService = new MockCurrentUserService(
@@ -281,7 +314,8 @@ public class CompleteTripCargoHandlerTests
     {
         var db = TestDbContextFactory.Create();
 
-        var transporter = new TransporterProfile(Guid.NewGuid());
+        var transporter = new TransporterProfile(
+            Guid.NewGuid());
 
         var vehicle = new Vehicle(
             transporter.Id,
@@ -298,6 +332,7 @@ public class CompleteTripCargoHandlerTests
             false);
 
         var origin = CreateLocation();
+
         var destination = CreateLocation(
             "Calle Test 2",
             37.3886,
@@ -310,7 +345,10 @@ public class CompleteTripCargoHandlerTests
 
         db.TransporterProfiles.Add(transporter);
         db.Vehicles.Add(vehicle);
-        db.Locations.AddRange(origin, destination);
+        db.Locations.AddRange(
+            origin,
+            destination);
+
         db.VehicleAvailabilities.Add(availability);
 
         await db.SaveChangesAsync();
@@ -350,6 +388,7 @@ public class CompleteTripCargoHandlerTests
             false);
 
         var origin = CreateLocation();
+
         var destination = CreateLocation(
             "Calle Test 2",
             37.3886,
@@ -363,7 +402,10 @@ public class CompleteTripCargoHandlerTests
         db.Companies.Add(company);
         db.TransporterProfiles.Add(transporter);
         db.Vehicles.Add(vehicle);
-        db.Locations.AddRange(origin, destination);
+        db.Locations.AddRange(
+            origin,
+            destination);
+
         db.VehicleAvailabilities.Add(availability);
 
         await db.SaveChangesAsync();
@@ -398,6 +440,26 @@ public class CompleteTripCargoHandlerTests
         db.Cargos.Add(cargo);
 
         await db.SaveChangesAsync();
+
+        return request;
+    }
+
+    private static async Task<TransportRequest> CreateAcceptedTripRequest(
+        TestDbContext db)
+    {
+        var request = await CreateValidRequest(db);
+
+        request.AssignToTrip();
+
+        await db.SaveChangesAsync();
+
+        Assert.Equal(
+            TransportRequestStatus.Accepted,
+            request.Status);
+
+        Assert.Equal(
+            FulfillmentMode.Trip,
+            request.Fulfillment);
 
         return request;
     }
@@ -449,4 +511,3 @@ public class CompleteTripCargoHandlerTests
             longitude);
     }
 }
-

@@ -243,7 +243,7 @@ public class CancelTripCargoHandlerTests
 
         var handler = new CancelTripCargoHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<ConflictException>(
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
             () => handler.Handle(tripCargo.Id));
 
         Assert.Equal(
