@@ -1,5 +1,4 @@
 using LogiMatch.Application.Companies;
-using LogiMatch.Application.Companies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
