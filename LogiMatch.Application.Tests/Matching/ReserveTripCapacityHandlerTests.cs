@@ -1,6 +1,7 @@
 ﻿using LogiMatch.Application.Common.Exceptions;
 using LogiMatch.Application.Matching;
 using LogiMatch.Application.Tests.Common;
+using LogiMatch.Application.TransportRequests;
 using LogiMatch.Domain.Entities;
 using LogiMatch.Domain.Enums;
 using Xunit;
@@ -221,14 +222,12 @@ public class ReserveTripCapacityHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new ReserveTripCapacityHandler(db, currentUserService);
-
+        var publish = new PublishTransportRequestHandler(db, currentUserService);
         var exception = await Assert.ThrowsAsync<ConflictException>(
-            () => handler.Handle(
-                CreateCommand(trip.Id, request.Id)));
+            () =>  publish.Handle(request.Id));
 
         Assert.Equal(
-            "The transport request has no cargo.",
+            "A transport request must have at least one cargo before it can be published.",
             exception.Message);
     }
 
@@ -678,7 +677,7 @@ public class ReserveTripCapacityHandlerTests
             6m,
             2m,
             2.5m,
-            true,
+            hasTailLift,
             false);
 
         var origin = CreateLocation();
@@ -689,7 +688,7 @@ public class ReserveTripCapacityHandlerTests
 
         var availability = new VehicleAvailability(
             vehicle.Id,
-            DateTime.UtcNow.AddDays(-1),
+            DateTime.UtcNow.AddDays(1),
             DateTime.UtcNow.AddDays(10));
 
         db.TransporterProfiles.Add(transporter);

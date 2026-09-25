@@ -1,4 +1,5 @@
-﻿using LogiMatch.Application.Tests.Common;
+﻿using LogiMatch.Application.Common.Exceptions;
+using LogiMatch.Application.Tests.Common;
 using LogiMatch.Application.TransportOffers;
 using LogiMatch.Domain.Entities;
 using LogiMatch.Domain.Enums;
@@ -17,7 +18,7 @@ public class CreateTransportOfferHandlerTests
 
         var command = CreateCommand();
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
             () => handler.Handle(command));
 
         Assert.Equal(
@@ -44,7 +45,7 @@ public class CreateTransportOfferHandlerTests
             Guid.NewGuid(),
             Guid.NewGuid());
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
             () => handler.Handle(command));
 
         Assert.Equal(
@@ -68,14 +69,16 @@ public class CreateTransportOfferHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(Guid.NewGuid()));
+        var transporterId = db.TransporterProfiles.Single(x => x.Id == transporter.Id).UserId;
+
+        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(transporterId));
 
         var command = CreateCommand(
             request.Id,
             transporter.Id,
             Guid.NewGuid());
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
             () => handler.Handle(command));
 
         Assert.Equal(
@@ -102,14 +105,16 @@ public class CreateTransportOfferHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(Guid.NewGuid()));
+        var transporterId = db.TransporterProfiles.Single(x => x.Id == transporter.Id).UserId;
+
+        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(transporterId));
 
         var command = CreateCommand(
             request.Id,
             transporter.Id,
             vehicle.Id);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ValidationException>(
             () => handler.Handle(command));
 
         Assert.Equal(
@@ -122,7 +127,8 @@ public class CreateTransportOfferHandlerTests
     {
         using var db = await CreateValidDatabase();
 
-        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(Guid.NewGuid()));
+        var transporterId = db.TransporterProfiles.Single().UserId;
+        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(transporterId));
 
         var command = CreateCommand(
             db.TransportRequests.Single().Id,
@@ -130,7 +136,7 @@ public class CreateTransportOfferHandlerTests
             db.Vehicles.Single().Id,
             price: 0);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ValidationException>(
             () => handler.Handle(command));
 
         Assert.Equal(
@@ -143,7 +149,8 @@ public class CreateTransportOfferHandlerTests
     {
         using var db = await CreateValidDatabase();
 
-        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(Guid.NewGuid()));
+        var transporterId = db.TransporterProfiles.Single().UserId;
+        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(transporterId));
 
         var command = CreateCommand(
             db.TransportRequests.Single().Id,
@@ -152,7 +159,7 @@ public class CreateTransportOfferHandlerTests
             pickup: DateTime.UtcNow.AddMinutes(-5),
             delivery: DateTime.UtcNow.AddHours(2));
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ValidationException>(
             () => handler.Handle(command));
 
         Assert.Equal(
@@ -168,7 +175,8 @@ public class CreateTransportOfferHandlerTests
         var pickup = DateTime.UtcNow.AddDays(1);
         var delivery = pickup.AddHours(-1);
 
-        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(Guid.NewGuid()));
+        var transporterId = db.TransporterProfiles.Single().UserId;
+        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(transporterId));
 
         var command = CreateCommand(
             db.TransportRequests.Single().Id,
@@ -177,7 +185,7 @@ public class CreateTransportOfferHandlerTests
             pickup: pickup,
             delivery: delivery);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ValidationException>(
             () => handler.Handle(command));
 
         Assert.Equal(
@@ -210,7 +218,9 @@ public class CreateTransportOfferHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(Guid.NewGuid()));
+        var transporterId = db.TransporterProfiles.Single().UserId;
+
+        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(transporterId));
 
         var command = CreateCommand(
             request.Id,
@@ -219,7 +229,7 @@ public class CreateTransportOfferHandlerTests
             pickup: DateTime.UtcNow.AddDays(1),
             delivery: DateTime.UtcNow.AddDays(1).AddHours(2));
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ValidationException>(
             () => handler.Handle(command));
 
         Assert.Equal(
@@ -250,7 +260,9 @@ public class CreateTransportOfferHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(Guid.NewGuid()));
+        var transporterId = db.TransporterProfiles.Single().UserId;
+
+        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(transporterId));
 
         var command = CreateCommand(
             request.Id,
@@ -259,7 +271,7 @@ public class CreateTransportOfferHandlerTests
             pickup: DateTime.UtcNow.AddDays(1).AddHours(1),
             delivery: DateTime.UtcNow.AddDays(1).AddHours(5));
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ValidationException>(
             () => handler.Handle(command));
 
         Assert.Equal(
@@ -295,14 +307,16 @@ public class CreateTransportOfferHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(Guid.NewGuid()));
+        var transporterId = db.TransporterProfiles.Single().UserId;
+
+        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(transporterId));
 
         var command = CreateCommand(
             request.Id,
             transporter.Id,
             vehicle.Id);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ValidationException>(
             () => handler.Handle(command));
 
         Assert.Equal(
@@ -332,14 +346,16 @@ public class CreateTransportOfferHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(Guid.NewGuid()));
+        var transporterId = db.TransporterProfiles.Single().UserId;
+
+        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(transporterId));
 
         var command = CreateCommand(
             request.Id,
             transporter.Id,
             vehicle.Id);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ValidationException>(
             () => handler.Handle(command));
 
         Assert.Equal(
@@ -366,14 +382,16 @@ public class CreateTransportOfferHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(Guid.NewGuid()));
+        var transporterId = db.TransporterProfiles.Single().UserId;
+
+        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(transporterId));
 
         var command = CreateCommand(
             request.Id,
             transporter.Id,
             vehicle.Id);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
             () => handler.Handle(command));
 
         Assert.Equal(
@@ -404,14 +422,16 @@ public class CreateTransportOfferHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new CreateTransportOfferHandler(db, new MockCurrentUserService(Guid.NewGuid()));
+        var transporterId = db.TransporterProfiles.Single().UserId;
+
+        var handler = new CreateTransportOfferHandler(db, new MockCurrentUserService(transporterId));
 
         var command = CreateCommand(
             request.Id,
             transporter.Id,
             vehicle.Id);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ValidationException>(
             () => handler.Handle(command));
 
         Assert.Equal(
@@ -442,14 +462,16 @@ public class CreateTransportOfferHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new CreateTransportOfferHandler(db, new MockCurrentUserService(Guid.NewGuid()));
+        var transporterId = db.TransporterProfiles.Single().UserId;
+
+        var handler = new CreateTransportOfferHandler(db, new MockCurrentUserService(transporterId));
 
         var command = CreateCommand(
             request.Id,
             transporter.Id,
             vehicle.Id);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ValidationException>(
             () => handler.Handle(command));
 
         Assert.Equal(
@@ -482,14 +504,16 @@ public class CreateTransportOfferHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(Guid.NewGuid()));
+        var transporterId = db.TransporterProfiles.Single().UserId;
+
+        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(transporterId));
 
         var command = CreateCommand(
             request.Id,
             transporter.Id,
             vehicle.Id);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ValidationException>(
             () => handler.Handle(command));
 
         Assert.Equal(
@@ -522,14 +546,16 @@ public class CreateTransportOfferHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(Guid.NewGuid()));
+        var transporterId = db.TransporterProfiles.Single().UserId;
+
+        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(transporterId));
 
         var command = CreateCommand(
             request.Id,
             transporter.Id,
             vehicle.Id);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ValidationException>(
             () => handler.Handle(command));
 
         Assert.Equal(
@@ -561,14 +587,16 @@ public class CreateTransportOfferHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(Guid.NewGuid()));
+        var transporterId = db.TransporterProfiles.Single().UserId;
+
+        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(transporterId));
 
         var command = CreateCommand(
             request.Id,
             transporter.Id,
             vehicle.Id);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ValidationException>(
             () => handler.Handle(command));
 
         Assert.Equal(
@@ -598,14 +626,16 @@ public class CreateTransportOfferHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(Guid.NewGuid()));
+        var transporterId = db.TransporterProfiles.Single().UserId;
+
+        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(transporterId));
 
         var command = CreateCommand(
             request.Id,
             transporter.Id,
             vehicle.Id);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ValidationException>(
             () => handler.Handle(command));
 
         Assert.Equal(
@@ -633,14 +663,16 @@ public class CreateTransportOfferHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(Guid.NewGuid()));
+        var transporterId = db.TransporterProfiles.Single().UserId;
+
+        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(transporterId));
 
         var command = CreateCommand(
             request.Id,
             transporter.Id,
             vehicle.Id);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ValidationException>(
             () => handler.Handle(command));
 
         Assert.Equal(
@@ -693,14 +725,16 @@ public class CreateTransportOfferHandlerTests
 
         await db.SaveChangesAsync();
 
-        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(Guid.NewGuid()));
+        var transporterId = db.TransporterProfiles.Single().UserId;
+
+        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(transporterId));
 
         var command = CreateCommand(
             request.Id,
             transporter.Id,
             vehicle.Id);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ValidationException>(
             () => handler.Handle(command));
 
         Assert.Equal(
@@ -717,7 +751,7 @@ public class CreateTransportOfferHandlerTests
         var transporter = db.TransporterProfiles.Single();
         var vehicle = db.Vehicles.Single();
 
-        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(Guid.NewGuid()));
+        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(transporter.UserId));
 
         var command = CreateCommand(
             request.Id,
@@ -751,7 +785,7 @@ public class CreateTransportOfferHandlerTests
         var transporter = db.TransporterProfiles.Single();
         var vehicle = db.Vehicles.Single();
 
-        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(Guid.NewGuid()));
+        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(transporter.UserId));
 
         var offerId = await handler.Handle(
             CreateCommand(
@@ -784,7 +818,7 @@ public class CreateTransportOfferHandlerTests
         var transporter = db.TransporterProfiles.Single();
         var vehicle = db.Vehicles.Single();
 
-        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(Guid.NewGuid()));
+        var handler = new CreateTransportOfferHandler(db,new MockCurrentUserService(transporter.UserId));
 
         var offerId = await handler.Handle(
             CreateCommand(

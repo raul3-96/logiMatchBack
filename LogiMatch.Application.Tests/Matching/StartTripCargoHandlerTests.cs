@@ -106,7 +106,8 @@ public class StartTripCargoHandlerTests
         var db = await CreateValidDatabase();
 
         var transporter = db.TransporterProfiles.Single();
-        var request = await CreateValidRequest(db);
+        //var request = await CreateValidRequest(db);
+        var request = await CreateAcceptedTripRequest(db);
         var trip = CreateTrip(db);
         trip.Start();
 
@@ -148,7 +149,8 @@ public class StartTripCargoHandlerTests
         var db = await CreateValidDatabaseWithCompany();
 
         var company = db.Companies.Single();
-        var request = await CreateValidRequest(db);
+        //var request = await CreateValidRequest(db);
+        var request = await CreateAcceptedTripRequest(db);
         var trip = CreateTrip(db);
         trip.Start();
 
@@ -200,7 +202,7 @@ public class StartTripCargoHandlerTests
 
         await db.SaveChangesAsync();
 
-        var request = await CreateValidRequest(db);
+        var request = await CreateAcceptedTripRequest(db);
         var trip = CreateTrip(db);
         trip.Start();
 
@@ -302,7 +304,7 @@ public class StartTripCargoHandlerTests
 
         var availability = new VehicleAvailability(
             vehicle.Id,
-            DateTime.UtcNow.AddDays(-1),
+            DateTime.UtcNow.AddDays(2),
             DateTime.UtcNow.AddDays(10));
 
         db.TransporterProfiles.Add(transporter);
@@ -354,7 +356,7 @@ public class StartTripCargoHandlerTests
 
         var availability = new VehicleAvailability(
             vehicle.Id,
-            DateTime.UtcNow.AddDays(-1),
+            DateTime.UtcNow.AddDays(1),
             DateTime.UtcNow.AddDays(10));
 
         db.Companies.Add(company);
@@ -444,5 +446,25 @@ public class StartTripCargoHandlerTests
             "España",
             latitude,
             longitude);
+    }
+
+    private static async Task<TransportRequest> CreateAcceptedTripRequest(
+        TestDbContext db)
+    {
+        var request = await CreateValidRequest(db);
+
+        request.AssignToTrip();
+
+        await db.SaveChangesAsync();
+
+        Assert.Equal(
+            TransportRequestStatus.Accepted,
+            request.Status);
+
+        Assert.Equal(
+            FulfillmentMode.Trip,
+            request.Fulfillment);
+
+        return request;
     }
 }

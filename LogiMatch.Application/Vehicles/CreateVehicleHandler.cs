@@ -1,4 +1,5 @@
-﻿using LogiMatch.Application.Common.Interfaces;
+﻿using LogiMatch.Application.Common.Exceptions;
+using LogiMatch.Application.Common.Interfaces;
 using LogiMatch.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,12 +27,19 @@ public class CreateVehicleHandler
             .SingleOrDefaultAsync(x => x.Id == command.TransporterProfileId);
 
         if (profile == null)
-            throw new InvalidOperationException(
+            throw new NotFoundException(
                 "The specified transporter profile does not exist.");
 
         if (profile.UserId != currentUserId)
-            throw new InvalidOperationException(
-                "The transporter profile does not belong to the authenticated user.");
+            throw new ValidationException(
+                "You can only create vehicles for your own transporter profile.");
+
+        //license plate uniqueness check
+        var existingVehicle = await _dbContext.Vehicles
+            .SingleOrDefaultAsync(x => x.LicensePlate == command.LicensePlate.Trim().ToUpperInvariant());
+        if (existingVehicle != null)
+            throw new ValidationException(
+                "A vehicle with the specified license plate already exists.");
 
         var vehicle = new Vehicle(
             command.TransporterProfileId,

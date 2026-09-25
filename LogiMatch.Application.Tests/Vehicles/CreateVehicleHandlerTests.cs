@@ -37,7 +37,7 @@ public class CreateVehicleHandlerTests
         var currentUserService = new MockCurrentUserService(Guid.NewGuid()); // Diferente usuario
         var handler = new CreateVehicleHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<ConflictException>(
+        var exception = await Assert.ThrowsAsync<ValidationException>(
             () => handler.Handle(CreateCommand(transporterProfileId: transporter.Id)));
 
         Assert.Equal(
@@ -65,7 +65,7 @@ public class CreateVehicleHandlerTests
         var currentUserService = new MockCurrentUserService(userId);
         var handler = new CreateVehicleHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<ConflictException>(
+        var exception = await Assert.ThrowsAsync<ValidationException>(
             () => handler.Handle(CreateCommand(
                 transporterProfileId: transporter.Id,
                 licensePlate: " 5678xyz ")));

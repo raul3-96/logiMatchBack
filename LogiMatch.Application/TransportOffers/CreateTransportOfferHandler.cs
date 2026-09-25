@@ -39,7 +39,7 @@ public class CreateTransportOfferHandler
 
         // Validar que el usuario actual es el dueño del perfil de transportista
         if (transporterProfile.UserId != _currentUserService.UserId)
-            throw new ConflictException(
+            throw new ValidationException(
                 "You can only create offers from your own transporter profile.");
 
         var vehicle = await _dbContext.Vehicles
@@ -50,7 +50,7 @@ public class CreateTransportOfferHandler
                 "The specified vehicle does not exist.");
 
         if (vehicle.TransporterProfileId != command.TransporterProfileId)
-            throw new ConflictException(
+            throw new ValidationException(
                 "The vehicle does not belong to the specified transporter.");
 
         if (command.Price <= 0)
@@ -80,7 +80,7 @@ public class CreateTransportOfferHandler
             request.Status != TransportRequestStatus.Matching &&
             request.Status != TransportRequestStatus.OffersReceived)
         {
-            throw new ConflictException(
+            throw new ValidationException(
                 "Offers cannot be created for the current transport request status.");
         }
 
@@ -90,7 +90,7 @@ public class CreateTransportOfferHandler
                 x.Status != TripCargoStatus.Cancelled);
 
         if (activeTripCargo)
-            throw new ConflictException(
+            throw new ValidationException(
                 "The transport request is already assigned to a trip.");
 
         var cargos = await _dbContext.Cargos
@@ -98,7 +98,7 @@ public class CreateTransportOfferHandler
             .ToListAsync();
 
         if (!cargos.Any())
-            throw new ConflictException(
+            throw new NotFoundException(
                 "The transport request has no cargo.");
 
         var totalWeight = cargos.Sum(x => x.WeightKg);
@@ -111,19 +111,19 @@ public class CreateTransportOfferHandler
             cargos.Any(x => x.RequiresTailLift);
 
         if (totalWeight > vehicle.MaxWeightKg)
-            throw new ConflictException(
+            throw new ValidationException(
                 "The vehicle does not have enough weight capacity for the transport request.");
 
         if (totalVolume > vehicle.MaxVolumeM3)
-            throw new ConflictException(
+            throw new ValidationException(
                 "The vehicle does not have enough volume capacity for the transport request.");
 
         if (requiresRefrigeration && !vehicle.IsRefrigerated)
-            throw new ConflictException(
+            throw new ValidationException(
                 "The vehicle does not meet the refrigeration requirement.");
 
         if (requiresTailLift && !vehicle.HasTailLift)
-            throw new ConflictException(
+            throw new ValidationException(
                 "The vehicle does not meet the tail lift requirement.");
 
         var vehicleAvailable = await _dbContext.VehicleAvailabilities
@@ -133,7 +133,7 @@ public class CreateTransportOfferHandler
                 x.AvailableTo >= command.EstimatedDeliveryDate);
 
         if (!vehicleAvailable)
-            throw new ConflictException(
+            throw new ValidationException(
                 "The vehicle is not available for the estimated offer dates.");
 
         var overlappingTrip = await _dbContext.Trips
@@ -144,7 +144,7 @@ public class CreateTransportOfferHandler
                 command.EstimatedDeliveryDate > x.DepartureDate);
 
         if (overlappingTrip)
-            throw new ConflictException(
+            throw new ValidationException(
                 "The vehicle already has a trip that overlaps with the specified offer dates.");
 
         var existingOffer = await _dbContext.TransportOffers
@@ -154,7 +154,7 @@ public class CreateTransportOfferHandler
                 x.Status == TransportOfferStatus.Pending);
 
         if (existingOffer)
-            throw new ConflictException(
+            throw new ValidationException(
                 "The transporter already has a pending offer for this transport request.");
 
         var acceptedOfferWithActiveBooking =
@@ -171,7 +171,7 @@ public class CreateTransportOfferHandler
                 .AnyAsync(x => x.Status != BookingStatus.Cancelled);
 
         if (acceptedOfferWithActiveBooking)
-            throw new ConflictException(
+            throw new ValidationException(
                 "The transporter already has an active booking for this transport request.");
 
         var offer = new TransportOffer(

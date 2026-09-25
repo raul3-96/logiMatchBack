@@ -41,11 +41,11 @@ public class CreateVehicleAvailabilityHandlerTests
         var currentUserService = new MockCurrentUserService(Guid.NewGuid());
         var handler = new CreateVehicleAvailabilityHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<ConflictException>(
+        var exception = await Assert.ThrowsAsync<ValidationException>(
             () => handler.Handle(CreateCommand(vehicleId: vehicle.Id)));
 
         Assert.Equal(
-            "You can only create availability for your own vehicles.",
+            "The vehicle does not belong to the authenticated user.",
             exception.Message);
     }
 
@@ -68,7 +68,7 @@ public class CreateVehicleAvailabilityHandlerTests
         var from = DateTime.UtcNow.AddDays(1);
         var to = from.AddHours(-1);
 
-        var exception = await Assert.ThrowsAsync<ValidationException>(
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
             () => handler.Handle(CreateCommand(
                 vehicleId: vehicle.Id,
                 availableFrom: from,
@@ -95,7 +95,7 @@ public class CreateVehicleAvailabilityHandlerTests
         var currentUserService = new MockCurrentUserService(userId);
         var handler = new CreateVehicleAvailabilityHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<ValidationException>(
+        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
             () => handler.Handle(CreateCommand(
                 vehicleId: vehicle.Id,
                 availableFrom: DateTime.UtcNow.AddMinutes(-5),
@@ -127,14 +127,14 @@ public class CreateVehicleAvailabilityHandlerTests
         var currentUserService = new MockCurrentUserService(userId);
         var handler = new CreateVehicleAvailabilityHandler(db, currentUserService);
 
-        var exception = await Assert.ThrowsAsync<ConflictException>(
+        var exception = await Assert.ThrowsAsync<ValidationException>(
             () => handler.Handle(CreateCommand(
                 vehicleId: vehicle.Id,
                 availableFrom: DateTime.UtcNow.AddDays(1).AddHours(1),
                 availableTo: DateTime.UtcNow.AddDays(2).AddHours(1))));
 
         Assert.Equal(
-            "The vehicle already has an availability that overlaps with the specified dates.",
+            "The specified availability overlaps with an existing availability for the vehicle.",
             exception.Message);
     }
 

@@ -1,4 +1,5 @@
-﻿using LogiMatch.Application.Common.Interfaces;
+﻿using LogiMatch.Application.Common.Exceptions;
+using LogiMatch.Application.Common.Interfaces;
 using LogiMatch.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,12 +37,21 @@ public class CreateVehicleAvailabilityHandler
             .SingleOrDefaultAsync();
 
         if (vehicle == null)
-            throw new InvalidOperationException(
+            throw new NotFoundException(
                 "The specified vehicle does not exist.");
 
         if (vehicle.UserId != currentUserId)
-            throw new InvalidOperationException(
+            throw new ValidationException(
                 "The vehicle does not belong to the authenticated user.");
+
+        //overlapping availability check
+        var overlappingAvailability = await _dbContext.VehicleAvailabilities
+            .Where(x => x.VehicleId == command.VehicleId)
+            .Where(x => x.AvailableFrom < command.AvailableTo && x.AvailableTo > command.AvailableFrom)
+            .AnyAsync();
+        if (overlappingAvailability)
+            throw new ValidationException(
+                "The specified availability overlaps with an existing availability for the vehicle.");
 
         var availability = new VehicleAvailability(
             command.VehicleId,

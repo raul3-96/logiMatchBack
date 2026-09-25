@@ -342,7 +342,7 @@ public class StartTripHandlerTests
             () => handler.Handle(trip.Id));
 
         Assert.Equal(
-            "The trip does not belong to the current user.",
+            "Only the company owner, an administrator, or the profile owner can manage this trip.",
             exception.Message);
     }
 

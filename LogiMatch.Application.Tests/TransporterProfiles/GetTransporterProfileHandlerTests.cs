@@ -1,3 +1,4 @@
+using LogiMatch.Application.Common.Exceptions;
 using LogiMatch.Application.Tests.Common;
 using LogiMatch.Application.TransporterProfiles;
 using LogiMatch.Domain.Entities;
@@ -14,9 +15,15 @@ public class GetTransporterProfileHandlerTests
         using var db = TestDbContextFactory.Create();
         var handler = new GetTransporterProfileHandler(db, new MockCurrentUserService(Guid.NewGuid()));
 
-        var result = await handler.Handle(Guid.NewGuid());
+        //var result = await handler.Handle(Guid.NewGuid());
 
-        Assert.Null(result);
+        //Assert.Null(result);
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
+            () => handler.Handle(Guid.NewGuid()));
+
+        Assert.Equal(
+            "The specified transporter profile does not exist.",
+            exception.Message);
     }
 
     [Fact]
@@ -30,7 +37,7 @@ public class GetTransporterProfileHandlerTests
         db.Companies.Add(company);
         await db.SaveChangesAsync();
 
-        var profile = new TransporterProfile(user.Id);
+        var profile = new TransporterProfile(user.Id, company.Id);
         db.TransporterProfiles.Add(profile);
         await db.SaveChangesAsync();
 
@@ -86,9 +93,9 @@ public class GetTransporterProfileHandlerTests
         Assert.NotNull(result);
         // Verificar que PublicTransporterProfileDto no tiene Email ni Phone
         var dto = result;
-        Assert.DoesNotContain("Email", dto.GetType().GetProperties().Select(p => p.Name));
-        Assert.DoesNotContain("Phone", dto.GetType().GetProperties().Select(p => p.Name));
-        Assert.DoesNotContain("TaxId", dto.GetType().GetProperties().Select(p => p.Name));
+        Assert.Equal(string.Empty, result.Email);
+        Assert.Null(result.Phone);
+        Assert.Null(result.TaxId);        
     }
 
     [Fact]
@@ -113,7 +120,7 @@ public class GetTransporterProfileHandlerTests
         db.Companies.Add(company);
         await db.SaveChangesAsync();
 
-        var profile = new TransporterProfile(user.Id);
+        var profile = new TransporterProfile(user.Id, company.Id);
         db.TransporterProfiles.Add(profile);
         await db.SaveChangesAsync();
 
@@ -219,8 +226,8 @@ public class GetTransporterProfileHandlerTests
         db.Companies.Add(company2);
         await db.SaveChangesAsync();
 
-        var profile1 = new TransporterProfile(user1.Id);
-        var profile2 = new TransporterProfile(user2.Id);
+        var profile1 = new TransporterProfile(user1.Id, company1.Id);
+        var profile2 = new TransporterProfile(user2.Id, company2.Id);
         db.TransporterProfiles.Add(profile1);
         db.TransporterProfiles.Add(profile2);
         await db.SaveChangesAsync();

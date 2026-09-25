@@ -34,7 +34,7 @@ public class CreateTransporterProfileHandler
             .AnyAsync(x => x.UserId == userId);
 
         if (profileExists)
-            throw new ConflictException(
+            throw new ValidationException(
                 "The user already has a transporter profile.");
 
         if (command.CompanyId.HasValue)
@@ -58,11 +58,11 @@ public class CreateTransporterProfileHandler
                         x.UserId == userId);
 
                 if (member == null)
-                    throw new ConflictException(
+                    throw new ValidationException(
                         "The user is not a member of the specified company.");
 
                 if (!member.IsActive)
-                    throw new ConflictException(
+                    throw new ValidationException(
                         "The user is not an active member of the specified company.");
             }
         }

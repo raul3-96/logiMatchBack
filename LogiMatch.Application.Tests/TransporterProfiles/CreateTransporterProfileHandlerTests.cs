@@ -1,3 +1,4 @@
+using LogiMatch.Application.Common.Exceptions;
 using LogiMatch.Application.Tests.Common;
 using LogiMatch.Application.TransporterProfiles;
 using LogiMatch.Domain.Entities;
@@ -14,7 +15,7 @@ public class CreateTransporterProfileHandlerTests
         using var db = TestDbContextFactory.Create();
         var handler = new CreateTransporterProfileHandler(db, new MockCurrentUserService(Guid.NewGuid()));
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
             () => handler.Handle(CreateCommand()));
 
         Assert.Equal(
@@ -37,7 +38,7 @@ public class CreateTransporterProfileHandlerTests
 
         var handler = new CreateTransporterProfileHandler(db, new MockCurrentUserService(user.Id));
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ValidationException>(
             () => handler.Handle(CreateCommand(user.Id)));
 
         Assert.Equal(
@@ -56,9 +57,7 @@ public class CreateTransporterProfileHandlerTests
 
         var handler = new CreateTransporterProfileHandler(db, new MockCurrentUserService(user.Id));
 
-        var command = CreateCommand(
-            user.Id,
-            companyId: null);
+        var command = CreateCommand(companyId: null);
 
         var profileId = await handler.Handle(command);
 
@@ -75,18 +74,21 @@ public class CreateTransporterProfileHandlerTests
     {
         using var db = TestDbContextFactory.Create();
 
-        var user = CreateUser();
-        var company = CreateCompany();
+        var userOwner = CreateUser();
+        var company = CreateCompany(userOwner.Id);
 
-        db.Users.Add(user);
+        db.Users.Add(userOwner);
         db.Companies.Add(company);
         await db.SaveChangesAsync();
 
-        var handler = new CreateTransporterProfileHandler(db, new MockCurrentUserService(user.Id));
+        var memberCompany = db.Companies
+            .Where(x => x.Id == company.Id)
+            .Select(x => x.OwnerUserId)
+            .FirstOrDefault();
 
-        var command = CreateCommand(
-            user.Id,
-            company.Id);
+        var handler = new CreateTransporterProfileHandler(db, new MockCurrentUserService(userOwner.Id));
+
+        var command = CreateCommand(company.Id);
 
         var profileId = await handler.Handle(command);
 
@@ -94,13 +96,11 @@ public class CreateTransporterProfileHandlerTests
             .SingleAsync(x => x.Id == profileId);
 
         Assert.NotEqual(Guid.Empty, profileId);
-        Assert.Equal(user.Id, profile.UserId);
+        Assert.Equal(userOwner.Id, profile.UserId);
         Assert.Equal(company.Id, profile.CompanyId);
     }
 
-    private static CreateTransporterProfileCommand CreateCommand(
-        Guid? userId = null,
-        Guid? companyId = null)
+    private static CreateTransporterProfileCommand CreateCommand(Guid? companyId = null)
     {
         return new CreateTransporterProfileCommand
         {
@@ -117,12 +117,13 @@ public class CreateTransporterProfileHandlerTests
             "600123456");
     }
 
-    private static Company CreateCompany()
+    private static Company CreateCompany(Guid ownerUserId)
     {
         return new Company(
             "LogiMatch SL",
             "B12345678",
             "info@logimatch.com",
-            "600123456",Guid.NewGuid());
+            "600123456",
+            ownerUserId);
     }
 }

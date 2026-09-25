@@ -1,4 +1,6 @@
-﻿namespace LogiMatch.Domain.Entities;
+﻿
+
+namespace LogiMatch.Domain.Entities;
 
 public class VehicleAvailability
 {
@@ -22,6 +24,10 @@ public class VehicleAvailability
         if (availableTo <= availableFrom)
             throw new InvalidOperationException(
                 "AvailableTo must be after AvailableFrom.");
+
+        if (availableFrom < DateTime.UtcNow)
+            throw new InvalidOperationException(
+                "AvailableFrom cannot be in the past.");
 
         Id = Guid.NewGuid();
         VehicleId = vehicleId;

@@ -10,8 +10,8 @@ public class VehicleAvailabilityTests
     {
         // Arrange
         var vehicleId = Guid.NewGuid();
-        var availableFrom = new DateTime(2026, 9, 15, 8, 0, 0);
-        var availableTo = new DateTime(2026, 9, 15, 18, 0, 0);
+        var availableFrom = DateTime.UtcNow.AddHours(10);
+        var availableTo = availableFrom.AddHours(10);
 
         // Act
         var availability = new VehicleAvailability(

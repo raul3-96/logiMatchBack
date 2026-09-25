@@ -1,4 +1,5 @@
-﻿using LogiMatch.Application.Common.Interfaces;
+﻿using LogiMatch.Application.Common.Exceptions;
+using LogiMatch.Application.Common.Interfaces;
 using LogiMatch.Application.Common.Services;
 using LogiMatch.Application.Tests.Common;
 using LogiMatch.Application.Trips;
@@ -18,7 +19,7 @@ public class CancelTripHandlerTests
             db,
             Guid.NewGuid());
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
             () => handler.Handle(Guid.NewGuid()));
 
         Assert.Equal(
@@ -41,7 +42,7 @@ public class CancelTripHandlerTests
             db,
             db.TransporterProfiles.Single().UserId);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(trip.Id));
 
         Assert.Equal(
@@ -65,7 +66,7 @@ public class CancelTripHandlerTests
             db,
             db.TransporterProfiles.Single().UserId);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(trip.Id));
 
         Assert.Equal(
@@ -88,7 +89,7 @@ public class CancelTripHandlerTests
             db,
             db.TransporterProfiles.Single().UserId);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(trip.Id));
 
         Assert.Equal(
@@ -122,7 +123,7 @@ public class CancelTripHandlerTests
             db,
             db.TransporterProfiles.Single().UserId);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(trip.Id));
 
         Assert.Equal(
@@ -157,7 +158,7 @@ public class CancelTripHandlerTests
             db,
             db.TransporterProfiles.Single().UserId);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(trip.Id));
 
         Assert.Equal(
@@ -187,7 +188,7 @@ public class CancelTripHandlerTests
             db,
             db.TransporterProfiles.Single().UserId);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<NotFoundException>(
             () => handler.Handle(trip.Id));
 
         Assert.Equal(
@@ -220,7 +221,7 @@ public class CancelTripHandlerTests
             db,
             db.TransporterProfiles.Single().UserId);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(trip.Id));
 
         Assert.Equal(
@@ -265,7 +266,7 @@ public class CancelTripHandlerTests
             db,
             db.TransporterProfiles.Single().UserId);
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(trip.Id));
 
         Assert.Equal(
@@ -563,11 +564,11 @@ public class CancelTripHandlerTests
             db,
             Guid.NewGuid());
 
-        var exception = await Assert.ThrowsAsync<InvalidOperationException>(
+        var exception = await Assert.ThrowsAsync<ConflictException>(
             () => handler.Handle(trip.Id));
 
         Assert.Equal(
-            "The trip does not belong to the current user.",
+            "Only the company owner, an administrator, or the profile owner can manage this trip.",
             exception.Message);
     }
 
